@@ -1,6 +1,10 @@
 {
 	"name": "dsParquetstoragelocation",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "uiapsynapsedl",
+			"type": "LinkedServiceReference"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {

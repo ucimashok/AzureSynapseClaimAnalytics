@@ -1,6 +1,10 @@
 {
 	"name": "dsParquetstoragelocation",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedService1",
+			"type": "LinkedServiceReference"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {

@@ -12,7 +12,7 @@
 				"type": "AzureBlobFSLocation",
 				"fileName": "ExternalTPA.parquet",
 				"folderPath": "Input",
-				"fileSystem": "azsynapsehackdlfs"
+				"fileSystem": "uiapsynapsedlfs"
 			},
 			"compressionCodec": "snappy"
 		},

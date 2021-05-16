@@ -158,7 +158,6 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "dbo.updatelogtable",
 								"storedProcedureParameters": {
 									"jobName": {
 										"value": {
@@ -170,7 +169,7 @@
 								}
 							},
 							"linkedServiceName": {
-								"referenceName": "SqlServerSynapse",
+								"referenceName": "SqlServerSynapseClaims",
 								"type": "LinkedServiceReference"
 							}
 						}

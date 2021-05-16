@@ -1,10 +1,6 @@
 {
 	"name": "dsExternalParquetfile",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "OnPremFileLocation",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"Folderpath": {
 				"type": "string"

@@ -2,7 +2,7 @@
 	"name": "DynamicStoredProceFromDatabase",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SqlServerSynapse",
+			"referenceName": "SqlServerSynapseClaims",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],

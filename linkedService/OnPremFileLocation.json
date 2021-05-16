@@ -7,7 +7,7 @@
 		"typeProperties": {
 			"host": "F:\\AzureSynapseHackathon\\ExternalTPA",
 			"userId": "ubtiinc\\ashokkumar",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwOTYxM2RmMy1kOWZlLTQwMzYtOTNhNy02YjFjOWEzZTIzZWIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3MmE3ZjJmOC04OTA1LTRmZjYtODU2YS04NTVjNDFlMjhjZTYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeselfhosted",

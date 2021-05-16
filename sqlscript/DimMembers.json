@@ -2,7 +2,7 @@
 	"name": "DimMembers",
 	"properties": {
 		"content": {
-			"query": "",
+			"query": "select 1 ",
 			"metadata": {
 				"language": "sql"
 			},

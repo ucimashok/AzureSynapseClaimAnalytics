@@ -1,0 +1,17 @@
+{
+	"name": "DimProcedureCodes",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [dbo].[DimProcedureCodes]    Script Date: 5/18/2021 3:46:13 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[DimProcedureCodes]\n(\n\t[CptCodeId] [int] NOT NULL,\n\t[CptCode] [varchar](50) NULL,\n\t[CptDescription] [varchar](500) NULL,\n\t[ProcedureCategoryId] [int] NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [CptCodeId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

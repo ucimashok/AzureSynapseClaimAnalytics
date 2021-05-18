@@ -1,0 +1,17 @@
+{
+	"name": "Load_MemberDetails",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[MemberDetails]    Script Date: 5/18/2021 1:19:17 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[MemberDetails]\n(\n\t[member_detail_id] [int] NOT NULL,\n\t[member_id] [int] NULL,\n\t[start_effective_date] [datetime] NULL,\n\t[end_effective_date] [datetime] NULL,\n\t[location_id] [int] NULL,\n\t[employer_id] [int] NULL,\n\t[product_type_id] [int] NULL,\n\t[city] [varchar](150) NULL,\n\t[state] [varchar](20) NULL,\n\t[zip_code] [varchar](50) NULL,\n\t[email] [varchar](50) NULL,\n\t[MobileNo] [varchar](20) NULL,\n\t[PanNo] [varchar](100) NULL,\n\t[DrivingNo] [varchar](100) NULL,\n\t[VoterID] [varchar](100) NULL,\n\t[Ration_Card] [varchar](100) NULL,\n\t[member_code_tmp] [varchar](20) NULL,\n\t[is_missing] [int] NULL,\n\t[AccountNo] [varchar](50) NULL,\n\t[Bank_Name] [varchar](50) NULL,\n\t[Bank_Branch] [varchar](50) NULL,\n\t[Branch_Code] [varchar](50) NULL,\n\t[Designation] [varchar](50) NULL,\n\t[Department] [varchar](50) NULL,\n\t[Policytype] [varchar](100) NULL,\n\t[ProductID] [int] NULL,\n\t[policyNo] [varchar](100) NULL,\n\t[SumInsured] [numeric](18, 2) NULL,\n\t[Cummulative] [numeric](18, 2) NULL,\n\t[Premium] [numeric](18, 2) NULL,\n\t[Renewal] [varchar](50) NULL,\n\t[Subscriber_Detail_id] [int] NULL,\n\t[RelationshipID] [int] NULL,\n\t[Plan_id] [int] NULL,\n\t[SumInsuredper] [varchar](100) NULL,\n\t[CardPer] [varchar](100) NULL,\n\t[Employee_No] [varchar](50) NULL,\n\t[Bloodgroup] [varchar](50) NULL,\n\t[SalaryGrade] [varchar](50) NULL,\n\t[CoInsurance] [varchar](100) NULL,\n\t[agentcode] [varchar](150) NULL,\n\t[member_insurer_id] [int] NULL,\n\t[country] [varchar](50) NULL,\n\t[district] [varchar](100) NULL,\n\t[workflow_current_sequence_id] [int] NULL,\n\t[policy_from_date] [datetime] NULL,\n\t[policy_to_date] [datetime] NULL,\n\t[Contract_Id] [int] NULL,\n\t[DateCreated] [datetime] NULL,\n\t[covered_from_date] [datetime] NULL,\n\t[End_Ren_Date] [datetime] NULL,\n\t[endorsement_no] [varchar](100) NULL,\n\t[Endorsement_Date] [datetime] NULL,\n\t[Parent_Member_detail_id] [int] NULL,\n\t[MemberCreatedDate] [datetime] NULL,\n\t[ModifiedDate] [datetime] NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [member_detail_id] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

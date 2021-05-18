@@ -1,0 +1,17 @@
+{
+	"name": "Load_ClaimProcedureDetails",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[ClaimProcedureDetails]    Script Date: 5/18/2021 1:10:30 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[ClaimProcedureDetails]\n(\n\t[ClaimProcedureId] [int] NOT NULL,\n\t[ClaimFormDetailId] [int] NULL,\n\t[CptCodeId] [int] NULL,\n\t[Billed] [money] NULL,\n\t[Net] [money] NULL,\n\t[NoofServices] [numeric](19, 2) NULL,\n\t[PlaceofServiceId] [int] NULL,\n\t[Amount] [money] NULL,\n\t[ParentServiceProcedureId] [money] NULL,\n\t[GrossAmount] [money] NULL,\n\t[ServiceStartDate] [datetime] NULL,\n\t[ServiceEndDate] [datetime] NULL,\n\t[BilledGross] [money] NULL,\n\t[ServiceNet] [money] NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [ClaimProcedureId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

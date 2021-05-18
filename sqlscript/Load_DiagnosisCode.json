@@ -1,0 +1,17 @@
+{
+	"name": "Load_DiagnosisCode",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[DiagnosisCodes]    Script Date: 5/18/2021 1:15:21 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[DiagnosisCodes]\n(\n\t[IcdCodeId] [int] NOT NULL,\n\t[IcdCode] [varchar](10) NULL,\n\t[IcdDescription] [varchar](250) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [IcdCodeId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

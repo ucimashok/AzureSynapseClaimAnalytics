@@ -1,0 +1,17 @@
+{
+	"name": "Load_HospitalDetails",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[HospitalDetails]    Script Date: 5/18/2021 1:17:43 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[HospitalDetails]\n(\n\t[HospitalId] [int] NOT NULL,\n\t[HospitalCode] [varchar](30) NULL,\n\t[HospitalName] [varchar](100) NULL,\n\t[IsSpecialist] [bit] NULL,\n\t[IsReferringProvider] [bit] NULL,\n\t[ProviderTypeId] [int] NULL,\n\t[ProviderCity] [varchar](50) NULL,\n\t[ProviderState] [varchar](100) NULL,\n\t[ProviderCountry] [varchar](100) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [HospitalId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

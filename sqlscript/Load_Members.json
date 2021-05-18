@@ -1,0 +1,17 @@
+{
+	"name": "Load_Members",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[Members]    Script Date: 5/18/2021 1:19:55 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[Members]\n(\n\t[member_id] [int] NOT NULL,\n\t[member_code] [varchar](25) NULL,\n\t[first_name] [varchar](150) NULL,\n\t[last_name] [varchar](30) NULL,\n\t[date_birth] [datetime] NULL,\n\t[sex] [varchar](20) NULL,\n\t[subscriber_id] [numeric](10, 0) NULL,\n\t[user_id] [int] NULL,\n\t[FullMemberName] [varchar](200) NULL,\n\t[SequenceNo] [varchar](100) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [member_id] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Load_Employers",
+	"properties": {
+		"content": {
+			"query": "/****** Object:  Table [load].[Employers]    Script Date: 5/18/2021 1:15:59 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[Employers]\n(\n\t[EmployerId] [int] NOT NULL,\n\t[EmployerCode] [varchar](15) NULL,\n\t[EmployerName] [varchar](100) NULL,\n\t[EmployerDetailid] [int] NULL,\n\t[EmpCity] [varchar](50) NULL,\n\t[EmpState] [varchar](20) NULL,\n\t[EmpZipcode] [varchar](9) NULL,\n\t[EmpEmail] [varchar](250) NULL,\n\t[PremiumNet] [money] NULL,\n\t[PremiumGross] [decimal](18, 0) NULL,\n\t[Premiumtax] [decimal](18, 0) NULL,\n\t[NoOfLives] [decimal](18, 0) NULL,\n\t[policyFromDate] [datetime] NULL,\n\t[policyToDate] [datetime] NULL,\n\t[Agent] [varchar](255) NULL,\n\t[PolicyNo] [varchar](255) NULL,\n\t[PolicyId] [int] NULL,\n\t[BankName] [varchar](250) NULL,\n\t[BankAccNo] [varchar](100) NULL,\n\t[BankCity] [varchar](100) NULL,\n\t[BankState] [varchar](100) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [EmployerId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -2,7 +2,7 @@
 	"name": "Alter Scripts",
 	"properties": {
 		"content": {
-			"query": "ALTER TABLE dbo.FactClaimDetails\nADD IsExternalTPAClaim BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPAClaim = 0\nFROM FactClaimDetails E\nWHERE\nE.IsExternalTPAClaim IS NULL\n​[Yesterday 10:38 PM] Ashok Kumar V\n    \nALTER TABLE dbo.DimMemberDetails\nADD IsExternalTPA BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMemberDetails E\nWHERE\nE.IsExternalTPA IS NULL\n​[Yesterday 10:38 PM] Ashok Kumar V\n    \nALTER TABLE dbo.DimMembers\nADD IsExternalTPA BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMembers E\nWHERE\nE.IsExternalTPA IS NULL\n",
+			"query": "ALTER TABLE dbo.FactClaimDetails\nADD IsExternalTPAClaim BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPAClaim = 0\nFROM FactClaimDetails E\nWHERE\nE.IsExternalTPAClaim IS NULL\n\n    \nALTER TABLE dbo.DimMemberDetails\nADD IsExternalTPA BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMemberDetails E\nWHERE\nE.IsExternalTPA IS NULL\n\n    \nALTER TABLE dbo.DimMembers\nADD IsExternalTPA BIT DEFAULT 0UPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMembers E\nWHERE\nE.IsExternalTPA IS NULL\n",
 			"metadata": {
 				"language": "sql"
 			},

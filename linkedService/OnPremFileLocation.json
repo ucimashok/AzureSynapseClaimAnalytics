@@ -7,7 +7,7 @@
 		"typeProperties": {
 			"host": "C:\\Azuresynapse\\ExternalTPA",
 			"userId": "ubtiinc\\ashok.kumar",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4NTg4YTZjMS1lZDRkLTQ4MWQtOWMyYS0yYWEwYjQwZDllYzYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwYTIwNGZiNy04NmU4LTRhZjYtYjVkZS05M2JhZjA1MDlmMmUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeselfhosted",

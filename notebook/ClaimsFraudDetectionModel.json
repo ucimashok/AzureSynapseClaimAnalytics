@@ -26,7 +26,7 @@
 			},
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "Synapse PySpark"
+				"display_name": "python"
 			},
 			"language_info": {
 				"name": "python"
@@ -91,7 +91,7 @@
 					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
 					"resource_group = \"uiap-d-si-synapse\"\n",
 					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
-					"experiment_name = \"az-synapse-hack-ws-claimssummary-exp1\"\n",
+					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-20210521043040\"\n",
 					"\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"

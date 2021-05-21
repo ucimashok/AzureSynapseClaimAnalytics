@@ -1,0 +1,17 @@
+{
+	"name": "Testing",
+	"properties": {
+		"content": {
+			"query": "SELECT [model] FROM dbo.[ClaimsMLModelExt]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

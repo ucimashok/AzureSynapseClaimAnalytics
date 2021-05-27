@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "CREATE PROCEDURE dbo.splatest\nAS\nBEGIN\n\nSELECT *\nFROM PREDICT (MODEL = (SELECT [model] FROM dbo.ClaimsMLModelExt WHERE [ID] = 'uiap-synapse-claims-ws-claimssummary-20210521071541-Best:2'),\n              DATA = [dbo].[ClaimsSummary],\n              RUNTIME = ONNX) WITH ([output_label1] [varchar])\n\nEND\nGO\n\nEXEC dbo.splatest",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

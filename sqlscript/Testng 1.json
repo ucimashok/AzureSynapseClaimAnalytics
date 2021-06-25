@@ -1,0 +1,20 @@
+{
+	"name": "Testng 1",
+	"properties": {
+		"folder": {
+			"name": "Testing"
+		},
+		"content": {
+			"query": "-- Truncate table dbo.LnkClaimFraudParameter \n\nSELECT  * from DimMemberDetails where IsExternalTPA = 1\nSELECT  * from DimMembers where IsExternalTPA = 1\nSELECT  * from factclaimdetails where IsExternalTPAClaim = 1\n\n\nEXEC [dbo].[InsFactClaimDetailsExternalTPA]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

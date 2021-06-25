@@ -1,0 +1,17 @@
+{
+	"name": "Purview Access",
+	"properties": {
+		"content": {
+			"query": "CREATE USER [uiap-claims-purview] FROM EXTERNAL PROVIDER\nGO\n\nEXEC sp_addrolemember 'db_datareader', 'uiap-claims-purview'\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

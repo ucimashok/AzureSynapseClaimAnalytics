@@ -1,0 +1,263 @@
+{
+	"name": "TPA_ADLSSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "uiapsynapsedl",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "External TPA.xlsx",
+				"folderPath": "Input/External TPA Excel file input",
+				"fileSystem": "uiapsynapsedlfs"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "TPA_name",
+				"type": "String"
+			},
+			{
+				"name": "TPA_code",
+				"type": "String"
+			},
+			{
+				"name": "BILL_NO",
+				"type": "String"
+			},
+			{
+				"name": "Modified Claim FIR No",
+				"type": "String"
+			},
+			{
+				"name": "SBU_Code",
+				"type": "String"
+			},
+			{
+				"name": "Group name",
+				"type": "String"
+			},
+			{
+				"name": "POLICY_NO",
+				"type": "String"
+			},
+			{
+				"name": "Product Type",
+				"type": "String"
+			},
+			{
+				"name": "Client_code",
+				"type": "String"
+			},
+			{
+				"name": "Policy_start_ date",
+				"type": "String"
+			},
+			{
+				"name": "Policy_end_date",
+				"type": "String"
+			},
+			{
+				"name": "Claim_type",
+				"type": "String"
+			},
+			{
+				"name": "INSURED_NAME",
+				"type": "String"
+			},
+			{
+				"name": "Employee_name",
+				"type": "String"
+			},
+			{
+				"name": "Employee_No",
+				"type": "String"
+			},
+			{
+				"name": "Member_ID",
+				"type": "String"
+			},
+			{
+				"name": "Age",
+				"type": "String"
+			},
+			{
+				"name": "Consolidated Relation",
+				"type": "String"
+			},
+			{
+				"name": "Provider name",
+				"type": "String"
+			},
+			{
+				"name": "Provider code",
+				"type": "String"
+			},
+			{
+				"name": "Payee address",
+				"type": "String"
+			},
+			{
+				"name": "Payee City",
+				"type": "String"
+			},
+			{
+				"name": "Payee State",
+				"type": "String"
+			},
+			{
+				"name": "Date of last document received",
+				"type": "String"
+			},
+			{
+				"name": "LOSS_DATE",
+				"type": "String"
+			},
+			{
+				"name": "Date Of Discharge",
+				"type": "String"
+			},
+			{
+				"name": "Disease Description",
+				"type": "String"
+			},
+			{
+				"name": "Procedure Description",
+				"type": "String"
+			},
+			{
+				"name": "Claimed Amount",
+				"type": "String"
+			},
+			{
+				"name": "NAME_PRINT_ON_CHECK",
+				"type": "String"
+			},
+			{
+				"name": "PAYMENT_MODE",
+				"type": "String"
+			},
+			{
+				"name": "PAYEE_ACCT",
+				"type": "String"
+			},
+			{
+				"name": "PAYEE_BANK_IFSC_CODE",
+				"type": "String"
+			},
+			{
+				"name": "Delivery_to",
+				"type": "String"
+			},
+			{
+				"name": "Payable location",
+				"type": "String"
+			},
+			{
+				"name": "LINE_AMOUNT",
+				"type": "String"
+			},
+			{
+				"name": "Claim_amount_type",
+				"type": "String"
+			},
+			{
+				"name": "Service_tax applicable",
+				"type": "String"
+			},
+			{
+				"name": "TDS applicable",
+				"type": "String"
+			},
+			{
+				"name": "TDS %",
+				"type": "String"
+			},
+			{
+				"name": "PAN NO",
+				"type": "String"
+			},
+			{
+				"name": "Service_tax amount",
+				"type": "String"
+			},
+			{
+				"name": "Service_tax Registration no",
+				"type": "String"
+			},
+			{
+				"name": "Serive_tax invoice No",
+				"type": "String"
+			},
+			{
+				"name": "Service_tax_invoice_date",
+				"type": "String"
+			},
+			{
+				"name": "Payee Mail ID",
+				"type": "String"
+			},
+			{
+				"name": "Payee Mobile No",
+				"type": "String"
+			},
+			{
+				"name": "Claim status",
+				"type": "String"
+			},
+			{
+				"name": "Status Code",
+				"type": "String"
+			},
+			{
+				"name": "Claim Number",
+				"type": "String"
+			},
+			{
+				"name": "Oracle Invoice number",
+				"type": "String"
+			},
+			{
+				"name": "Error Description",
+				"type": "String"
+			},
+			{
+				"name": "Date Created",
+				"type": "String"
+			},
+			{
+				"name": "Date Modified",
+				"type": "String"
+			},
+			{
+				"name": "Customer Payment Reference Number",
+				"type": "String"
+			},
+			{
+				"name": "Transferred Date",
+				"type": "String"
+			},
+			{
+				"name": "Oracle TDS Amount",
+				"type": "String"
+			},
+			{
+				"name": "Transferred Amount",
+				"type": "String"
+			},
+			{
+				"name": "Created By",
+				"type": "String"
+			},
+			{
+				"name": "Modified By",
+				"type": "String"
+			}
+		]
+	}
+}

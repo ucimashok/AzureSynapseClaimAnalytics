@@ -1,0 +1,21 @@
+{
+	"name": "Aravind_ParquettoExcel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "uiapsynapsedl",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ExternalTPA",
+				"folderPath": "Input/External TPA Excel File",
+				"fileSystem": "uiapsynapsedlfs"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}

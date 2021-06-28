@@ -1,0 +1,908 @@
+{
+	"name": "LoadExternalTPAFiles_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load to ExternalTPAData",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "Truncate Table Load.ExternalTPAData"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "TPA_name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TPA_name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "TPA_code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TPA_code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BILL_NO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BILL_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Modified Claim FIR No",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Modified Claim FIR No",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "SBU_Code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SBU_Code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Group name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Group name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "POLICY_NO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "POLICY_NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Product Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Product Type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Client_code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Client_code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Policy_start_ date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Policy_start_ date",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Policy_end_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Policy_end_date",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Claim_type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Claim_type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "INSURED_NAME",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "INSURED_NAME",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Employee_name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Employee_name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Employee_No",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Employee_No",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Member_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Member_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Age",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Age",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Consolidated Relation",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Consolidated Relation",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Provider name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Provider name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Provider code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Provider code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payee address",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payee address",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payee City",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payee City",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payee State",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payee State",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Date of last document received",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Date of last document received",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "LOSS_DATE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LOSS_DATE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Date Of Discharge",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Date Of Discharge",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Disease Description",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Disease Description",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Procedure Description",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Procedure Description",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Claimed Amount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Claimed Amount",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "NAME_PRINT_ON_CHECK",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NAME_PRINT_ON_CHECK",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PAYMENT_MODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PAYMENT_MODE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PAYEE_ACCT",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PAYEE_ACCT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PAYEE_BANK_IFSC_CODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PAYEE_BANK_IFSC_CODE",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Delivery_to",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Delivery_to",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payable location",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payable location",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "LINE_AMOUNT",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LINE_AMOUNT",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Claim_amount_type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Claim_amount_type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Service_tax applicable",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Service_tax applicable",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "TDS applicable",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TDS applicable",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "TDS %",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TDS %",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PAN NO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PAN NO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Service_tax amount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Service_tax amount",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Service_tax Registration no",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Service_tax Registration no",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Serive_tax invoice No",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Serive_tax invoice No",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Service_tax_invoice_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Service_tax_invoice_date",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payee Mail ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payee Mail ID",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Payee Mobile No",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Payee Mobile No",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Claim status",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Claim status",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Status Code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Status Code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Claim Number",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Claim Number",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Oracle Invoice number",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Oracle Invoice number",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Error Description",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Error Description",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Date Created",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Date Created",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Date Modified",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Date Modified",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Customer Payment Reference Number",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Customer Payment Reference Number",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Transferred Date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Transferred Date",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Oracle TDS Amount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Oracle TDS Amount",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Transferred Amount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Transferred Amount",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Created By",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Created By",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Modified By",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Modified By",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TPA_ADLSSource",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "dsExternalTPAsink",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Archive file",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "InsFactClaimDetailsExternalTPA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "FileServerWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dsParquetstoragelocation",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "dsExternalParquetfile",
+						"type": "DatasetReference",
+						"parameters": {
+							"Folderpath": "Archive"
+						}
+					}
+				]
+			},
+			{
+				"name": "Delete file",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Archive file",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "dsParquetstoragelocation",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "InsFactClaimDetailsExternalTPA",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Load to ExternalTPAData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "ClaimsSummaryDSQL",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsFactClaimDetailsExternalTPA]"
+				}
+			}
+		],
+		"parameters": {
+			"LoadDate": {
+				"type": "String",
+				"defaultValue": "@utcnow()"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-05-05T06:14:43Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

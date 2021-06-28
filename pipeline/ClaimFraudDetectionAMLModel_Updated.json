@@ -1,9 +1,36 @@
 {
-	"name": "ClaimFraudDetectionAMLModel_copy1",
+	"name": "ClaimFraudDetectionAMLModel_Updated",
 	"properties": {
 		"activities": [
 			{
-				"name": "ClaimsFraudDetectionModel",
+				"name": "ClaimsFraudModelTrainingAutoML",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "ClaimsFraudDetectionModel_Spark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "ClaimsFraudDetectionModel_AutoML",
+						"type": "NotebookReference"
+					},
+					"snapshot": true
+				}
+			},
+			{
+				"name": "ClaimsFraudDetectionModel_Spark",
 				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +43,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "ClaimsFraudDetectionModel",
+						"referenceName": "ClaimsFraud Spark Table Creation",
 						"type": "NotebookReference"
 					},
 					"snapshot": true

@@ -1,0 +1,21 @@
+{
+	"name": "Aravind_TPAtoExcel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "uiapsynapsedl",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "TPAExcel",
+				"folderPath": "Input/External TPA Excel File",
+				"fileSystem": "uiapsynapsedlfs"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}

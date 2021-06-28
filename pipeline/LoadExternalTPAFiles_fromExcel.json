@@ -1,5 +1,5 @@
 {
-	"name": "LoadExternalTPAFiles_copy1",
+	"name": "LoadExternalTPAFiles_fromExcel",
 	"properties": {
 		"activities": [
 			{
@@ -886,10 +886,6 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"sqlPool": {
-					"referenceName": "ClaimsSummaryDSQL",
-					"type": "SqlPoolReference"
-				},
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[InsFactClaimDetailsExternalTPA]"
 				}

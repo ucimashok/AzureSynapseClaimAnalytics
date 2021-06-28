@@ -5,11 +5,6 @@
 			"referenceName": "uiapsynapsedl",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"LoadDate": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {

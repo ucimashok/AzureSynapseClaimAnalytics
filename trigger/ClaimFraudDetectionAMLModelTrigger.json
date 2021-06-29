@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "ClaimFraudDetectionAMLModel",
+					"referenceName": "ClaimFraudDetectionAMLModel_old",
 					"type": "PipelineReference"
 				}
 			}

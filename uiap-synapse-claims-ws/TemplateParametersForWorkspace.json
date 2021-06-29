@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "uiap-synapse-claims-ws"
+		},
+		"AzureMLServiceClaims_servicePrincipalKey": {
+			"value": ""
+		},
+		"OnPremFileLocation_password": {
+			"value": ""
+		},
+		"SqlServerSynapseClaims_connectionString": {
+			"value": ""
+		},
+		"az-synapse-hack-ws-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"azsynapsedatalake_accountKey": {
+			"value": ""
+		},
+		"uiap-synapse-claims-ws-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"uiapsynapsedl_accountKey": {
+			"value": ""
+		},
+		"uiapsynapselakedl_accountKey": {
+			"value": ""
+		},
+		"AzureMLServiceClaims_properties_typeProperties_subscriptionId": {
+			"value": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
+		},
+		"AzureMLServiceClaims_properties_typeProperties_resourceGroupName": {
+			"value": "uiap-d-si-synapse"
+		},
+		"AzureMLServiceClaims_properties_typeProperties_servicePrincipalId": {
+			"value": "a387d727-b567-46ed-859e-84f88f049e0d"
+		},
+		"AzureMLServiceClaims_properties_typeProperties_tenant": {
+			"value": "008502d6-3f79-46f0-ab37-9354e3fe80ff"
+		},
+		"OnPremFileLocation_properties_typeProperties_host": {
+			"value": "C:\\Azuresynapse\\ExternalTPA"
+		},
+		"OnPremFileLocation_properties_typeProperties_userId": {
+			"value": "ubtiinc\\ashok.kumar"
+		},
+		"azsynapsedatalake_properties_typeProperties_url": {
+			"value": "https://uiapsynapsedl.dfs.core.windows.net"
+		},
+		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://uiapsynapsedl.dfs.core.windows.net"
+		},
+		"uiapsynapsedl_properties_typeProperties_url": {
+			"value": "https://uiapsynapsedl.dfs.core.windows.net"
+		},
+		"uiapsynapselakedl_properties_typeProperties_url": {
+			"value": "https://uiapsynapsedl.dfs.core.windows.net"
+		}
+	}
+}

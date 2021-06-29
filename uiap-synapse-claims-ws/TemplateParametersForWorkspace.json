@@ -14,19 +14,10 @@
 		"SqlServerSynapseClaims_connectionString": {
 			"value": ""
 		},
-		"az-synapse-hack-ws-WorkspaceDefaultSqlServer_connectionString": {
-			"value": ""
-		},
-		"azsynapsedatalake_accountKey": {
-			"value": ""
-		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
 		"uiapsynapsedl_accountKey": {
-			"value": ""
-		},
-		"uiapsynapselakedl_accountKey": {
 			"value": ""
 		},
 		"AzureMLServiceClaims_properties_typeProperties_subscriptionId": {
@@ -47,16 +38,10 @@
 		"OnPremFileLocation_properties_typeProperties_userId": {
 			"value": "ubtiinc\\ashok.kumar"
 		},
-		"azsynapsedatalake_properties_typeProperties_url": {
-			"value": "https://uiapsynapsedl.dfs.core.windows.net"
-		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://uiapsynapsedl.dfs.core.windows.net"
 		},
 		"uiapsynapsedl_properties_typeProperties_url": {
-			"value": "https://uiapsynapsedl.dfs.core.windows.net"
-		},
-		"uiapsynapselakedl_properties_typeProperties_url": {
 			"value": "https://uiapsynapsedl.dfs.core.windows.net"
 		}
 	}

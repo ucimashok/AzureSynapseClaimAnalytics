@@ -19,14 +19,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServerSynapseClaims'"
 		},
-		"az-synapse-hack-ws-WorkspaceDefaultSqlServer_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'az-synapse-hack-ws-WorkspaceDefaultSqlServer'"
-		},
-		"azsynapsedatalake_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'azsynapsedatalake'"
-		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'uiap-synapse-claims-ws-WorkspaceDefaultSqlServer'"
@@ -34,10 +26,6 @@
 		"uiapsynapsedl_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'uiapsynapsedl'"
-		},
-		"uiapsynapselakedl_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'uiapsynapselakedl'"
 		},
 		"AzureMLServiceClaims_properties_typeProperties_subscriptionId": {
 			"type": "string",
@@ -63,19 +51,11 @@
 			"type": "string",
 			"defaultValue": "ubtiinc\\ashok.kumar"
 		},
-		"azsynapsedatalake_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
-		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
 		},
 		"uiapsynapsedl_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
-		},
-		"uiapsynapselakedl_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
 		}
@@ -2784,53 +2764,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/az-synapse-hack-ws-WorkspaceDefaultSqlServer')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"parameters": {
-					"DBName": {
-						"type": "String"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlDW",
-				"typeProperties": {
-					"connectionString": "[parameters('az-synapse-hack-ws-WorkspaceDefaultSqlServer_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/azsynapsedatalake')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('azsynapsedatalake_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('azsynapsedatalake_accountKey')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/uiap-synapse-claims-ws-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2885,29 +2818,6 @@
 					"accountKey": {
 						"type": "SecureString",
 						"value": "[parameters('uiapsynapsedl_accountKey')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/uiapsynapselakedl')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('uiapsynapselakedl_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('uiapsynapselakedl_accountKey')]"
 					}
 				},
 				"connectVia": {

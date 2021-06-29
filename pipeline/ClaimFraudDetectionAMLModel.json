@@ -1,5 +1,5 @@
 {
-	"name": "ClaimFraudDetectionAMLModel_Updated",
+	"name": "ClaimFraudDetectionAMLModel",
 	"properties": {
 		"activities": [
 			{

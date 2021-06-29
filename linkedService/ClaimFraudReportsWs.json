@@ -1,6 +1,5 @@
 {
 	"name": "ClaimFraudReportsWs",
-	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "PowerBIWorkspace",

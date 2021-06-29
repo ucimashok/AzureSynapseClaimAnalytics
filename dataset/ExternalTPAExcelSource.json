@@ -258,6 +258,5 @@
 				"type": "String"
 			}
 		]
-	},
-	"type": "Microsoft.Synapse/workspaces/datasets"
+	}
 }

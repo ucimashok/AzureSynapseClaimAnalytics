@@ -20,6 +20,5 @@
 			"referenceName": "ClaimsSummaryDSQL",
 			"type": "SqlPoolReference"
 		}
-	},
-	"type": "Microsoft.Synapse/workspaces/datasets"
+	}
 }

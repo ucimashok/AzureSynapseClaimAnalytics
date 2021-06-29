@@ -178,8 +178,6 @@
 				}
 			}
 		],
-		"annotations": [],
-		"lastPublishTime": "2021-05-16T13:07:22Z"
-	},
-	"type": "Microsoft.Synapse/workspaces/pipelines"
+		"annotations": []
+	}
 }

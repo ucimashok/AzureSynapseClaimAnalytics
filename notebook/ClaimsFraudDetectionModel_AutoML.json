@@ -41,9 +41,8 @@
 				"nodeCount": 3,
 				"cores": 8,
 				"memory": 56,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"extraHeader": null
+			}
 		},
 		"cells": [
 			{
@@ -55,6 +54,7 @@
 					"from azureml.train.automl import AutoMLConfig\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
+				"attachments": null,
 				"execution_count": 1
 			},
 			{
@@ -68,6 +68,7 @@
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"
 				],
+				"attachments": null,
 				"execution_count": 3
 			},
 			{
@@ -78,6 +79,7 @@
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 				],
+				"attachments": null,
 				"execution_count": 4
 			},
 			{
@@ -93,6 +95,7 @@
 					"                             max_concurrent_iterations = 2,\n",
 					"                             enable_onnx_compatible_models = True)"
 				],
+				"attachments": null,
 				"execution_count": 5
 			},
 			{
@@ -100,6 +103,7 @@
 				"source": [
 					"run = experiment.submit(automl_config)"
 				],
+				"attachments": null,
 				"execution_count": 6
 			},
 			{
@@ -107,6 +111,7 @@
 				"source": [
 					"displayHTML(\"<a href={} target='_blank'>Your experiment in Azure Machine Learning portal: {}</a>\".format(run.get_portal_url(), run.id))"
 				],
+				"attachments": null,
 				"execution_count": 7
 			},
 			{
@@ -168,6 +173,7 @@
 					"    # Register the model to AML model registry\n",
 					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-synapse-claims-ws-claimssummary-20210521071541-Best\")"
 				],
+				"attachments": null,
 				"execution_count": 8
 			}
 		]

@@ -24,5 +24,6 @@
 			"compressionCodec": "snappy"
 		},
 		"schema": []
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

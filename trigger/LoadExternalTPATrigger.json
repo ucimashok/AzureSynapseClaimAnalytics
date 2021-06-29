@@ -5,7 +5,7 @@
 		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
-				"referenceName": "LoadExternalTPAFiles",
+				"referenceName": "LoadExternalTPAFiles_old",
 				"type": "PipelineReference"
 			}
 		},

@@ -1,0 +1,30 @@
+{
+	"name": "ExternalTPAArchiveSink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "uiapsynapsedl",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat('ExternalTPA-',formatDateTime(utcnow(),'u'))",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@Concat('External TPA Archive/', formatDateTime(utcnow(), 'yyyy'), '/', formatDateTime(utcnow(), 'MM'),'/',formatDateTime(utcnow(), 'dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "uiapsynapsedlfs"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

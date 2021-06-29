@@ -1,5 +1,5 @@
 {
-	"name": "LoadExternalTPAFiles_FromExcel",
+	"name": "LoadExternalTPAFiles",
 	"properties": {
 		"activities": [
 			{
@@ -801,12 +801,14 @@
 						}
 					},
 					"sink": {
-						"type": "ParquetSink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "FileServerWriteSettings"
+							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "ParquetWriteSettings"
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false,
@@ -1515,11 +1517,8 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "dsExternalParquetfile",
-						"type": "DatasetReference",
-						"parameters": {
-							"Folderpath": "Archive"
-						}
+						"referenceName": "ExternalTPAArchiveSink",
+						"type": "DatasetReference"
 					}
 				]
 			},

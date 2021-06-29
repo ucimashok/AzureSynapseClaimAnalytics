@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat('ExternalTPA-',formatDateTime(utcnow(),'u'))",
+					"value": "@concat('ExternalTPA-',formatDateTime(utcnow(),'u'),'.csv')",
 					"type": "Expression"
 				},
 				"folderPath": {

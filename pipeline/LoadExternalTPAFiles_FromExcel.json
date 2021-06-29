@@ -856,8 +856,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Modified Claim FIR No",
-									"type": "String",
+									"name": "Modified_Claim_FIR_No",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1024,8 +1023,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Consolidated Relation",
-									"type": "String",
+									"name": "Consolidated_Relation",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1036,8 +1034,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Provider name",
-									"type": "String",
+									"name": "Provider_name",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1048,8 +1045,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Provider code",
-									"type": "String",
+									"name": "Provider_code",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1060,8 +1056,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payee address",
-									"type": "String",
+									"name": "Payee_address",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1072,8 +1067,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payee City",
-									"type": "String",
+									"name": "Payee_City",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1084,8 +1078,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payee State",
-									"type": "String",
+									"name": "Payee_State",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1096,8 +1089,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Date of last document received",
-									"type": "String",
+									"name": "Date_of_last_document_received",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1120,8 +1112,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Date Of Discharge",
-									"type": "String",
+									"name": "Date_Of_Discharge",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1132,8 +1123,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Disease Description",
-									"type": "String",
+									"name": "Disease_Description",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1144,8 +1134,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Procedure Description",
-									"type": "String",
+									"name": "Procedure_Description",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1156,8 +1145,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Claimed Amount",
-									"type": "String",
+									"name": "Claimed_Amount",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1228,8 +1216,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payable location",
-									"type": "String",
+									"name": "Payable_location",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1276,8 +1263,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "TDS applicable",
-									"type": "String",
+									"name": "TDS_applicable",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1288,8 +1274,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "TDS %",
-									"type": "String",
+									"name": "TDS_%",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1300,8 +1285,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "PAN NO",
-									"type": "String",
+									"name": "PAN_NO",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1312,8 +1296,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Service_tax amount",
-									"type": "String",
+									"name": "Service_tax_amount",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1324,8 +1307,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Service_tax Registration no",
-									"type": "String",
+									"name": "Service_tax_Registration no",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1336,8 +1318,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Serive_tax invoice No",
-									"type": "String",
+									"name": "Serive_tax_invoice_No",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1360,8 +1341,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payee Mail ID",
-									"type": "String",
+									"name": "Payee_Mail_ID",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1372,8 +1352,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Payee Mobile No",
-									"type": "String",
+									"name": "Payee_Mobile_No",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1384,8 +1363,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Claim status",
-									"type": "String",
+									"name": "Claim_status",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1396,8 +1374,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Status Code",
-									"type": "String",
+									"name": "Status_Code",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1408,8 +1385,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Claim Number",
-									"type": "String",
+									"name": "Claim_Number",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1420,8 +1396,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Oracle Invoice number",
-									"type": "String",
+									"name": "Oracle_Invoice_number",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1432,8 +1407,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Error Description",
-									"type": "String",
+									"name": "Error_Description",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1444,8 +1418,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Date Created",
-									"type": "String",
+									"name": "Date_Created",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1456,8 +1429,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Date Modified",
-									"type": "String",
+									"name": "Date_Modified",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1468,8 +1440,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Customer Payment Reference Number",
-									"type": "String",
+									"name": "Customer_Payment_Reference_Number",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1480,8 +1451,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Transferred Date",
-									"type": "String",
+									"name": "Transferred_Date",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1492,8 +1462,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Oracle TDS Amount",
-									"type": "String",
+									"name": "Oracle_TDS_Amount",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1504,8 +1473,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Transferred Amount",
-									"type": "String",
+									"name": "Transferred_Amount",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1516,8 +1484,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Created By",
-									"type": "String",
+									"name": "Created_By",
 									"physicalType": "UTF8"
 								}
 							},
@@ -1528,8 +1495,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Modified By",
-									"type": "String",
+									"name": "Modified_By",
 									"physicalType": "UTF8"
 								}
 							}

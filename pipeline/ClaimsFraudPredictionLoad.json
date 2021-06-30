@@ -77,6 +77,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Sub Pipelines"
+		},
 		"annotations": [],
 		"lastPublishTime": "2021-05-15T11:39:12Z"
 	},

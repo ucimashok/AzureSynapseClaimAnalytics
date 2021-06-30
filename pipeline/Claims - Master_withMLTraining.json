@@ -1,0 +1,84 @@
+{
+	"name": "Claims - Master_withMLTraining",
+	"properties": {
+		"activities": [
+			{
+				"name": "Claims Data Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ClaimsDataLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Load External TPA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Claims Data Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "LoadExternalTPAFiles",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Fraud Prediction",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Re-Train ML",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ClaimsFraudPredictionLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Re-Train ML",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Load External TPA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ClaimFraudDetectionAMLModel",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Master"
+		},
+		"annotations": []
+	}
+}

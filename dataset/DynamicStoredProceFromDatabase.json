@@ -29,5 +29,6 @@
 			"schema": "Load",
 			"table": "LogDetails"
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

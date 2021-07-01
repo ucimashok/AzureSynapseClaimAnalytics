@@ -188,15 +188,17 @@
 					"account_name = \"azsynapsehackmlstorage\"\r\n",
 					"container_name = \"azureml\"\r\n",
 					"run_id = \"dcid.d5cac760-9b6f-46c4-849d-88f55bd48d68\" # Run_Id\r\n",
-					"relative_path = f\"ExperimentRun/{run_id}\"\r\n",
+					"blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linked_service_name)\r\n",
+					"relative_path = f\"ExperimentRun/{run_id}/uiap-synapse-claims-ws-claimssummary-20210521043040_artifact/model.onnx\"\r\n",
 					"print(relative_path)\r\n",
+					"spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (container_name, account_name), blob_sas_token)\r\n",
 					"adls_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name, account_name, relative_path)\r\n",
 					"\r\n",
 					"temp_df = spark.read.option('header', 'true') \\\r\n",
 					"                .option('delimiter', ',') \\\r\n",
-					"                .csv(adls_path + '/Testfile.csv')"
+					"                .csv(adls_path)"
 				],
-				"execution_count": null
+				"execution_count": 3
 			}
 		]
 	}

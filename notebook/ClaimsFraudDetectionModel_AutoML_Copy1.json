@@ -185,20 +185,22 @@
 					"collapsed": true
 				},
 				"source": [
-					"account_name = \"azsynapsehackmlstorage\"\r\n",
-					"container_name = \"azureml\"\r\n",
-					"run_id = \"dcid.d5cac760-9b6f-46c4-849d-88f55bd48d68\" # Run_Id\r\n",
-					"blob_sas_token = mssparkutils.credentials.getConnectionStringOrCreds(linked_service_name)\r\n",
-					"relative_path = f\"ExperimentRun/{run_id}/uiap-synapse-claims-ws-claimssummary-20210521043040_artifact/model.onnx\"\r\n",
-					"print(relative_path)\r\n",
-					"spark.conf.set('fs.azure.sas.%s.%s.blob.core.windows.net' % (container_name, account_name), blob_sas_token)\r\n",
-					"adls_path = 'abfss://%s@%s.dfs.core.windows.net/%s' % (container_name, account_name, relative_path)\r\n",
+					"def convertONNXtoHEX(model):\r\n",
+					"    return model.SerializeToString().hex()\r\n",
 					"\r\n",
-					"temp_df = spark.read.option('header', 'true') \\\r\n",
-					"                .option('delimiter', ',') \\\r\n",
-					"                .csv(adls_path)"
+					"with open('model.onnx.hex','w') as f1:\r\n",
+					"    f1.write(f.read().hex())\r\n",
+					" \r\n",
+					"connection_string = \"DefaultEndpointsProtocol=https;AccountName=uiapsynapsedl;AccountKey=6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==;EndpointSuffix=core.windows.net\"\r\n",
+					" \r\n",
+					"from azure.storage.blob import BlobClient\r\n",
+					" \r\n",
+					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model.onnx.hex\")\r\n",
+					" \r\n",
+					"with open(\"./model.onnx.hex\", \"rb\") as data:\r\n",
+					"    blob.upload_blob(data,overwrite=True)"
 				],
-				"execution_count": 3
+				"execution_count": null
 			}
 		]
 	}

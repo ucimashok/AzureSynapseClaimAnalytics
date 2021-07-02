@@ -1,6 +1,9 @@
 {
 	"name": "2_AzureStorageAccountKey",
 	"properties": {
+		"folder": {
+			"name": "Access Scripts"
+		},
 		"content": {
 			"query": "ALTER DATABASE SCOPED CREDENTIAL AzureStorageAccountKey\nWITH IDENTITY = 'uiapsynapsedl'\n    ,SECRET = '6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw=='\n",
 			"metadata": {

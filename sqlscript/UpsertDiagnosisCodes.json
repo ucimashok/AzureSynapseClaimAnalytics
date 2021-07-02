@@ -1,6 +1,9 @@
 {
 	"name": "UpsertDiagnosisCodes",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nALTER PROC [dbo].[UpsertDiagnosisCodes] AS\nBEGIN\n\nUPDATE icd SET IcdCodeId = icdStage.IcdCodeId,\nIcdCode= icdStage.IcdCode,\nIcdDescription= icdStage.IcdDescription\nFROM\nDimDiagnosisCodes icd\nJOIN\nLoad.DiagnosisCodes icdStage ON\nicd.IcdCodeId = icdStage.IcdCodeId\n\ninsert into DimDiagnosisCodes (IcdCodeId,IcdCode,IcdDescription)\nSELECT icdStage.IcdCodeId, \nicdStage.IcdCode, \nicdStage.IcdDescription\nFROM\nLoad.DiagnosisCodes icdStage \nLEFT JOIN \nDimDiagnosisCodes icd ON icd.IcdCodeId = icdStage.IcdCodeId\nWHERE icd.IcdCodeId IS NULL\n\n\n--Insert the log details into Load.LogDetails table\nDECLARE @logId INT\nSELECT @logId = LogID FROM [Load].[Log] WHERE FileType = 'DiagnosisCodes' \n\nINSERT INTO [Load].[LogDetails] (LogId,CompletedDate)\nselect @logId,  GETDATE()\n\n--update load.Log table\nUPDATE [Load].[Log] SET LastUpdatedDate = GETDATE() WHERE FileType = 'DiagnosisCodes' \n\n\nEND\nGO",
 			"metadata": {

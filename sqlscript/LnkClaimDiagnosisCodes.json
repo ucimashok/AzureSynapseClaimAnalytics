@@ -1,6 +1,9 @@
 {
 	"name": "LnkClaimDiagnosisCodes",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[LnkClaimDiagnosisCodes]\n(\n    ClaimDiagnosisId int NOT NULL \n,\tClaimFormDetailId\tINT\n,\tIcdCodeId INT\n)\nWITH\n(\n    DISTRIBUTION = HASH (ClaimDiagnosisId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

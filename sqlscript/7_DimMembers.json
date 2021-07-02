@@ -1,6 +1,9 @@
 {
 	"name": "7_DimMembers",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[DimMembers]\n(\n    member_id INT NOT NULL\n,\tmember_code VARCHAR(25)\n,\tfirst_name VARCHAR(150)\n,\tlast_name VARCHAR(30)\n,\tdate_birth DATETIME\n,\tsex VARCHAR(20)\n,\tsubscriber_id numeric(10,0)\n,\tuser_id INT\n,\tFullMemberName VARCHAR(200)\n,\tSequenceNo VARCHAR(100)\n)\nWITH\n(\n    DISTRIBUTION = HASH (member_id),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "SP for Model Insertion",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
 		"content": {
 			"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM [dbo].[MLModelExt]\n\nEND\n\n-- EXEC [dbo].[InsertMLModel]\n\n-- select * from [dbo].[MLModel_Automated]\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "DimDiagnosisCodes",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimDiagnosisCodes]    Script Date: 5/18/2021 3:44:24 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[DimDiagnosisCodes]\n(\n\t[IcdCodeId] [int] NOT NULL,\n\t[IcdCode] [varchar](10) NULL,\n\t[IcdDescription] [varchar](250) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [IcdCodeId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
 			"metadata": {

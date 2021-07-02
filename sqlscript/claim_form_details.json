@@ -1,6 +1,9 @@
 {
 	"name": "claim_form_details",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[claim_form_details]\n(\n    [Claim FIR No] [int] NOT NULL,\n\t[Claim Type] [varchar](13) NOT NULL,\n\t[Hospitalization Type] [varchar](10) NULL,\n\t[Class_of_Accommodation] [varchar](50) NULL,\n\t[Procedure] [varchar](500) NULL,\n\t[Diagnosis] [varchar](250) NULL,\n\t[policyNo] [varchar](100) NULL,\n\t[Policy Type] [varchar](17) NOT NULL,\n\t[member_code] [varchar](25) NULL,\n\t[FullMemberName] [varchar](200) NULL,\n\t[Gender] [varchar](6) NOT NULL,\n\t[Age] [int] NULL,\n\t[Hospital] [varchar](100) NULL,\n\t[Provider Network Type] [varchar](100) NULL,\n\t[Corporate] [varchar](100) NULL,\n\t[Length of Stay] [int] NULL,\n\t[IsFraudClaim] [varchar](1) NOT NULL,\n\t[Fraud Score] [int] NOT NULL,\n\t[Claim Amount] [money] NULL,\n\t[Claim Date] [datetime] NULL\n)\nWITH\n(\n    DISTRIBUTION = HASH ([Claim FIR No]),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "ML ModelTable Creations",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "DROP EXTERNAL DATA SOURCE ModelStorage;\nCREATE EXTERNAL DATA SOURCE ModelStorage\nWITH\n( LOCATION = 'wasbs://models@uiapsynapsedl.blob.core.windows.net'\n, CREDENTIAL = AzureStorageAccountKey\n, TYPE = HADOOP\n);\n\nDROP EXTERNAL FILE FORMAT csv;\n\nCREATE EXTERNAL FILE FORMAT csv\nWITH (\nFORMAT_TYPE = DELIMITEDTEXT,\nFORMAT_OPTIONS (\nFIELD_TERMINATOR = ',',\nSTRING_DELIMITER = '',\nDATE_FORMAT = '',\nUSE_TYPE_DEFAULT = False\n)\n);\n\nIF OBJECT_ID('[dbo].[MLModelExt]') IS NOT NULL  \nDROP TABLE [dbo].[MLModelExt] \n\nCREATE EXTERNAL TABLE [dbo].[MLModelExt]\n(\n[Model] [varbinary](max) NULL\n)\nWITH\n(\nLOCATION='/hex' ,\nDATA_SOURCE = ModelStorage ,\nFILE_FORMAT = csv ,\nREJECT_TYPE = VALUE ,\nREJECT_VALUE = 0\n)\nGO\n\n-- Verify access by running query\n--SELECT Model, 'A simple model.'\n--FROM dbo.MLModelExt\n\nIF OBJECT_ID('[dbo].[MLModel_Automated]') IS NOT NULL  \nDROP TABLE [dbo].[MLModel_Automated] \n\n\nCREATE TABLE [dbo].[MLModel_Automated]\n(\n[Id] [int] NOT NULL,\n[Model] [varbinary](max) NULL,\n[ModifiedDate] [DATETIME] NULL\n)\nWITH\n(\nDISTRIBUTION = REPLICATE,\nheap\n)\nGO\n\n\n",
 			"metadata": {

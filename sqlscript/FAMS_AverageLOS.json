@@ -1,6 +1,9 @@
 {
 	"name": "FAMS_AverageLOS",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE PROC [dbo].[FAMS_AverageLOS] AS BEGIN\n\n\tDECLARE\n\t\t@FraudParameterId\tINT\n\t,\t@FraudScore\t\t\tINT\n\n\tSELECT \n\t\t@FraudParameterId = F.FraudParameterId\n\t,\t@FraudScore = F.FraudScore\n\n\tFROM FraudParameters F WHERE F.FraudParameterCode =  'Avg LOS >= 4 days'\n\n\tCREATE TABLE #Temp\n\t(\n\t\tClaimFormDetailId\tINT\n\t,\tHospitalId\t\t\tINT\n\t,\tHospitalName\t\tVARCHAR(150)\n\t,\tDateAdmit\t\t\tDATETIME\n\t,\tDateDischarge\t\tDATETIME\n\t,\tLengthofStay\t\tDECIMAL(19,2)\n\t)\n\n\tINSERT INTO #Temp \n\tSELECT \n\t\tC.ClaimFormDetailId\n\t,\tP.HospitalId\n\t,\tP.HospitalName\n\t,\tC.DateofAdmit\n\t,\tC.DateofDischarge\n\t,\tDATEDIFF(Day,C.DateofAdmit,C.DateofDischarge) AS LengthofStay\n\n\tFROM FactClaimDetails C\n\tINNER JOIN DimHospitalDetails P ON C.HospitalId = P.HospitalId\n\t \n\t\tDELETE L FROM dbo.LnkClaimFraudParameter L WHERE L.FraudParameterId = @FraudParameterId\n\n\t\tINSERT INTO dbo.LnkClaimFraudParameter\n\t\t(\n\t\t\tClaimFormDetailId\n\t\t,\tFraudParameterId\n\t\t,\tFraudScore\n\t\t)\n\t\tSELECT \n\t\t\tT.ClaimFormDetailId \n\t\t,\t@FraudParameterId\n\t\t,\t@FraudScore\n\n\t\tFROM #Temp T \n\t\tINNER JOIN \n\t\t(\n\t\t\tSELECT T.HospitalId  \n\t\t\tFROM #Temp T\t\t\t\n\t\t\tGROUP BY\n\t\t\t\tT.HospitalId\n\t\t\tHAVING \n\t\t\t\tAVG(T.lengthofStay) >= 4\n\t\t) AS B ON T.HospitalId = B.HospitalId\n\n\t\tDROP TABLE #Temp\n\n\t\tEND\nGO",
 			"metadata": {

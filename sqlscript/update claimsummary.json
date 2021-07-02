@@ -1,6 +1,9 @@
 {
 	"name": "update claimsummary",
 	"properties": {
+		"folder": {
+			"name": "Other Scripts"
+		},
 		"content": {
 			"query": "UPDATE ClaimsSummary\nSET \n    IsFraudClaim = 0\n,    [FraudScore] = 0\n\n \n\nUPDATE CS\nSET CS.IsFraudClaim = 1\n,    CS.[FraudScore] = 10\nFROM ClaimsSummary CS\nINNER JOIN FactClaimDetails C ON C.ClaimFormDetailId = CS.ClaimFIRNo\nINNER JOIN LnkClaimDiagnosisCodes L ON L.ClaimFormDetailId = C.ClaimFormDetailId\nINNER JOIN DimMemberDetails MDT ON MDT.member_detail_id = C.MemberDetailId\nINNER JOIN DimMembers M ON M.member_id = MDT.member_id\nWHERE\n    L.IcdCodeId IN \n    (\nSELECT C.IcdCodeId\nFROM DimDiagnosisCodes c \nWHERE \n    C.IcdDescription LIKE '%delivery%' AND\n    M.sex <> 'F')\n    \n\n \n\nUPDATE CS\nSET CS.IsFraudClaim = 1\n,    CS.[FraudScore] = 10\n\n \n\nFROM ClaimsSummary CS\nINNER JOIN FactClaimDetails C ON C.ClaimFormDetailId = CS.ClaimFIRNo\nINNER JOIN LnkClaimDiagnosisCodes L ON L.ClaimFormDetailId = C.ClaimFormDetailId\nINNER JOIN DimMemberDetails MDT ON MDT.member_detail_id = C.MemberDetailId\nINNER JOIN DimMembers M ON M.member_id = MDT.member_id\nWHERE\n    L.IcdCodeId IN \n    (\nSELECT C.IcdCodeId \nFROM DimDiagnosisCodes c \nWHERE \n    C.IcdDescription LIKE '%Heart%' AND\n    Datediff(Year,M.date_birth,GETDATE())  <= 10)",
 			"metadata": {

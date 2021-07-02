@@ -1,6 +1,9 @@
 {
 	"name": "UpsertDimProcedureCategories",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
 		"content": {
 			"query": "\nCreate Procedure dbo.UpsertDimProcedureCategories\nAS\nBEGIN\n\nUpdate \nld\nSET\n  ProcedureCategoryCode= ld.ProcedureCategoryCode\n, ProcedureCategoryDesc= ld.ProcedureCategoryDesc\nFROM\nLoad.ProcedureCategories ld\nINNEr JOIN dbo.DimProcedureCategories dp ON ld.ProcedureCategoryId = dp.ProcedureCategoryId\n\nINSERT INTO dbo.DimProcedureCategories\n(\n\tProcedureCategoryId\n,\tProcedureCategoryCode\n,\tProcedureCategoryDesc\n)\nSELECT\n\tld.ProcedureCategoryId\n,\tld.ProcedureCategoryCode\n,\tld.ProcedureCategoryDesc\nFROM\nLoad.ProcedureCategories ld\nLEFT JOIN dbo.DimProcedureCategories dp ON ld.ProcedureCategoryId = dp.ProcedureCategoryId\nWHERE dp.ProcedureCategoryId IS NULL\n\nEND\nGO",
 			"metadata": {

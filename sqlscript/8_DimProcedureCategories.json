@@ -1,6 +1,9 @@
 {
 	"name": "8_DimProcedureCategories",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[DimProcedureCategories]\n(\n    ProcedureCategoryId INT NOT NULL\n,\tProcedureCategoryCode VARCHAR(10)\n,\tProcedureCategoryDesc VARCHAR(150)\n)\nWITH\n(\n    DISTRIBUTION = HASH (ProcedureCategoryId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

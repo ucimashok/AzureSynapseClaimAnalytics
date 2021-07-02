@@ -1,6 +1,9 @@
 {
 	"name": "ClaimsFraudSummaryData",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [Report].[ClaimsFraudSummaryData]\n( \n\t[ClaimFIRNo] [varchar](20)  NULL,\n\t[ClaimType] [varchar](13)  NULL,\n\t[HospitalizationType] [varchar](10)  NULL,\n\t[Class_of_Accommodation] [varchar](50)  NULL,\n\t[Procedure] [varchar](500)  NULL,\n\t[Diagnosis] [varchar](250)  NULL,\n\t[policyNo] [varchar](100)  NULL,\n\t[PolicyType] [varchar](17)  NULL,\n\t[member_code] [varchar](25)  NULL,\n\t[FullMemberName] [varchar](200)  NULL,\n\t[Gender] [varchar](6)  NULL,\n\t[Age] [varchar](20)  NULL,\n\t[Hospital] [varchar](100)  NULL,\n\t[Corporate] [varchar](100)  NULL,\n\t[LengthofStay] [varchar](5)  NULL,\n\t[IsFraudClaim] [varchar](1)  NULL,\n\t[FraudScore] [varchar](10)  NULL,\n\t[ClaimAmount] [varchar](20)  NULL,\n\t[ClaimDate] [varchar](20)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
 			"metadata": {

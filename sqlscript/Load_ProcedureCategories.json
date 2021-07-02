@@ -1,6 +1,9 @@
 {
 	"name": "Load_ProcedureCategories",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "/****** Object:  Table [load].[ProcedureCategories]    Script Date: 5/18/2021 1:20:31 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[ProcedureCategories]\n(\n\t[ProcedureCategoryId] [int] NOT NULL,\n\t[ProcedureCategoryCode] [varchar](10) NULL,\n\t[ProcedureCategoryDesc] [varchar](150) NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [ProcedureCategoryId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
 			"metadata": {

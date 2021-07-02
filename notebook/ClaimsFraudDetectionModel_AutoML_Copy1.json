@@ -186,8 +186,27 @@
 				},
 				"source": [
 					"def convertONNXtoHEX(model):\r\n",
-					"    return model.SerializeToString().hex()\r\n",
+					"    return model.SerializeToString().hex()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
 					"print(type(onnx_model))\r\n",
+					"print(convertONNXtoHEX(onnx_model))\r\n",
 					"with open('model.onnx.hex','w') as f1:\r\n",
 					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 					" \r\n",

@@ -2,7 +2,7 @@
 	"name": "SP for Model Insertion",
 	"properties": {
 		"content": {
-			"query": "CREATE PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, 'A classification model.'\nFROM [dbo].[MLModelExt]\n\nEND\n",
+			"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM [dbo].[MLModelExt]\n\nEND\n\n-- EXEC [dbo].[InsertMLModel]\n\n-- select * from [dbo].[MLModel_Automated]\n",
 			"metadata": {
 				"language": "sql"
 			},

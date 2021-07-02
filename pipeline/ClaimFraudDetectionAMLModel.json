@@ -50,9 +50,16 @@
 				}
 			},
 			{
-				"name": "SQL pool stored procedure1",
+				"name": "InsertMLModel",
 				"type": "SqlPoolStoredProcedure",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ClaimsFraudModelTrainingAutoML",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -64,6 +71,9 @@
 				"sqlPool": {
 					"referenceName": "ClaimsSummaryDSQL",
 					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsertMLModel]"
 				}
 			}
 		],

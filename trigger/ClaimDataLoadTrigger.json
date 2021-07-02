@@ -1,0 +1,17 @@
+{
+	"name": "ClaimDataLoadTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2021-07-02T10:12:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

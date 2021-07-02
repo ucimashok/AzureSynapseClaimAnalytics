@@ -2,13 +2,13 @@
 	"name": "ModelLoadAutomate",
 	"properties": {
 		"content": {
-			"query": "CREATE EXTERNAL DATA SOURCE ModelStorage\nWITH\n( LOCATION = 'wasbs://models@uiapsynapsedl.blob.core.windows.net'\n, CREDENTIAL = StorageCredential\n, TYPE = HADOOP\n)\n;\nCREATE EXTERNAL FILE FORMAT csv\nWITH (\nFORMAT_TYPE = DELIMITEDTEXT,\nFORMAT_OPTIONS (\nFIELD_TERMINATOR = ',',\nSTRING_DELIMITER = '',\nDATE_FORMAT = '',\nUSE_TYPE_DEFAULT = False\n)\n);\n\n\nCREATE EXTERNAL TABLE [dbo].[MLModelExt]\n(\n[Model] [varbinary](max) NULL\n)\nWITH\n(\nLOCATION='/hex' ,\nDATA_SOURCE = ModelStorage ,\nFILE_FORMAT = csv ,\nREJECT_TYPE = VALUE ,\nREJECT_VALUE = 0\n)\nGO\n\n-- Verify access by running query\nSELECT Model, 'A simple model.'\nFROM wwi_ml.MLModelExt\n\n\nCREATE TABLE [wwi_ml].[MLModel]\n(\n[Id] [int] IDENTITY(1,1) NOT NULL,\n[Model] [varbinary](max) NULL,\n[Description] [varchar](200) NULL\n)\nWITH\n(\nDISTRIBUTION = REPLICATE,\nheap\n)\nGO\n\nINSERT INTO [wwi_ml].[MLModel]\nSELECT Model, 'A linear regression model.'\nFROM [wwi_ml].[MLModelExt]",
+			"query": "CREATE EXTERNAL DATA SOURCE ModelStorage\nWITH\n( LOCATION = 'wasbs://models@uiapsynapsedl.blob.core.windows.net'\n, CREDENTIAL = AzureStorageAccountKey\n, TYPE = HADOOP\n)\n;\nCREATE EXTERNAL FILE FORMAT csv\nWITH (\nFORMAT_TYPE = DELIMITEDTEXT,\nFORMAT_OPTIONS (\nFIELD_TERMINATOR = ',',\nSTRING_DELIMITER = '',\nDATE_FORMAT = '',\nUSE_TYPE_DEFAULT = False\n)\n);\n\n\nCREATE EXTERNAL TABLE [dbo].[MLModelExt]\n(\n[Model] [varbinary](max) NULL\n)\nWITH\n(\nLOCATION='/hex' ,\nDATA_SOURCE = ModelStorage ,\nFILE_FORMAT = csv ,\nREJECT_TYPE = VALUE ,\nREJECT_VALUE = 0\n)\nGO\n\n-- Verify access by running query\nSELECT Model, 'A simple model.'\nFROM dbo.MLModelExt\n\nIF OBJECT_ID('[dbo].[MLModel_Automated]') IS NOT NULL  \nDROP TABLE [dbo].[MLModel_Automated] \n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, 'A classification model.'\nFROM [dbo].[MLModelExt]\n\nselect * from dbo.MLModel_Automated",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "Built-in",
-				"databaseName": "master"
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

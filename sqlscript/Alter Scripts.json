@@ -1,6 +1,9 @@
 {
 	"name": "Alter Scripts",
 	"properties": {
+		"folder": {
+			"name": "Other Scripts"
+		},
 		"content": {
 			"query": "ALTER TABLE dbo.FactClaimDetails\nADD IsExternalTPAClaim BIT DEFAULT 0\nUPDATE E\nSET E.IsExternalTPAClaim = 0\nFROM FactClaimDetails E\nWHERE\nE.IsExternalTPAClaim IS NULL\n\n    \nALTER TABLE dbo.DimMemberDetails\nADD IsExternalTPA BIT DEFAULT 0\nUPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMemberDetails E\nWHERE\nE.IsExternalTPA IS NULL\n\n    \nALTER TABLE dbo.DimMembers\nADD IsExternalTPA BIT DEFAULT 0\nUPDATE E\nSET E.IsExternalTPA = 0\nFROM DimMembers E\nWHERE\nE.IsExternalTPA IS NULL\n",
 			"metadata": {

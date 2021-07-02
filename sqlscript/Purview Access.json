@@ -1,6 +1,9 @@
 {
 	"name": "Purview Access",
 	"properties": {
+		"folder": {
+			"name": "Access Scripts"
+		},
 		"content": {
 			"query": "CREATE USER [uiap-claims-purview] FROM EXTERNAL PROVIDER\nGO\n\nEXEC sp_addrolemember 'db_datareader', 'uiap-claims-purview'\nGO",
 			"metadata": {

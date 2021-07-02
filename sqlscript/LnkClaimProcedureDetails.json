@@ -1,6 +1,9 @@
 {
 	"name": "LnkClaimProcedureDetails",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[LnkClaimProcedureDetails]\n(       \n        ClaimProcedureId  INT NOT NULL\n\t,\tClaimFormDetailId INT \n\t,\tCptCodeId INT\n\t,\tBilled Money\n\t,\tNet Money\n\t,\tNoofServices numeric(19,2)\n\t,\tPlaceofServiceId INT\n\t,\tAmount\tMoney\n\t,\tParentServiceProcedureId Money\n\t,\tGrossAmount Money\n\t,\tServiceStartDate DateTime\n\t,\tServiceEndDate DateTime\n\t,\tBilledGross Money\n\t,\tServiceNet Money\n)\nWITH\n(\n    DISTRIBUTION = HASH (ClaimProcedureId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

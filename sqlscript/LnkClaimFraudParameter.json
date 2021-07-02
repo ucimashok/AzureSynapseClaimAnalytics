@@ -1,6 +1,9 @@
 {
 	"name": "LnkClaimFraudParameter",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[LnkClaimFraudParameter]\n(\n    LnkCFPId\t\t\t\tINT\t IDENTITY(1,1)\n,\tClaimFormDetailId\t\tINT\n,\tFraudParameterId\t\tVARCHAR(200)\n,\tFraudScore\t\t\t\tINT\n,\tDateCreated\t\t\t\tDATETIME \n)\nWITH\n(\n    DISTRIBUTION = HASH (ClaimFormDetailId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

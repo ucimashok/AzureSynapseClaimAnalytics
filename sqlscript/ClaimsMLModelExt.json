@@ -1,6 +1,9 @@
 {
 	"name": "ClaimsMLModelExt",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table/Outdated"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[ClaimsMLModelExt]\n( \n\t[ID] [nvarchar](1024)  NOT NULL,\n\t[name] [nvarchar](1024)  NOT NULL,\n\t[description] [nvarchar](1024)  NULL,\n\t[version] [int]  NULL,\n\t[created_time] [datetime2](7)  NULL,\n\t[created_by] [nvarchar](128)  NULL,\n\t[framework] [nvarchar](64)  NULL,\n\t[model] [varbinary](max)  NULL,\n\t[inputs_schema] [nvarchar](max)  NULL,\n\t[outputs_schema] [nvarchar](max)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tHEAP\n)\nGO",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "spExecuteDetectFraud",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nALTER PROC [dbo].[spExecuteDetectFraud] AS\nBEGIN\n\nTRUNCATE TABLE [Report].ClaimsFraudSummaryData\n\nINSERT INTO [Report].ClaimsFraudSummaryData\nSELECT \n      [ClaimFIRNo]\n      ,[ClaimType]\n      ,[HospitalizationType]\n      ,[ClassofAccommodation]\n      ,[Procedure]\n      ,[Diagnosis]\n      ,[policyNo]\n      ,[PolicyType]\n      ,[member_code]\n      ,[FullMemberName]\n      ,[Gender]\n      ,[Age]\n      ,[Hospital]\n      ,[Corporate]\n      ,[LengthofStay]\n      ,[output_label1] IsFraudClaim\n      ,[FraudScore]\n      ,[ClaimAmount]\n      ,[ClaimDate] \nFROM PREDICT (MODEL = (Select model from dbo.MLModel_automated where id=(select MAX(id) from dbo.MLModel_automated)),\n-- FROM PREDICT (MODEL = (SELECT [model] FROM dbo.[ClaimsMLModelExt] WHERE [ID] = 'uiap-synapse-claims-ws-claimssummary-20210521071541-Best:2'),\n             DATA = [dbo].[ClaimsSummary],\n              RUNTIME = ONNX) WITH ([output_label1] [varchar])\n\n\nEND\nGO",
 			"metadata": {

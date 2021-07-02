@@ -1,6 +1,9 @@
 {
 	"name": "load_log",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "DROP TABLE [Load].[Log]\nCREATE TABLE [Load].[Log](\n\t[LogId] [int] IDENTITY(1,1) NOT NULL,\n\t[FileType] [varchar](255) NULL,\n\t[Jobname] [varchar](255) NULL,  \n\t[LastUpdatedDate] [datetime] NULL \n)\n\nWITH\n(\n    DISTRIBUTION = HASH (FileType),\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n-- Add primary key constraint\nALTER TABLE Load.Log add CONSTRAINT PK_Log PRIMARY KEY NONCLUSTERED (LogId) NOT ENFORCED\n\n--DROP TABLE [Load].[LogDetails]\nCREATE TABLE [Load].[LogDetails](\n\t[Log_Detail_id] [int] IDENTITY(1,1) NOT NULL,\n\t[LogId] INT, \n\t[CompletedDate] [datetime] NULL\n    )\n\nWITH\n(\n    DISTRIBUTION = HASH (LogId),\n    CLUSTERED COLUMNSTORE INDEX\n)\n\nALTER TABLE [Load].[LogDetails] add CONSTRAINT PK_LogDetails PRIMARY KEY NONCLUSTERED (Log_Detail_id) NOT ENFORCED\n\n",
 			"metadata": {

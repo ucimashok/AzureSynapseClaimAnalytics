@@ -1,6 +1,9 @@
 {
 	"name": "ClaimDetails",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [Load].[ClaimDetails]\n( \n\t[ClaimFIRNo] [varchar](50)  NULL,\n\t[Injury] [varchar](100)  NULL,\n\t[ClaimType] [bit]  NULL,\n\t[ClaimCategory] [varchar](10)  NULL,\n\t[AmountBilled] [money]  NULL,\n\t[AmountNet] [money]  NULL,\n\t[AmountPaid] [money]  NULL,\n\t[DoctorName] [varchar](50)  NULL,\n\t[DoctorCity] [varchar](50)  NULL,\n\t[ClaimFormDetailId] [int]  NULL,\n\t[IntimationId] [int]  NULL,\n\t[HospitalId] [int]  NULL,\n\t[ClaimStatusId] [int]  NULL,\n\t[PlaceofServiceId] [int]  NULL,\n\t[DateofService] [datetime]  NULL,\n\t[DatePaid] [datetime]  NULL,\n\t[DateReceived] [datetime]  NULL,\n\t[DateofAdmit] [datetime]  NULL,\n\t[DateofInjury] [datetime]  NULL,\n\t[DateofDocumentation] [datetime]  NULL,\n\t[DateofDischarge] [datetime]  NULL,\n\t[DateModified] [datetime]  NULL,\n\t[WorkflowSequenceId] [int]  NULL,\n\t[MemberDetailId] [int]  NULL,\n\t[ClassofAccommodation] [varchar](50)  NULL,\n\t[HospitalizationType] [varchar](50)  NULL,\n\t[Corporate] [varchar](100)  NULL,\n\t[ClaimId] [int]  NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [ClaimId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
 			"metadata": {

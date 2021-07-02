@@ -1,6 +1,9 @@
 {
 	"name": "20_DimRelationship",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "/****** Object:  Table [dbo].[DimRelationship]    Script Date: 5/20/2021 11:28:49 AM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[DimRelationship]\n(\n\t[RelationshipID] [int] IDENTITY(1,1) NOT NULL,\n\t[RelationshipCode] [varchar](50) NULL,\n\t[Description] [varchar](100) NULL,\n\t[Gender] [varchar](10) NULL,\n\t[Sequence] [int] NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "12_load_ClaimsSummary",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "\nCREATE TABLE [load].[ClaimsSummary](\n\t[ClaimFIRNo] [int] NULL,\n\t[ClaimType] [varchar](13) NOT NULL,\n\t[HospitalizationType] [varchar](10) NULL,\n\t[ClassofAccommodation] [varchar](50) NULL,\n\t[Procedure] [varchar](500) NULL,\n\t[Diagnosis] [varchar](250) NULL,\n\t[PolicyNo] [varchar](100) NULL,\n\t[PolicyType] [varchar](17) NOT NULL,\n\t[member_code] [varchar](25) NULL,\n\t[FullMemberName] [varchar](200) NULL,\n\t[Gender] [varchar](6) NOT NULL,\n\t[Age] [int] NULL,\n\t[Hospital] [varchar](100) NULL,\n\t[Corporate] [varchar](100) NULL,\n\t[LengthofStay] [int] NULL,\n\t[IsFraudClaim] [int] NOT NULL,\n\t[FraudScore] [int] NULL,\n\t[ClaimAmount] [money] NULL,\n\t[ClaimDate] [datetime] NULL\n) \nGO\n\n\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "1_2_CREATE SCHEMA Report",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE SCHEMA Report",
 			"metadata": {

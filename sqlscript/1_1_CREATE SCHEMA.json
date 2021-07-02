@@ -1,6 +1,9 @@
 {
 	"name": "1_1_CREATE SCHEMA",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE SCHEMA load",
 			"metadata": {

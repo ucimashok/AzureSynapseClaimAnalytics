@@ -1,6 +1,9 @@
 {
 	"name": "Load_ProcedureCodes",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "/****** Object:  Table [load].[ProcedureCodes]    Script Date: 5/18/2021 1:21:10 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[ProcedureCodes]\n(\n\t[CptCodeId] [int] NOT NULL,\n\t[CptCode] [varchar](50) NULL,\n\t[CptDescription] [varchar](500) NULL,\n\t[ProcedureCategoryId] [int] NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [CptCodeId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
 			"metadata": {

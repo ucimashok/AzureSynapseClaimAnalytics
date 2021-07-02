@@ -1,6 +1,9 @@
 {
 	"name": "4_DimEmployers",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[DimEmployers]\n(\n    EmployerId  INT NOT NULL\n,\tEmployerCode\tVARCHAR(15) NULL\n,\tEmployerName\tVARCHAR(100) NULL\n,\tEmployerDetailid   INT NULL\n,\tEmpCity\tVARCHAR(50) NULL\n,\tEmpState\tVARCHAR(20) NULL\n,\tEmpZipcode\tVARCHAR(9) NULL\n,\tEmpEmail\tVARCHAR(250) NULL\n,\tPremiumNet\tMoney NULL\n,\tPremiumGross\t[decimal](18, 0) NULL\n,\tPremiumtax [decimal](18, 0) NULL\n,\tNoOfLives [decimal](18, 0) NULL\n,\tpolicyFromDate DateTime NULL\n,\tpolicyToDate\tDateTime NULL\n,\tAgent VARCHAR(255) NULL\n,\tPolicyNo VARCHAR(255) NULL\n,\tPolicyId  INT NULL\n,\tBankName VARCHAR(250)\t NULL\n,\tBankAccNo VARCHAR(100) NULL\n,\tBankCity  VARCHAR(100) NULL\n,\tBankState  VARCHAR(100) NULL\n)\nWITH\n(\n    DISTRIBUTION = HASH (EmployerId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

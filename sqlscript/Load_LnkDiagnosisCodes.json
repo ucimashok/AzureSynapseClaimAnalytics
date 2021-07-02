@@ -1,6 +1,9 @@
 {
 	"name": "Load_LnkDiagnosisCodes",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "/****** Object:  Table [load].[LnkClaimDiagnosisCodes]    Script Date: 5/18/2021 1:18:27 PM ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [load].[LnkClaimDiagnosisCodes]\n(\n\t[ClaimDiagnosisId] [int] NOT NULL,\n\t[ClaimFormDetailId] [int] NULL,\n\t[IcdCodeId] [int] NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [ClaimDiagnosisId] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n\n",
 			"metadata": {

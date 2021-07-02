@@ -1,6 +1,9 @@
 {
 	"name": "6_DimMemberDetails",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[DimMemberDetails]\n(\n    member_detail_id int NOT NULL \n,\tmember_id\tINT\n,\tstart_effective_date\tDateTime\n,\tend_effective_date\tDateTime\n,\tlocation_id\tINT\n,\temployer_id\tINT\n,\tproduct_type_id\tINT\n,\tcity\tVARCHAR(150)\n,\tstate\t\tVARCHAR(20)\n,\tzip_code\t\tVARCHAR(50)\n,\temail\t\t\tVARCHAR(50)\n,\tMobileNo\tVARCHAR(20)\n,\tPanNo\tVARCHAR(100)\n,\tDrivingNo VARCHAR(100)\t\n,\tVoterID\tVARCHAR(100)\t\n,\tRation_Card\tVARCHAR(100)\t\n,\tmember_code_tmp\tVARCHAR(20)\t\n,\tis_missing\tINT\n,\tAccountNo\tVARCHAR(50)\n,\tBank_Name\tVARCHAR(50)\n,\tBank_Branch\tVARCHAR(50)\n,\tBranch_Code\tVARCHAR(50)\n,\tDesignation\tVARCHAR(50)\n,\tDepartment\tVARCHAR(50)\n,\tPolicytype\tVARCHAR(100)\t\n,\tProductID INT\t\n,\tpolicyNo\tVARCHAR(100)\n,\tSumInsured\t[numeric](18, 2)\n,\tCummulative\t[numeric](18, 2)\n,\tPremium\t[numeric](18, 2)\n,\tRenewal\tVARCHAR(50)\n,\tSubscriber_Detail_id\tINT\n,\tRelationshipID\tINT\n,\tPlan_id\tINT\n,\tSumInsuredper\tVARCHAR(100)\n,\tCardPer\tVARCHAR(100)\n,\tEmployee_No\tVARCHAR(50)\n,\tBloodgroup\tVARCHAR(50)\n,\tSalaryGrade\tVARCHAR(50)\n,\tCoInsurance\tVARCHAR(100)\n,\tagentcode\tVARCHAR(150)\n,\tmember_insurer_id\tINT\n,\tcountry\tVARCHAR(50)\n,\tdistrict VARCHAR(100)\t\n,\tworkflow_current_sequence_id\tINT\n,\tpolicy_from_date\tDateTime\n,\tpolicy_to_date\tDateTime\n,\tContract_Id\tINT\n,\tDateCreated\tDateTime\n,\tcovered_from_date\tDateTime\n,\tEnd_Ren_Date\tDateTime\n,\tendorsement_no\tVARCHAR(100)\n,\tEndorsement_Date\tDateTime\n,\tParent_Member_detail_id\tINT\n,\tMemberCreatedDate\tDateTime\n,\tModifiedDate\tDateTime\n)\nWITH\n(\n    DISTRIBUTION = HASH (member_detail_id),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

@@ -1,6 +1,9 @@
 {
 	"name": "5_DimHospitalDetails",
 	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
 		"content": {
 			"query": "CREATE TABLE [dbo].[DimHospitalDetails]\n(\n     HospitalId INT NOT NULL\n,\t HospitalCode VARCHAR(30)\n,\t HospitalName VARCHAR(100)\n,\t IsSpecialist BIT\n,\t IsReferringProvider BIT\n,\t ProviderTypeId INT\n,\t ProviderCity VARCHAR(50)\n,\t ProviderState VARCHAR(100)\n,\t ProviderCountry VARCHAR(100)\n)\nWITH\n(\n    DISTRIBUTION = HASH (HospitalId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {

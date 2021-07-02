@@ -187,9 +187,9 @@
 				"source": [
 					"def convertONNXtoHEX(model):\r\n",
 					"    return model.SerializeToString().hex()\r\n",
-					"\r\n",
+					"print(type(onnx_model))\r\n",
 					"with open('model.onnx.hex','w') as f1:\r\n",
-					"    f1.write(f.read().hex())\r\n",
+					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 					" \r\n",
 					"connection_string = \"DefaultEndpointsProtocol=https;AccountName=uiapsynapsedl;AccountKey=6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==;EndpointSuffix=core.windows.net\"\r\n",
 					" \r\n",

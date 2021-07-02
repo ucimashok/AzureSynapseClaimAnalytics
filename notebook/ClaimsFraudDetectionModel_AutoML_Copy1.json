@@ -50,7 +50,6 @@
 				"cell_type": "code",
 				"source": [
 					"import azureml.core\n",
-					"\n",
 					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
 					"from azureml.train.automl import AutoMLConfig\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
@@ -63,7 +62,7 @@
 					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
 					"resource_group = \"uiap-d-si-synapse\"\n",
 					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
-					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-20210521043040\"\n",
+					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-automated-testing-02-07-2021\"\n",
 					"\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"

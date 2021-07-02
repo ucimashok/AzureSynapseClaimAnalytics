@@ -1,5 +1,5 @@
 {
-	"name": "ClaimsFraudDetectionModel_AutoML_Copy1",
+	"name": "ClaimsFraudDetectionModel_AutoML",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -206,8 +206,8 @@
 					"collapsed": true
 				},
 				"source": [
-					"print(type(onnx_model))\r\n",
-					"print(convertONNXtoHEX(onnx_model))\r\n",
+					"# print(type(onnx_model))\r\n",
+					"# print(convertONNXtoHEX(onnx_model))\r\n",
 					"with open('model.onnx.hex','w') as f1:\r\n",
 					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 					" \r\n",
@@ -221,32 +221,6 @@
 					"    blob.upload_blob(data,overwrite=True)"
 				],
 				"execution_count": 18
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"microsoft": {
-						"language": "python"
-					},
-					"collapsed": false
-				},
-				"source": [
-					"%%pyspark\r\n",
-					"# Testing lake permission issue\r\n",
-					"df = spark.read.load('abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net/External TPA Archive/2021/06/29/ExternalTPA-2021-06-29 12:50:21Z.csv', format='csv'\r\n",
-					")\r\n",
-					"display(df.limit(10))"
-				],
-				"execution_count": 19
 			}
 		]
 	}

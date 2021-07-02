@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "ClaimsFraudDetectionModel_AutoML",
+						"referenceName": "ClaimsFraudDetectionModel_AutoML_old",
 						"type": "NotebookReference"
 					},
 					"snapshot": true

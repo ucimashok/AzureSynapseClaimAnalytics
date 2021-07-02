@@ -62,7 +62,7 @@
 					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
 					"resource_group = \"uiap-d-si-synapse\"\n",
 					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
-					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-automated-testing-02-07-2021\"\n",
+					"experiment_name = \"uiap-synapse-claims-ws-fraud-detection-model\"\n",
 					"\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"
@@ -167,7 +167,7 @@
 					"    mlflow.onnx.log_model(onnx_model, artifact_path, signature=signature)\n",
 					"    Run_Id = run.info.run_id\n",
 					"    # Register the model to AML model registry\n",
-					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-synapse-claims-ws-claimssummary-20210521071541-Best\")"
+					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-synapse-claims-ws-fraud-detection-model-Best\")"
 				],
 				"execution_count": 16
 			},

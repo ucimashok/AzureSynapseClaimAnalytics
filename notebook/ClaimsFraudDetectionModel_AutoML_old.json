@@ -1,5 +1,5 @@
 {
-	"name": "ClaimsFraudDetectionModel_AutoML_Copy1",
+	"name": "ClaimsFraudDetectionModel_AutoML",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -41,20 +41,21 @@
 				"nodeCount": 3,
 				"cores": 8,
 				"memory": 56,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"extraHeader": null
+			}
 		},
 		"cells": [
 			{
 				"cell_type": "code",
 				"source": [
 					"import azureml.core\n",
+					"\n",
 					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
 					"from azureml.train.automl import AutoMLConfig\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
-				"execution_count": 10
+				"attachments": null,
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -62,12 +63,13 @@
 					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
 					"resource_group = \"uiap-d-si-synapse\"\n",
 					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
-					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-automated-testing-02-07-2021\"\n",
+					"experiment_name = \"uiap-synapse-claims-ws-claimssummary-20210521043040\"\n",
 					"\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"experiment = Experiment(ws, experiment_name)"
 				],
-				"execution_count": 11
+				"attachments": null,
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -77,7 +79,8 @@
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(df, datastore, name = experiment_name + \"-dataset\")"
 				],
-				"execution_count": 12
+				"attachments": null,
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -92,21 +95,24 @@
 					"                             max_concurrent_iterations = 2,\n",
 					"                             enable_onnx_compatible_models = True)"
 				],
-				"execution_count": 13
+				"attachments": null,
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"run = experiment.submit(automl_config)"
 				],
-				"execution_count": 14
+				"attachments": null,
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"displayHTML(\"<a href={} target='_blank'>Your experiment in Azure Machine Learning portal: {}</a>\".format(run.get_portal_url(), run.id))"
 				],
-				"execution_count": 15
+				"attachments": null,
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -149,8 +155,6 @@
 					"def _infer_signature(onnx_model):\n",
 					"    onnx_model_bytes = onnx_model.SerializeToString()\n",
 					"    onnx_runtime = onnxruntime.InferenceSession(onnx_model_bytes)\n",
-					"    print(onnx_runtime.get_inputs())\n",
-					"    print(onnx_runtime.get_outputs())\n",
 					"    inputs = _infer_schema(onnx_runtime.get_inputs())\n",
 					"    outputs = _infer_schema(onnx_runtime.get_outputs())\n",
 					"    return ModelSignature(inputs, outputs)\n",
@@ -165,88 +169,12 @@
 					"with mlflow.start_run() as run:\n",
 					"    # Save the model to the outputs directory for capture\n",
 					"    mlflow.onnx.log_model(onnx_model, artifact_path, signature=signature)\n",
-					"    Run_Id = run.info.run_id\n",
+					"\n",
 					"    # Register the model to AML model registry\n",
 					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-synapse-claims-ws-claimssummary-20210521071541-Best\")"
 				],
-				"execution_count": 16
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"def convertONNXtoHEX(model):\r\n",
-					"    return model.SerializeToString().hex()"
-				],
-				"execution_count": 17
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": true
-				},
-				"source": [
-					"print(type(onnx_model))\r\n",
-					"print(convertONNXtoHEX(onnx_model))\r\n",
-					"with open('model.onnx.hex','w') as f1:\r\n",
-					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
-					" \r\n",
-					"connection_string = \"DefaultEndpointsProtocol=https;AccountName=uiapsynapsedl;AccountKey=6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==;EndpointSuffix=core.windows.net\"\r\n",
-					" \r\n",
-					"from azure.storage.blob import BlobClient\r\n",
-					" \r\n",
-					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model.onnx.hex\")\r\n",
-					" \r\n",
-					"with open(\"./model.onnx.hex\", \"rb\") as data:\r\n",
-					"    blob.upload_blob(data,overwrite=True)"
-				],
-				"execution_count": 18
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"microsoft": {
-						"language": "python"
-					},
-					"collapsed": false
-				},
-				"source": [
-					"%%pyspark\r\n",
-					"# Testing lake permission issue\r\n",
-					"df = spark.read.load('abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net/External TPA Archive/2021/06/29/ExternalTPA-2021-06-29 12:50:21Z.csv', format='csv'\r\n",
-					")\r\n",
-					"display(df.limit(10))"
-				],
-				"execution_count": 19
+				"attachments": null,
+				"execution_count": 8
 			}
 		]
 	}

@@ -5,7 +5,7 @@
 			"name": "Claim Approval Scripts"
 		},
 		"content": {
-			"query": "CREATE PROC [dbo].[usp_UpdateClaimApproved] (@ClaimID VARCHAR(40))\nAS BEGIN \n\nUPDATE [dbo].[ClaimApprovalStatus_Dev]\nSET IsClaimApproved = 1 WHERE ClaimFIRNo=@ClaimID\n\nEND",
+			"query": "CREATE PROC [dbo].[usp_UpdateClaimApproved] (@ClaimID VARCHAR(Max))\nAS BEGIN \n\nUPDATE [dbo].[ClaimApprovalStatus_Dev]\nSET IsClaimApproved = 1 WHERE ClaimFIRNo in (@ClaimID)\n\nEND",
 			"metadata": {
 				"language": "sql"
 			},

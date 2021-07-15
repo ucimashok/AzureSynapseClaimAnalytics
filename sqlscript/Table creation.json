@@ -5,7 +5,7 @@
 			"name": "Claim Approval Scripts"
 		},
 		"content": {
-			"query": "DROP TABLE [dbo].[ClaimApprovalStatus_Dev]\n\n\nCreate Table [dbo].[ClaimApprovalStatus_Dev]\n(\n\nClaimFormDetailId Int,\nIsClaimApproved int DEFAULT(NULL)\n)\n\n\nINSERT INTO [dbo].[ClaimApprovalStatus_Dev] (ClaimFormDetailId)\nSELECT distinct ClaimFIRNo from dbo.ClaimsSummary\n\n-- Select * from [dbo].[ClaimApprovalStatus_Dev]\n\n-- Select count(*) from [dbo].[ClaimApprovalStatus_Dev]\n\n\n-- Select top 100 * from dbo.ClaimsSummary\n-- Select top 100 * from dbo.FactClaimDetails\n\n-- Select distinct top 100 * from dbo.FactClaimDetails where ClaimFIRNo='100061610552'\n\n-- Select ClaimFIRNo, Count(ClaimFIRNo) from dbo.FactClaimDetails\n-- group by ClaimFIRNo having Count(ClaimFIRNo) >1",
+			"query": "DROP TABLE [dbo].[ClaimApprovalStatus]\n\n\nCreate Table [dbo].[ClaimApprovalStatus]\n(\n\nClaimFormDetailId Int,\nIsClaimApproved int DEFAULT(-1)\n)\n\n\nINSERT INTO [dbo].[ClaimApprovalStatus] (ClaimFormDetailId)\nSELECT distinct ClaimFIRNo from dbo.ClaimsSummary\n\n-- Select * from [dbo].[ClaimApprovalStatus_Dev]\n\n-- Select count(*) from [dbo].[ClaimApprovalStatus_Dev]\n\n\n-- Select top 100 * from dbo.ClaimsSummary\n-- Select top 100 * from dbo.FactClaimDetails\n\n-- Select distinct top 100 * from dbo.FactClaimDetails where ClaimFIRNo='100061610552'\n\n-- Select ClaimFIRNo, Count(ClaimFIRNo) from dbo.FactClaimDetails\n-- group by ClaimFIRNo having Count(ClaimFIRNo) >1",
 			"metadata": {
 				"language": "sql"
 			},

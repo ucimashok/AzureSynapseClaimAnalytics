@@ -1,0 +1,20 @@
+{
+	"name": "usp_UpdateClaimApprovalStatus",
+	"properties": {
+		"folder": {
+			"name": "Claim Approval Scripts"
+		},
+		"content": {
+			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n-- DROP PROC [dbo].[usp_UpdateClaimApprovalStatus]\nCREATE PROC [dbo].[usp_UpdateClaimApprovalStatus] @ClaimID [VARCHAR](Max),@Checker [int] \nAS \nBEGIN \nUPDATE C\nSET IsClaimApproved = @checker from [dbo].[ClaimApprovalStatus] C\nINNER JOIN (SELECT Item from dbo.DelimitedSplit(@ClaimID,',')) L ON C.ClaimFormDetailId = L.Item\nEND\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

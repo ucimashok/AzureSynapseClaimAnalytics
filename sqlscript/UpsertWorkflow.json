@@ -1,0 +1,20 @@
+{
+	"name": "UpsertWorkflow",
+	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
+		"content": {
+			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE PROC [dbo].[UpsertWorkflow] AS\nBEGIN\n\nUPDATE W SET \nWorkflowcode\t= lw.Workflowcode\n,Workflowname\t= lw.Workflowname\n,Description \t= lw.Description \n,Dataobjectid\t= lw.Dataobjectid\n,Statusid\t\t= lw.Statusid\nfrom\n[dbo].[DimWorkflow] W\nJOIN\nLoad.Workflow lW ON\nW.Workflowid = LW.Workflowid\n\ninsert into [dbo].[DimWorkflow] (Workflowid\t,Workflowcode\t,Workflowname\t,Description \t,Dataobjectid\t,Statusid)\nSELECT Workflowid\t,Workflowcode\t,Workflowname\t\n,Description \t,Dataobjectid\t,Statusid\nFROM\nLoad.Workflow lw\nLEFT JOIN \n[dbo].[DimWorkflow] W ON LW.Workflowid = w.Workflowid\nWHERE WS.Workflowid IS NULL\n\n\n--Insert the log details into Load.LogDetails table\nDECLARE @logId INT\nSELECT @logId = LogID FROM [Load].[Log] WHERE FileType = 'Workflow' \n\nINSERT INTO [Load].[LogDetails] (LogId,CompletedDate)\nselect @logId,  GETDATE()\n\n--update load.Log table\nUPDATE [Load].[Log] SET LastUpdatedDate = GETDATE() WHERE FileType = 'Workflow' \n\n\nEND\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "ClaimsSummaryDSQL",
+				"databaseName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

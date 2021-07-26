@@ -5,7 +5,7 @@
 			"name": "Creation Scripts/Table"
 		},
 		"content": {
-			"query": "IF OBJECT_ID('[load].[Workflow]') IS NOT NULL\nBEGIN\n    DROP TABLE [Load].[Workflow]\nEND\nGO\nCREATE TABLE [Load].[Workflow]\n(\nWorkflowid INT,     \nWorkflowcode VARCHAR (30),\nWorkflowname VARCHAR(100),\nDescription VARCHAR(500),\nDataobjectid INT,\nStatusid INT\n)\n\nIF OBJECT_ID('[load].[WorkflowSequence]') IS NOT NULL\nBEGIN\n    DROP TABLE [Load].[WorkflowSequence]\nEND\nGO\nCREATE TABLE [Load].[WorkflowSequence]\n(\nWorkflowSequenceid\tint\n,Workflowid\tint\t\n,Workflowsequencetitle\tvarchar(50)\n,Description\tvarchar(200)\n,Sequence\tint\n,Isfinalstage int\n,Groupid\tint\n,Currentstatus\tvarchar(100)\n,Alertid\tint\n,Workflowsequencecode\tvarchar(20)\n,IsQcApprove\tbit\n\n)",
+			"query": "IF OBJECT_ID('[load].[Workflow]') IS NOT NULL\nBEGIN\n    DROP TABLE [Load].[Workflow]\nEND\nGO\nCREATE TABLE [Load].[Workflow]\n(\nWorkflowid INT NOT NULL,     \nWorkflowcode VARCHAR (30),\nWorkflowname VARCHAR(100),\nDescription VARCHAR(500),\nDataobjectid INT,\nStatusid INT\n)\n\nIF OBJECT_ID('[load].[WorkflowSequence]') IS NOT NULL\nBEGIN\n    DROP TABLE [Load].[WorkflowSequence]\nEND\nGO\nCREATE TABLE [Load].[WorkflowSequence]\n(\nWorkflowSequenceid\tint NOT NULL\n,Workflowid\tint\t\n,Workflowsequencetitle\tvarchar(50)\n,Description\tvarchar(200)\n,Sequence\tint\n,Isfinalstage int\n,Groupid\tint\n,Currentstatus\tvarchar(100)\n,Alertid\tint\n,Workflowsequencecode\tvarchar(20)\n,IsQcApprove\tbit\n\n)",
 			"metadata": {
 				"language": "sql"
 			},

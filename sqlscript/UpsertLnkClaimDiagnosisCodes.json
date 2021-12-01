@@ -2,7 +2,7 @@
 	"name": "UpsertLnkClaimDiagnosisCodes",
 	"properties": {
 		"folder": {
-			"name": "Creation Scripts/SP"
+			"name": "Creation Scripts/SP/Outdated"
 		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nalter PROC [dbo].[UpsertLnkClaimDiagnosisCodes] AS\nBEGIN\n\nUPDATE diag SET ClaimDiagnosisId = diagStage.ClaimDiagnosisId,\nClaimFormDetailId= diagStage.ClaimFormDetailId,\nIcdCodeId= diagStage.IcdCodeId\nFROM\nLnkClaimDiagnosisCodes diag\nJOIN\nLoad.LnkClaimDiagnosisCodes diagStage ON\ndiag.ClaimDiagnosisId = diagStage.ClaimDiagnosisId\n\ninsert into dbo.LnkClaimDiagnosisCodes (ClaimDiagnosisId,ClaimFormDetailId,IcdCodeId)\nSELECT diagStage.ClaimDiagnosisId, \ndiagStage.ClaimFormDetailId, \ndiagStage.IcdCodeId\nFROM\nLoad.LnkClaimDiagnosisCodes diagStage \nLEFT JOIN \nLnkClaimDiagnosisCodes diag ON diag.ClaimDiagnosisId = diagStage.ClaimDiagnosisId\nWHERE diag.IcdCodeId IS NULL\n\n--Insert the log details into Load.LogDetails table\nDECLARE @logId INT\nSELECT @logId = LogID FROM [Load].[Log] WHERE FileType = 'ClaimDiagnosisCodes' \n\nINSERT INTO [Load].[LogDetails] (LogId,CompletedDate)\nselect @logId,  GETDATE()\n\n--update load.Log table\nUPDATE [Load].[Log] SET LastUpdatedDate = GETDATE() WHERE FileType = 'ClaimDiagnosisCodes' \n\n\n\nEND\nGO",
@@ -10,8 +10,8 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "ClaimsSummaryDSQL",
-				"databaseName": "ClaimsSummaryDSQL"
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

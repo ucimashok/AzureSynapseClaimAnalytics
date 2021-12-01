@@ -2,7 +2,7 @@
 	"name": "UpsertClaimDetails",
 	"properties": {
 		"folder": {
-			"name": "Creation Scripts/SP"
+			"name": "Creation Scripts/SP/Outdated"
 		},
 		"content": {
 			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nALTER PROC [dbo].[UpsertClaimDetails] AS\nBEGIN\n\nUPDATE claim SET \n\tclaim.ClaimFIRNo\t=\tclaimstage.ClaimFIRNo\n,\tclaim.Injury\t=\tclaimstage.Injury\n,\tclaim.ClaimType\t=\tclaimstage.ClaimType\n,\tclaim.ClaimCategory\t=\tclaimstage.ClaimCategory\n,\tclaim.AmountBilled\t=\tclaimstage.AmountBilled\n,\tclaim.AmountNet\t=\tclaimstage.AmountNet\n,\tclaim.AmountPaid\t=\tclaimstage.AmountPaid\n,\tclaim.DoctorName\t=\tclaimstage.DoctorName\n,\tclaim.DoctorCity\t=\tclaimstage.DoctorCity\n,\tclaim.ClaimFormDetailId\t=\tclaimstage.ClaimFormDetailId\n,\tclaim.IntimationId\t=\tclaimstage.IntimationId\n,\tclaim.HospitalId\t=\tclaimstage.HospitalId\n,\tclaim.ClaimStatusId\t=\tclaimstage.ClaimStatusId\n,\tclaim.PlaceofServiceId\t=\tclaimstage.PlaceofServiceId\n,\tclaim.DateofService\t=\tclaimstage.DateofService\n,\tclaim.DatePaid\t=\tclaimstage.DatePaid\n,\tclaim.DateReceived\t=\tclaimstage.DateReceived\n,\tclaim.DateofAdmit\t=\tclaimstage.DateofAdmit\n,\tclaim.DateofInjury\t=\tclaimstage.DateofInjury\n,\tclaim.DateofDocumentation\t=\tclaimstage.DateofDocumentation\n,\tclaim.DateofDischarge\t=\tclaimstage.DateofDischarge\n,\tclaim.DateModified\t=\tclaimstage.DateModified\n,\tclaim.WorkflowSequenceId\t=\tclaimstage.WorkflowSequenceId\n,\tclaim.MemberDetailId\t=\tclaimstage.MemberDetailId\n,\tclaim.ClassofAccommodation\t=\tclaimstage.ClassofAccommodation\n,\tclaim.HospitalizationType\t=\tclaimstage.HospitalizationType\n,\tclaim.Corporate\t=\tclaimstage.Corporate \n,\tclaim.WorkflowCurrentSequenceId= ClaimStage.WorkflowCurrentSequenceId\nFROM\ndbo.FactClaimDetails claim\nJOIN\nLoad.ClaimDetails claimstage ON\nclaim.ClaimId = claimstage.ClaimId\n\ninsert into FactClaimDetails (ClaimFIRNo,Injury,ClaimType,ClaimCategory,AmountBilled,AmountNet,AmountPaid,DoctorName,DoctorCity,ClaimFormDetailId,IntimationId,HospitalId,ClaimStatusId,PlaceofServiceId,DateofService,DatePaid,DateReceived,DateofAdmit,DateofInjury,DateofDocumentation,DateofDischarge,DateModified,WorkflowSequenceId,MemberDetailId,\nClassofAccommodation,HospitalizationType,Corporate,ClaimId,WorkflowCurrentSequenceId)\nSELECT \n\tclaimstage.ClaimFIRNo\n,\tclaimstage.Injury\n,\tclaimstage.ClaimType\n,\tclaimstage.ClaimCategory\n,\tclaimstage.AmountBilled\n,\tclaimstage.AmountNet\n,\tclaimstage.AmountPaid\n,\tclaimstage.DoctorName\n,\tclaimstage.DoctorCity\n,\tclaimstage.ClaimFormDetailId\n,\tclaimstage.IntimationId\n,\tclaimstage.HospitalId\n,\tclaimstage.ClaimStatusId\n,\tclaimstage.PlaceofServiceId\n,\tclaimstage.DateofService\n,\tclaimstage.DatePaid\n,\tclaimstage.DateReceived\n,\tclaimstage.DateofAdmit\n,\tclaimstage.DateofInjury\n,\tclaimstage.DateofDocumentation\n,\tclaimstage.DateofDischarge\n,\tclaimstage.DateModified\n,\tclaimstage.WorkflowSequenceId\n,\tclaimstage.MemberDetailId\n,\tclaimstage.ClassofAccommodation\n,\tclaimstage.HospitalizationType\n,\tclaimstage.Corporate\n,\tclaimstage.ClaimId \n,\tclaimstage.WorkflowCurrentSequenceId\nFROM\n[Load].ClaimDetails claimstage \nLEFT JOIN \nFactClaimDetails claim ON claimstage.ClaimId = claim.ClaimId\nWHERE claim.ClaimId IS NULL\n\n--update load.Log table\nUPDATE [Load].[Log] SET LastUpdatedDate = GETDATE() WHERE FileType = 'ClaimDetails' \n\nEND\nGO",
@@ -10,8 +10,8 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "ClaimsSummaryDSQL",
-				"databaseName": "ClaimsSummaryDSQL"
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

@@ -5,13 +5,13 @@
 			"name": "Creation Scripts/Table"
 		},
 		"content": {
-			"query": "CREATE TABLE [dbo].[FactClaimDetails]\n(\n    \tClaimFIRNo\tVARCHAR(50)\n\t,\tInjury\tVARCHAR(100)\n\t,\tClaimType\tBIT\n\t,\tClaimCategory\tVARCHAR(10)\n\t,\tAmountBilled\tmoney\n\t,\tAmountNet\tmoney\n\t,\tAmountPaid\tmoney\n\t,\tDoctorName\tVARCHAR(50)\n\t,\tDoctorCity\tVARCHAR(50)\n\t,\tClaimFormDetailId\tINT\n\t,\tIntimationId\tINT\n\t,\tHospitalId\tINT\n\t,\tClaimStatusId\tINT\n\t,\tPlaceofServiceId\tINT\n\t,\tDateofService\tDateTime\n\t,\tDatePaid\tDateTime\n\t,\tDateReceived\tDateTime\n\t,\tDateofAdmit\tDateTime\n\t,\tDateofInjury\tDateTime\n\t,\tDateofDocumentation\tDateTime\n\t,\tDateofDischarge\tDateTime\n\t,\tDateModified\tDateTime\n\t,\tWorkflowSequenceId\tINT\n\t,\tMemberDetailId\tINT\n\t,\tClassofAccommodation\tVARCHAR(50)\n\t,\tHospitalizationType\tVARCHAR(50)\n\t,\tCorporate\tVARCHAR(100)\n\t,\tClaimId\tINT \n)\nWITH\n(\n    DISTRIBUTION = HASH (ClaimId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
+			"query": "CREATE TABLE [dbo].[FactClaimDetails]\n(\n    \tClaimFIRNo\tVARCHAR(50)\n\t,\tInjury\tVARCHAR(100)\n\t,\tClaimType\tBIT\n\t,\tClaimCategory\tVARCHAR(10)\n\t,\tAmountBilled\tmoney\n\t,\tAmountNet\tmoney\n\t,\tAmountPaid\tmoney\n\t,\tDoctorName\tVARCHAR(50)\n\t,\tDoctorCity\tVARCHAR(50)\n\t,\tClaimFormDetailId\tINT\n\t,\tIntimationId\tINT\n\t,\tHospitalId\tINT\n\t,\tClaimStatusId\tINT\n\t,\tPlaceofServiceId\tINT\n\t,\tDateofService\tDateTime\n\t,\tDatePaid\tDateTime\n\t,\tDateReceived\tDateTime\n\t,\tDateofAdmit\tDateTime\n\t,\tDateofInjury\tDateTime\n\t,\tDateofDocumentation\tDateTime\n\t,\tDateofDischarge\tDateTime\n\t,\tDateModified\tDateTime\n\t,\tWorkflowSequenceId\tINT\n\t,\tMemberDetailId\tINT\n\t,\tClassofAccommodation\tVARCHAR(50)\n\t,\tHospitalizationType\tVARCHAR(50)\n\t,\tCorporate\tVARCHAR(100)\n\t,\tClaimId\tINT\n\t,\t[WorkflowCurrentSequenceId] int NULL\n)\nWITH\n(\n    DISTRIBUTION = HASH (ClaimId),\n    CLUSTERED COLUMNSTORE INDEX\n)\nGO\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "ClaimsSummaryDSQL",
-				"databaseName": "ClaimsSummaryDSQL"
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

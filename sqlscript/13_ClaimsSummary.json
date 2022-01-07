@@ -5,13 +5,13 @@
 			"name": "Creation Scripts/Table"
 		},
 		"content": {
-			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[ClaimsSummary]\n( \n\t[ClaimFIRNo] [varchar](30)  NULL,\n\t[ClaimType] [varchar](13)  NOT NULL,\n\t[HospitalizationType] [varchar](10)  NULL,\n\t[ClassofAccommodation] [varchar](50)  NULL,\n\t[Procedure] [varchar](500)  NULL,\n\t[Diagnosis] [varchar](250)  NULL,\n\t[PolicyNo] [varchar](100)  NULL,\n\t[PolicyType] [varchar](17)  NOT NULL,\n\t[member_code] [varchar](25)  NULL,\n\t[FullMemberName] [varchar](200)  NULL,\n\t[Gender] [varchar](6)  NOT NULL,\n\t[Age] [varchar](30)  NULL,\n\t[Hospital] [varchar](100)  NULL,\n\t[Corporate] [varchar](100)  NULL,\n\t[LengthofStay] [varchar](30)  NULL,\n\t[IsFraudClaim] [varchar](30)  NOT NULL,\n\t[FraudScore] [varchar](30)  NULL,\n\t[ClaimAmount] [varchar](30)  NULL,\n\t[ClaimDate] [varchar](30)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
+			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[ClaimsSummary]\n( \n\t[ClaimFIRNo] [varchar](30)  NULL,\n\t[ClaimType] [varchar](13)  NOT NULL,\n\t[HospitalizationType] [varchar](10)  NULL,\n\t[ClassofAccommodation] [varchar](50)  NULL,\n\t[Procedure] [varchar](500)  NULL,\n\t[Diagnosis] [varchar](250)  NULL,\n\t[PolicyNo] [varchar](100)  NULL,\n\t[PolicyType] [varchar](17)  NOT NULL,\n\t[member_code] [varchar](25)  NULL,\n\t[FullMemberName] [varchar](200)  NULL,\n\t[Gender] [varchar](6)  NOT NULL,\n\t[Age] [varchar](30)  NULL,\n\t[Hospital] [varchar](100)  NULL,\n\t[Corporate] [varchar](100)  NULL,\n\t[LengthofStay] [varchar](30)  NULL,\n\t[IsFraudClaim] [varchar](30)  NOT NULL,\n\t[FraudScore] [varchar](30)  NULL,\n\t[ClaimAmount] [varchar](30)  NULL,\n\t[ClaimDate] [datetime] NULL,\n\t[ProcedureAmount] [money] NULL,\n\t[HospitalCity] [varchar](100) NULL,\n\t[HospitalState] [varchar](100) NULL,\n\t[MemberCity] [varchar](100) NULL,\n\t[MemberState] [varchar](100) NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "ClaimsSummaryDSQL",
-				"databaseName": "ClaimsSummaryDSQL"
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

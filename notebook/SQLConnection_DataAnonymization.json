@@ -1,0 +1,158 @@
+{
+	"name": "SQLConnection_DataAnonymization",
+	"properties": {
+		"folder": {
+			"name": "Data Anonymization"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool2021",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5dc9d03f-f20a-4207-9227-65b3bcf8c7e5"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
+				"name": "sparkpool2021",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Data Anonymization Starts Here\n",
+					"from faker import Factory\n",
+					"from collections import defaultdict"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"### Credentials\n",
+					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
+					"url = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"faker  = Factory.create()\n",
+					"faker_dict = {'email': defaultdict(faker.email),'name': defaultdict(faker.name),'company':defaultdict(faker.company), 'ssn':defaultdict(faker.ssn),'firstname': defaultdict(faker.first_name),'uuid4': defaultdict(faker.uuid4)}\n",
+					"providers = {\n",
+					"    'dbo.ClaimsSummary':\n",
+					"    {\n",
+					"        'faker': ['ssn','name','uuid4'],\n",
+					"        'cols': ['member_code', 'FullMemberName','PolicyNo']\n",
+					"    },\n",
+					"    'dbo.ClaimsFraudOutput':\n",
+					"    {\n",
+					"        'faker': ['name', 'company','uuid4'],\n",
+					"        'cols': ['FullMemberName', 'Hospital','PolicyNo']\n",
+					"    },\n",
+					"    'dbo.DimEmployers':\n",
+					"    {\n",
+					"        'faker': ['name'],\n",
+					"        'cols': ['EmployerName']\n",
+					"    },\n",
+					"    'dbo.DimHospitalDetails':\n",
+					"    {\n",
+					"        'faker': ['company'],\n",
+					"        'cols': ['HospitalName']\n",
+					"    },\n",
+					"    'dbo.DimMembers':\n",
+					"    {\n",
+					"        'faker': ['uuid4','firstname', 'name'],\n",
+					"        'cols': ['PolicyNo','first_name', 'FullMemberName']\n",
+					"    }\n",
+					"}\n",
+					"\n",
+					"tables = providers.keys()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Actual Anonymization Logic\n",
+					"def anonymize_rows(rows, table_name):\n",
+					"    \"\"\"\n",
+					"    Rows is an iterable of dictionaries that contain name and\n",
+					"    email fields that need to be anonymized.\n",
+					"    \"\"\"\n",
+					"    # Load faker\n",
+					"    for i,e in enumerate(providers[table_name]['faker']):\n",
+					"      col = providers[table_name]['cols'][i]\n",
+					"      rows[col]  = rows[col].apply(lambda x: faker_dict[e][x])\n",
+					"\n",
+					"    return rows"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
+					"    dataframe.write \\\n",
+					"    .format(\"jdbc\") \\\n",
+					"    .mode(\"overwrite\") \\\n",
+					"    .option(\"url\", jdbcConnection) \\\n",
+					"    .option(\"dbtable\", tableName) \\\n",
+					"    .save()\n",
+					"    print(\"Data Written Successfully\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"for table in tables:\n",
+					"  df = spark.read.format(\"jdbc\")\\\n",
+					"  .option(\"driver\", driver)\\\n",
+					"  .option(\"url\", url)\\\n",
+					"  .option(\"dbtable\", table)\\\n",
+					"  .load()\n",
+					"  anonymizeddf = anonymize_rows(df.toPandas(), table)\n",
+					"  spark_df = spark.createDataFrame(anonymizeddf)\n",
+					"  writeto_sql(spark_df, table+'_Anon', url)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

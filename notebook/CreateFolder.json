@@ -1,0 +1,75 @@
+{
+	"name": "CreateFolder",
+	"properties": {
+		"folder": {
+			"name": "Automation"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool2021",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "c64322f2-544a-4ea9-918f-206757cb3630"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
+				"name": "sparkpool2021",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from azure.storage.filedatalake import DataLakeServiceClient   "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"connect_str = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"Gen2ConnectionString\")\n",
+					"datalake_service_client = DataLakeServiceClient.from_connection_string(connect_str)\n",
+					"container = \"claimsfiles\"\n",
+					"myfolder     = \"ClaimFilesAutoLoad/Live\"\n",
+					"file_system_client = datalake_service_client.get_file_system_client(container)            \n",
+					"directory_client = file_system_client.create_directory(myfolder)  "
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

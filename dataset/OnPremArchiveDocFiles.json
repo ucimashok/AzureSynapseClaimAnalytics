@@ -1,0 +1,17 @@
+{
+	"name": "OnPremArchiveDocFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OnPremFileLocation",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": "ClaimDocuments/Archive"
+			}
+		}
+	}
+}

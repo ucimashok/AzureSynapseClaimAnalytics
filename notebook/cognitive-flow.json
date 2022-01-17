@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d3e1346b-3562-4199-be3b-81f548b9d75b"
+				"spark.autotune.trackingId": "d7a1aefa-1ceb-4ce1-9f5e-a37a02d3d87c"
 			}
 		},
 		"metadata": {
@@ -84,7 +84,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = 'https://ai-ml-computervision.cognitiveservices.azure.com'\n",
-					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKeyProd\")"
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 				],
 				"execution_count": null
 			},
@@ -178,7 +178,7 @@
 				"cell_type": "code",
 				"source": [
 					"# For Translator\n",
-					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKeyProd\")\n",
+					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
 					"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
 					"\n",
 					"# This is required if using a Cognitive Services resource.\n",
@@ -202,7 +202,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = \"https://ai-ml-language.cognitiveservices.azure.com\" \n",
-					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKeyProd\")\n",
+					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
@@ -404,7 +404,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"SQLTargetJdbc\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

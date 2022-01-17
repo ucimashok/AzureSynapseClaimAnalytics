@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fd2cd685-d283-4de7-8c90-0133837ecc3e"
+				"spark.autotune.trackingId": "395ebc6b-484b-4bc3-a1cf-af958b90e76a"
 			}
 		},
 		"metadata": {
@@ -73,6 +73,49 @@
 					"import time"
 				],
 				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"jobId = mssparkutils.env.getJobId() "
+				],
+				"execution_count": 51
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"try:\r\n",
+					"    mssparkutils.fs.mount( \r\n",
+					"    \"abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net\", \r\n",
+					"    \"/claims\", \r\n",
+					"    {\"linkedService\":\"uiapsynapsedl\"} \r\n",
+					"    ) \r\n",
+					"except Exception:\r\n",
+					"    print(\"Already mounted\")"
+				],
+				"execution_count": 49
 			},
 			{
 				"cell_type": "markdown",
@@ -157,17 +200,18 @@
 				"cell_type": "code",
 				"source": [
 					"# For Standard Tier \n",
-					"files = mssparkutils.fs.ls('/ClaimFiles/Live/')\n",
+					"files = mssparkutils.fs.ls(f\"synfs:/{jobId}/claims/ClaimFiles/Live\")\n",
 					"OCRDatas = []\n",
 					"for ele in files:\n",
 					"    name = ele.name\n",
-					"    stream = mssparkutils.fs.head(ele.path+'/report.png').encode('utf8')\n",
-					"    resp = client.read_document(streamdata = stream)\n",
-					"    print(resp)\n",
-					"    parsed = client.parse(resp)\n",
-					"    OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
+					"    path = '/'+ele.path.replace(':','')\n",
+					"    print(path)\n",
+					"    with open(f'{path}/report.png', mode='rb') as pdfstream:\n",
+					"        resp = client.read_document(streamdata = pdfstream.read())\n",
+					"        parsed = client.parse(resp)\n",
+					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
 				],
-				"execution_count": 47
+				"execution_count": 63
 			},
 			{
 				"cell_type": "markdown",

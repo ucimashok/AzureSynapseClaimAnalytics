@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d7a1aefa-1ceb-4ce1-9f5e-a37a02d3d87c"
+				"spark.autotune.trackingId": "fd2cd685-d283-4de7-8c90-0133837ecc3e"
 			}
 		},
 		"metadata": {
@@ -69,9 +69,10 @@
 					"from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
 					"from collections import OrderedDict\n",
 					"import json\n",
+					"from notebookutils import mssparkutils\n",
 					"import time"
 				],
-				"execution_count": 1
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -86,7 +87,7 @@
 					"endpoint = 'https://ai-ml-computervision.cognitiveservices.azure.com'\n",
 					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 				],
-				"execution_count": null
+				"execution_count": 42
 			},
 			{
 				"cell_type": "markdown",
@@ -100,7 +101,7 @@
 					"# Create Client Object\n",
 					"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
 				],
-				"execution_count": null
+				"execution_count": 43
 			},
 			{
 				"cell_type": "markdown",
@@ -156,17 +157,17 @@
 				"cell_type": "code",
 				"source": [
 					"# For Standard Tier \n",
-					"files = dbutils.fs.ls('dbfs:/mnt/claimsfiles/ClaimFilesAutoLoad/Live')\n",
+					"files = mssparkutils.fs.ls('/ClaimFiles/Live/')\n",
 					"OCRDatas = []\n",
 					"for ele in files:\n",
-					"    name = ele.name[:-1]\n",
-					"    print(name)\n",
-					"    with open(f'/dbfs/mnt/claimsfiles/ClaimFilesAutoLoad/Live/{name}/report.png', mode='rb') as pdfstream:\n",
-					"        resp = client.read_document(streamdata = pdfstream.read())\n",
-					"        parsed = client.parse(resp)\n",
-					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
+					"    name = ele.name\n",
+					"    stream = mssparkutils.fs.head(ele.path+'/report.png').encode('utf8')\n",
+					"    resp = client.read_document(streamdata = stream)\n",
+					"    print(resp)\n",
+					"    parsed = client.parse(resp)\n",
+					"    OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
 				],
-				"execution_count": null
+				"execution_count": 47
 			},
 			{
 				"cell_type": "markdown",

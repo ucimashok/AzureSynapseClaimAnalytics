@@ -6,8 +6,8 @@
 		"type": "FileServer",
 		"typeProperties": {
 			"host": "C:\\Azuresynapse\\ExternalTPA",
-			"userId": "ubtiinc\\ashok.kumar",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwYTIwNGZiNy04NmU4LTRhZjYtYjVkZS05M2JhZjA1MDlmMmUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"userId": "ubtiinc\\aravind.r",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1YjUwMjA5OC00NjRiLTQ3ZmUtYmVmZi0zMzBjOWFjNGFjMGYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeselfhosted",

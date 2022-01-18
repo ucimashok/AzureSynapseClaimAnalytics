@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "395ebc6b-484b-4bc3-a1cf-af958b90e76a"
+				"spark.autotune.trackingId": "4389d20b-df86-4ac7-8cbb-f65a6ee36d3b"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					"from notebookutils import mssparkutils\n",
 					"import time"
 				],
-				"execution_count": 19
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -90,7 +90,7 @@
 				"source": [
 					"jobId = mssparkutils.env.getJobId() "
 				],
-				"execution_count": 51
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -115,7 +115,7 @@
 					"except Exception:\r\n",
 					"    print(\"Already mounted\")"
 				],
-				"execution_count": 49
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -127,10 +127,10 @@
 				"cell_type": "code",
 				"source": [
 					"# Define Credentials\n",
-					"endpoint = 'https://ai-ml-computervision.cognitiveservices.azure.com'\n",
+					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
 					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 				],
-				"execution_count": 42
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -144,51 +144,13 @@
 					"# Create Client Object\n",
 					"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
 				],
-				"execution_count": 43
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
 				"source": [
 					"### Read Files from datalake and call read_document Function"
 				]
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### For Free tier"
-				]
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"# files = dbutils.fs.ls('dbfs:/mnt/claimsfiles/ClaimFilesAutoLoad/Live')\n",
-					"# if len(files)!=0:\n",
-					"#     OCRDatas = []\n",
-					"#     stop = len(files) if len(files)<5 else 5\n",
-					"#     start = 0\n",
-					"#     flag = True\n",
-					"#     filesRead = 0 \n",
-					"#     while True:\n",
-					"#         starttime = time.time()\n",
-					"#         for ele in files[start:stop]:\n",
-					"#             name = ele.name[:-1]\n",
-					"#             print(name)\n",
-					"#             with open(f'/dbfs/mnt/claimsfiles/ClaimFilesAutoLoad/Live/{name}/report.png', mode='rb') as pdfstream:\n",
-					"#                 resp = client.read_document(streamdata = pdfstream.read())\n",
-					"#                 parsed = client.parse(resp)\n",
-					"#                 OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))\n",
-					"#                 filesRead+=1\n",
-					"#         overall = time.time()-starttime\n",
-					"#         start, stop = stop, stop+5\n",
-					"#         if filesRead!=len(files):\n",
-					"#             print(f\"Wait for {int(60-overall)} seconds to make further api calls\")\n",
-					"#             time.sleep(60-overall+5)\n",
-					"#         else:\n",
-					"#             break\n",
-					"# else:\n",
-					"#     raise Exception(\"No Files found in Live\")"
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -211,7 +173,7 @@
 					"        parsed = client.parse(resp)\n",
 					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
 				],
-				"execution_count": 63
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",

@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "6194c805-9da4-42e3-9af2-8a95a586e058"
+				"spark.autotune.trackingId": "12ea5fc7-7d5f-4f42-b31b-6d9c77e73af9"
 			}
 		},
 		"metadata": {
@@ -28,7 +28,7 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
@@ -69,60 +69,53 @@
 					"from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
 					"from collections import OrderedDict\n",
 					"import json\n",
+					"from notebookutils import mssparkutils\n",
 					"import time"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"### Mounting/Unmounting Datalake"
-				]
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"# Mount Datalake here\n",
-					"storageAccountName = \"aimlworkathondl\"\n",
-					"storageAccountKey = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"Gen2AccountKey\")\n",
-					"storageContainer = \"claimsfiles\"\n",
-					"blobMountPoint = \"/mnt/claimsfiles\"\n",
-					"def mountStorageContainer(storageAccount, storageAccountKey, storageContainer, blobMountPoint):\n",
-					"  try:\n",
-					"    print(\"Mounting {0} to {1}:\".format(storageContainer, blobMountPoint))\n",
-					"    # Unmount the storage container if already mounted\n",
-					"    dbutils.fs.unmount(blobMountPoint)\n",
-					"  except Exception as e:\n",
-					"    # If this errors, safe to assume that the container is not mounted\n",
-					"    print(\"....Container is not mounted; Attempting mounting now..\")\n",
-					"    \n",
-					"  # Mount the storage container\n",
-					"  mountStatus = dbutils.fs.mount(\n",
-					"                  source = \"wasbs://{0}@{1}.blob.core.windows.net/\".format(storageContainer, storageAccount),\n",
-					"                  mount_point = blobMountPoint,\n",
-					"                  extra_configs = {\"fs.azure.account.key.{0}.blob.core.windows.net\".format(storageAccount): storageAccountKey})\n",
-					"\n",
-					"  print(\"....Status of mount is: \" + str(mountStatus))\n",
-					"  print() # Provide a blank line between mounts\n",
-					"mountStorageContainer(storageAccountName,storageAccountKey,storageContainer,blobMountPoint)"
+					"jobId = mssparkutils.env.getJobId() "
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"### Refresh Mounts if needed"
-				]
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"# Refresh mounts if applicable\n",
-					"# dbutils.fs.refreshMounts()\n",
-					"#Display directories\n",
-					"# display(dbutils.fs.ls(\"/mnt/claimsfiles/ClaimFilesAutoLoad\"))"
+					"try:\r\n",
+					"    mssparkutils.fs.mount( \r\n",
+					"    \"abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net\", \r\n",
+					"    \"/claims\", \r\n",
+					"    {\"linkedService\":\"uiapsynapsedl\"} \r\n",
+					"    ) \r\n",
+					"except Exception:\r\n",
+					"    print(\"Already mounted\")"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -134,10 +127,10 @@
 				"cell_type": "code",
 				"source": [
 					"# Define Credentials\n",
-					"endpoint = 'https://ai-ml-computervision.cognitiveservices.azure.com'\n",
-					"SUBSCRIPTION_KEY = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"ComputerVisionKeyProd\")"
+					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -151,51 +144,13 @@
 					"# Create Client Object\n",
 					"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "markdown",
 				"source": [
 					"### Read Files from datalake and call read_document Function"
 				]
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### For Free tier"
-				]
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"# files = dbutils.fs.ls('dbfs:/mnt/claimsfiles/ClaimFilesAutoLoad/Live')\n",
-					"# if len(files)!=0:\n",
-					"#     OCRDatas = []\n",
-					"#     stop = len(files) if len(files)<5 else 5\n",
-					"#     start = 0\n",
-					"#     flag = True\n",
-					"#     filesRead = 0 \n",
-					"#     while True:\n",
-					"#         starttime = time.time()\n",
-					"#         for ele in files[start:stop]:\n",
-					"#             name = ele.name[:-1]\n",
-					"#             print(name)\n",
-					"#             with open(f'/dbfs/mnt/claimsfiles/ClaimFilesAutoLoad/Live/{name}/report.png', mode='rb') as pdfstream:\n",
-					"#                 resp = client.read_document(streamdata = pdfstream.read())\n",
-					"#                 parsed = client.parse(resp)\n",
-					"#                 OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))\n",
-					"#                 filesRead+=1\n",
-					"#         overall = time.time()-starttime\n",
-					"#         start, stop = stop, stop+5\n",
-					"#         if filesRead!=len(files):\n",
-					"#             print(f\"Wait for {int(60-overall)} seconds to make further api calls\")\n",
-					"#             time.sleep(60-overall+5)\n",
-					"#         else:\n",
-					"#             break\n",
-					"# else:\n",
-					"#     raise Exception(\"No Files found in Live\")"
-				],
-				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -207,17 +162,18 @@
 				"cell_type": "code",
 				"source": [
 					"# For Standard Tier \n",
-					"files = dbutils.fs.ls('dbfs:/mnt/claimsfiles/ClaimFilesAutoLoad/Live')\n",
+					"files = mssparkutils.fs.ls(f\"synfs:/{jobId}/claims/ClaimFiles/Live\")\n",
 					"OCRDatas = []\n",
 					"for ele in files:\n",
-					"    name = ele.name[:-1]\n",
-					"    print(name)\n",
-					"    with open(f'/dbfs/mnt/claimsfiles/ClaimFilesAutoLoad/Live/{name}/report.png', mode='rb') as pdfstream:\n",
+					"    name = ele.name\n",
+					"    path = '/'+ele.path.replace(':','')\n",
+					"    print(path)\n",
+					"    with open(f'{path}/report.png', mode='rb') as pdfstream:\n",
 					"        resp = client.read_document(streamdata = pdfstream.read())\n",
 					"        parsed = client.parse(resp)\n",
 					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
 				],
-				"execution_count": null
+				"execution_count": 13
 			},
 			{
 				"cell_type": "markdown",
@@ -229,7 +185,7 @@
 				"cell_type": "code",
 				"source": [
 					"# For Translator\n",
-					"subscription_key = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"AzureTranslatorKeyProd\")\n",
+					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
 					"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
 					"\n",
 					"# This is required if using a Cognitive Services resource.\n",
@@ -240,7 +196,7 @@
 					"output= client.translate(documents)\n",
 					"documents = client.parse(output, documents)"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -252,12 +208,12 @@
 				"cell_type": "code",
 				"source": [
 					"# Define Credentials\n",
-					"endpoint = \"https://ai-ml-language.cognitiveservices.azure.com\" \n",
-					"key = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"TextAnalyticsKeyProd\")\n",
+					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
+					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
-				"execution_count": null
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -284,7 +240,7 @@
 					"    sentiments.extend(data)\n",
 					"    s,e = e,e+10"
 				],
-				"execution_count": null
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -305,7 +261,7 @@
 					"    keyphrases.extend(data)\n",
 					"    s2,e2 = e2,e2+10"
 				],
-				"execution_count": null
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
@@ -455,7 +411,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"SQLTargetJdbc\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

@@ -36,7 +36,7 @@
 			"value": "C:\\Azuresynapse\\ExternalTPA"
 		},
 		"OnPremFileLocation_properties_typeProperties_userId": {
-			"value": "ubtiinc\\ashok.kumar"
+			"value": "ubtiinc\\aravind.r"
 		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://uiapsynapsedl.dfs.core.windows.net"

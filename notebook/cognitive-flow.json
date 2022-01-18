@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4389d20b-df86-4ac7-8cbb-f65a6ee36d3b"
+				"spark.autotune.trackingId": "12ea5fc7-7d5f-4f42-b31b-6d9c77e73af9"
 			}
 		},
 		"metadata": {
@@ -196,7 +196,7 @@
 					"output= client.translate(documents)\n",
 					"documents = client.parse(output, documents)"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -208,12 +208,12 @@
 				"cell_type": "code",
 				"source": [
 					"# Define Credentials\n",
-					"endpoint = \"https://ai-ml-language.cognitiveservices.azure.com\" \n",
+					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
 					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
-				"execution_count": null
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -240,7 +240,7 @@
 					"    sentiments.extend(data)\n",
 					"    s,e = e,e+10"
 				],
-				"execution_count": null
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -261,7 +261,7 @@
 					"    keyphrases.extend(data)\n",
 					"    s2,e2 = e2,e2+10"
 				],
-				"execution_count": null
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",

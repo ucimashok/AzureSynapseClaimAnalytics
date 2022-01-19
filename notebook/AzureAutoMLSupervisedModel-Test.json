@@ -1,0 +1,261 @@
+{
+	"name": "AzureAutoMLSupervisedModel-Test",
+	"properties": {
+		"folder": {
+			"name": "SparkMLServices"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool2021",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5a17f407-3863-4719-baed-b679f5278b3e"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
+				"name": "sparkpool2021",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Import necessary packages to Submit AutoML Experiment"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import logging\n",
+					"import azureml.core\n",
+					"import onnxruntime\n",
+					"import mlflow\n",
+					"import mlflow.onnx\n",
+					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
+					"from azureml.train.automl import AutoMLConfig\n",
+					"from azureml.data.dataset_factory import TabularDatasetFactory\n",
+					"# from azureml.core.authentication import InteractiveLoginAuthentication, ServicePrincipalAuthentication\n",
+					"\n",
+					"from mlflow.models.signature import ModelSignature\n",
+					"from mlflow.types import DataType\n",
+					"from mlflow.types.schema import ColSpec, Schema"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Define Credentials, workspace and Authentication for Prediction"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
+					"resource_group = \"uiap-d-ci-claimfraudanalytics\"\n",
+					"workspace_name = \"ai-ml-amlworkspace\"\n",
+					"experiment_name = \"sampleclaimfraud\"\n",
+					"\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dataset = Dataset.get_by_name(workspace=ws,name='claiml-labelled-dataset',version='latest')"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Define AutoMLConfig Properties"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"automl_config = AutoMLConfig(spark_context = sc,\n",
+					"                             task = \"classification\",\n",
+					"                             debug_log = 'automl_errors.log',\n",
+					"                             training_data = dataset,\n",
+					"                             label_column_name = \"ADRS\",\n",
+					"                             primary_metric = \"AUC_weighted\",\n",
+					"                             experiment_timeout_minutes = 15,\n",
+					"                             blocked_models=['DecisionTreeClassifier'],\n",
+					"                             max_concurrent_iterations = 2,\n",
+					"                             verbosity = logging.INFO,                             \n",
+					"#                              enable_cache=True,\n",
+					"                             featurization='auto',\n",
+					"                             enable_onnx_compatible_models = True)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Submit and Run Experiment"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"try:\n",
+					"\n",
+					"  # Create AML Experiment - use the name from ./99-Shared-Functions-and-Settings notebook\n",
+					"  experiment = Experiment(ws, experiment_name)\n",
+					"\n",
+					"  # Submit AutoML Run\n",
+					"  run = experiment.submit(automl_config)\n",
+					"  run.wait_for_completion(show_output=True)   \n",
+					"\n",
+					"except Exception as e:\n",
+					"  print(\"Error : \",e)\n",
+					"  "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Get Best Run and Onnx Model"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"best_run, onnx_model = run.get_output(return_onnx_model=True)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Infer Schema, Signature and Register the Model"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Define utility functions to infer the schema of ONNX model\n",
+					"def _infer_schema(data):\n",
+					"    res = []\n",
+					"    for _, col in enumerate(data):\n",
+					"        t = col.type.replace(\"tensor(\", \"\").replace(\")\", \"\")\n",
+					"        if t in [\"bool\"]:\n",
+					"            dt = DataType.boolean\n",
+					"        elif t in [\"int8\", \"uint8\", \"int16\", \"uint16\", \"int32\"]:\n",
+					"            dt = DateType.integer\n",
+					"        elif t in [\"uint32\", \"int64\"]:\n",
+					"            dt = DataType.long\n",
+					"        elif t in [\"float16\", \"bfloat16\", \"float\"]:\n",
+					"            dt = DataType.float\n",
+					"        elif t in [\"double\"]:\n",
+					"            dt = DataType.double\n",
+					"        elif t in [\"string\"]:\n",
+					"            dt = DataType.string\n",
+					"        else:\n",
+					"            raise Exception(\"Unsupported type: \" + t)\n",
+					"        res.append(ColSpec(type=dt, name=col.name))\n",
+					"    return Schema(res)\n",
+					"\n",
+					"def _infer_signature(onnx_model):\n",
+					"    onnx_model_bytes = onnx_model.SerializeToString()\n",
+					"    onnx_runtime = onnxruntime.InferenceSession(onnx_model_bytes)\n",
+					"    # print(onnx_runtime.get_inputs())\n",
+					"    # print(onnx_runtime.get_outputs())\n",
+					"    inputs = _infer_schema(onnx_runtime.get_inputs())\n",
+					"    outputs = _infer_schema(onnx_runtime.get_outputs())\n",
+					"    return ModelSignature(inputs, outputs)\n",
+					"\n",
+					"# Infer signature of ONNX model\n",
+					"signature = _infer_signature(onnx_model)\n",
+					"\n",
+					"artifact_path = experiment_name + \"_artifact\"\n",
+					"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\n",
+					"mlflow.set_experiment(experiment_name)\n",
+					"\n",
+					"with mlflow.start_run() as run:\n",
+					"    # Save the model to the outputs directory for capture\n",
+					"    mlflow.onnx.log_model(onnx_model, artifact_path, signature=signature)\n",
+					"    Run_Id = run.info.run_id\n",
+					"    # Register the model to AML model registry\n",
+					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-azure-ml-ws-fraud-detection-model-Best\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Convert ONNXModel to Hexadecimal"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def convertONNXtoHEX(model):\n",
+					"    return model.SerializeToString().hex()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Write ONNX Model to Blob Storage"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"with open('model.onnx.hex','w') as f1:\n",
+					"    f1.write(convertONNXtoHEX(onnx_model))\n",
+					" \n",
+					"connection_string = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"BlobConnectionString\")\n",
+					" \n",
+					"from azure.storage.blob import BlobClient\n",
+					" \n",
+					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model_Cleaned.onnx.hex\")\n",
+					" \n",
+					"with open(\"./model.onnx.hex\", \"rb\") as data:\n",
+					"    blob.upload_blob(data,overwrite=True)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

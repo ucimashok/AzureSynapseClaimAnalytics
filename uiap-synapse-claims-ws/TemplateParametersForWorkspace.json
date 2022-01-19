@@ -32,6 +32,9 @@
 		"AzureMLServiceClaims_properties_typeProperties_tenant": {
 			"value": "008502d6-3f79-46f0-ab37-9354e3fe80ff"
 		},
+		"ClaimsSolutionKV_properties_typeProperties_baseUrl": {
+			"value": "https://aimlworkathonkv.vault.azure.net/"
+		},
 		"OnPremFileLocation_properties_typeProperties_host": {
 			"value": "C:\\Azuresynapse\\ExternalTPA"
 		},

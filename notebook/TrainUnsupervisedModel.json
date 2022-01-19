@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "67d027ea-3c73-47e5-8af7-99ea1e91f2f3"
+				"spark.autotune.trackingId": "55778e2c-1caa-46ba-8e8f-347353ba520b"
 			}
 		},
 		"metadata": {
@@ -614,8 +614,7 @@
 				"cell_type": "code",
 				"source": [
 					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
-					"from azureml.data.dataset_factory import TabularDatasetFactory\n",
-					"from azureml.core.authentication import ServicePrincipalAuthentication"
+					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
 				"execution_count": null
 			},
@@ -627,11 +626,7 @@
 					"workspace_name = \"ai-ml-amlworkspace\"\n",
 					"experiment_name = \"sampleclaimfraud\"\n",
 					"\n",
-					"sp = ServicePrincipalAuthentication(tenant_id=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"TenantId\"), # tenantID\n",
-					"                                    service_principal_id=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"ClientId\"), # clientId\n",
-					"                                    service_principal_password=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"ClientSecret\")) # clientSecret\n",
-					"\n",
-					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name,auth=sp)\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"\n",
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"

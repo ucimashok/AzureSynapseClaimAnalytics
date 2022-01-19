@@ -1,5 +1,5 @@
 {
-	"name": "AzureAutoMLSupervisedModel-Test",
+	"name": "AzureAutoMLSupervisedModel",
 	"properties": {
 		"folder": {
 			"name": "SparkMLServices"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5a17f407-3863-4719-baed-b679f5278b3e"
+				"spark.autotune.trackingId": "b76fd531-5577-4527-b691-228be826dc19"
 			}
 		},
 		"metadata": {

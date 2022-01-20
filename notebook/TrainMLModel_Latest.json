@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "905488f1-fc53-4712-85cf-9743e517a8b8"
+				"spark.autotune.trackingId": "24dc917b-c678-4c0c-bc54-d5de9e3f988f"
 			}
 		},
 		"metadata": {
@@ -146,7 +146,7 @@
 					"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
 					""
 				],
-				"execution_count": 1
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
@@ -181,7 +181,7 @@
 					"url = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\r\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
-				"execution_count": 2
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -216,7 +216,7 @@
 					"  .option(\"dbtable\", table)\\\r\n",
 					"  .load()"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -615,7 +615,7 @@
 					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
-				"execution_count": 30
+				"execution_count": 32
 			},
 			{
 				"cell_type": "code",
@@ -630,7 +630,7 @@
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"
 				],
-				"execution_count": 31
+				"execution_count": 33
 			},
 			{
 				"cell_type": "markdown",

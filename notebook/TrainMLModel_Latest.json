@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f9e20700-c281-4f56-ae8c-0882dc57d3cf"
+				"spark.autotune.trackingId": "a0ae0076-3b8d-4469-b820-5f0bc007fe5a"
 			}
 		},
 		"metadata": {
@@ -229,7 +229,7 @@
 				"source": [
 					"df = df.na.fill(0)"
 				],
-				"execution_count": 6
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -281,7 +281,7 @@
 					"clsofAccUDF = udf(lambda z : preunique(z), StringType()) \n",
 					"df = df.withColumn('Class_of_Accommodation', clsofAccUDF(col('Class_of_Accommodation')))"
 				],
-				"execution_count": 7
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -289,7 +289,7 @@
 					"# Spark Dataframe Converting to Pandas Dataframe\n",
 					"pdf = df.toPandas()"
 				],
-				"execution_count": 8
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -313,7 +313,7 @@
 					"for i in ['Procedure','Diagnosis']:\n",
 					"  pdf[i]=pdf[i].apply(lambda x: textclean(x))"
 				],
-				"execution_count": 9
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -327,7 +327,7 @@
 					"pdf.loc[pdf['Age']=='NONE','Age']=30\n",
 					"pdf.loc[pdf['Claim_Amount']==0,'Claim_Amount']=int(pdf['Claim_Amount'].mean())"
 				],
-				"execution_count": 10
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -335,14 +335,14 @@
 					"# Round Claim Amount\n",
 					"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
 				],
-				"execution_count": 11
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
 				],
-				"execution_count": 12
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -350,7 +350,7 @@
 					"# Removing Duplicate Claim Records\n",
 					"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
 				],
-				"execution_count": 13
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -366,7 +366,7 @@
 					"pdf['Age_group'] = [bucketize(x, 10, 5) for x in pdf['Age']]    \n",
 					"pdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pdf['Claim_Amount']]"
 				],
-				"execution_count": 14
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -375,7 +375,7 @@
 					"# 'Claim_FIR_No'\n",
 					"dt=pdf.drop(['FullMemberName','Claim_Date','ProcedureAmount'],axis=1)"
 				],
-				"execution_count": 15
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -383,14 +383,14 @@
 					"# Type Conversation\n",
 					"dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']] = dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']].apply(pd.to_numeric)"
 				],
-				"execution_count": 16
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"ddf = dt.copy()"
 				],
-				"execution_count": 17
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -411,7 +411,7 @@
 					"for i in col_n:\n",
 					"    ddf[i]=le.fit_transform(ddf[i])"
 				],
-				"execution_count": 18
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -433,14 +433,14 @@
 					"\n",
 					"dft=pd.concat([diag,prod],axis=1)"
 				],
-				"execution_count": 19
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"dfr=ddf.drop(['Claim_FIR_No','Diagnosis','Procedure'], axis=1)"
 				],
-				"execution_count": 20
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -464,7 +464,7 @@
 					"dtfs=scaler_t.fit_transform(X_t)\n",
 					""
 				],
-				"execution_count": 21
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -483,7 +483,7 @@
 					"pca_t = PCA(n_components=2)\n",
 					"pct = pca_t.fit_transform(dtfs)"
 				],
-				"execution_count": 22
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -503,7 +503,7 @@
 					"outlier_values_pca_t = pca_t.transform(outlier_values_scaled_t)\n",
 					""
 				],
-				"execution_count": 23
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -514,7 +514,7 @@
 					"dtest['AD_D']=pred_d\n",
 					"dtest['AD_T']=pred_t"
 				],
-				"execution_count": 24
+				"execution_count": 22
 			},
 			{
 				"cell_type": "markdown",
@@ -533,7 +533,7 @@
 					"kmeans_t.fit(pct)\n",
 					"dtest['C2_KM']=kmeans_t.labels_"
 				],
-				"execution_count": 25
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -541,7 +541,7 @@
 					"dtest[\"ADRS\"]=0\n",
 					"dtest[\"ADRS\"]=dtest[\"AD_D\"].apply(lambda x : int(x==-1))"
 				],
-				"execution_count": 26
+				"execution_count": 24
 			},
 			{
 				"cell_type": "markdown",
@@ -558,7 +558,7 @@
 					"      #print(i,dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().values[0],int((len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)/2))      \n",
 					"      dtest.loc[dtest['C1_KM']==i,'ADRS']=1              "
 				],
-				"execution_count": 37
+				"execution_count": 25
 			},
 			{
 				"cell_type": "code",
@@ -569,7 +569,7 @@
 					"      #print(i,dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().values[0],int((len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)/2))      \n",
 					"      dtest.loc[dtest['C2_KM']==i,'ADRS']=1"
 				],
-				"execution_count": 40
+				"execution_count": 26
 			},
 			{
 				"cell_type": "markdown",
@@ -582,7 +582,7 @@
 				"source": [
 					"dtest[\"ADRS\"]=dtest[[\"AD_T\",\"ADRS\"]].apply(lambda x : 1 if x[0]==-1 else x[1] ,axis=1)"
 				],
-				"execution_count": 41
+				"execution_count": 27
 			},
 			{
 				"cell_type": "code",
@@ -591,7 +591,7 @@
 					"       'Policy_Type', 'member_code', 'Gender', 'Age', 'Hospital', 'Corporate', 'Length_of_Stay', 'Claim_Amount',\n",
 					"       'HospitalCity', 'HospitalState', 'MemberCity','MemberState','Age_group', 'Claim_amt_grp', 'day', 'year', 'month', 'ADRS']]"
 				],
-				"execution_count": 42
+				"execution_count": 28
 			},
 			{
 				"cell_type": "code",
@@ -601,7 +601,7 @@
 					"SDF.printSchema()\n",
 					"#SDF.show()"
 				],
-				"execution_count": 43
+				"execution_count": 29
 			},
 			{
 				"cell_type": "markdown",
@@ -615,7 +615,7 @@
 					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
 					"from azureml.data.dataset_factory import TabularDatasetFactory"
 				],
-				"execution_count": 44
+				"execution_count": 30
 			},
 			{
 				"cell_type": "code",
@@ -630,7 +630,7 @@
 					"datastore = Datastore.get_default(ws)\n",
 					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"
 				],
-				"execution_count": 45
+				"execution_count": 31
 			},
 			{
 				"cell_type": "markdown",
@@ -673,7 +673,7 @@
 					"from mlflow.types import DataType\r\n",
 					"from mlflow.types.schema import ColSpec, Schema"
 				],
-				"execution_count": 46
+				"execution_count": 32
 			},
 			{
 				"cell_type": "markdown",
@@ -716,7 +716,7 @@
 					"                             featurization='auto',\r\n",
 					"                             enable_onnx_compatible_models = True)"
 				],
-				"execution_count": 47
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -758,7 +758,7 @@
 					"  print(\"Error : \",e)\r\n",
 					"  "
 				],
-				"execution_count": 50
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -789,7 +789,7 @@
 				"source": [
 					"best_run, onnx_model = run.get_output(return_onnx_model=True)"
 				],
-				"execution_count": 49
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",

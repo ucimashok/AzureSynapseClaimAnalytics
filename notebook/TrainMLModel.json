@@ -1,5 +1,5 @@
 {
-	"name": "TrainUnsupervisedModel",
+	"name": "TrainMLModel",
 	"properties": {
 		"folder": {
 			"name": "SparkMLServices"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "57b8981c-69ea-441c-b978-f8f70dba2191"
+				"spark.autotune.trackingId": "e8ac8b01-abf5-499d-ad73-fdca73d8ea51"
 			}
 		},
 		"metadata": {

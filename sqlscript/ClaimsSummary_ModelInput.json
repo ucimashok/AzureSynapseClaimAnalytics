@@ -1,0 +1,20 @@
+{
+	"name": "ClaimsSummary_ModelInput",
+	"properties": {
+		"folder": {
+			"name": "Creation Scripts"
+		},
+		"content": {
+			"query": "\nALTER VIEW [dbo].[ClaimsSummary_ModelInput]\nAS\n\nWith Diag as \n(\nSelect ClaimFIRNo,Diagnosis from dbo.ClaimsSummary nolock group by ClaimFIRNo,Diagnosis\n)\n,Proced as\n(\nSelect ClaimFIRNo,[Procedure] from dbo.ClaimsSummary nolock group by ClaimFIRNo,[Procedure]\n)\n\n, Alldata as (\nSelect \n CASE WHEN ISNULL(ClaimFIRNo\t\t   ,'null')='null' then 'NO' else ClaimFIRNo\t\t\t\tend as ClaimFIRNo\t\t  \n,CASE WHEN ISNULL(ClaimType\t\t\t   ,'null')='null' then 'NO' else ClaimType\t\t\t\tend as ClaimType\t\t\t  \n,CASE WHEN ISNULL(HospitalizationType  ,'null')='null' then 'NO' else HospitalizationType\t\tend as HospitalizationType \n,CASE WHEN ISNULL(ClassofAccommodation ,'null')='null' then 'NO' else ClassofAccommodation\tend as ClassofAccommodation\n,CASE WHEN ISNULL(PolicyNo\t\t\t   ,'null')='null' then 'NO' else PolicyNo\t\t\t\tend as PolicyNo\t\t\t  \n,CASE WHEN ISNULL(PolicyType\t\t   ,'null')='null' then 'NO' else PolicyType\t\t\t\tend as PolicyType\t\t  \n,CASE WHEN ISNULL(member_code\t\t   ,'null')='null' then 'NO' else member_code\t\t\t\tend as member_code\t\t  \n,CASE WHEN ISNULL(FullMemberName\t   ,'null')='null' then 'NO' else FullMemberName\t\t\tend as FullMemberName\t  \n,CASE WHEN ISNULL(Gender\t\t\t   ,'null')='null' then 'NO' else Gender\t\t\t\t\tend as Gender\t\t\t  \n,CASE WHEN ISNULL(Age\t\t\t\t   ,'0')   = 0     then\t  0  else Age\t\t\t\t\t\tend as Age\t\t\t\t  \n,CASE WHEN ISNULL(Hospital\t\t\t   ,'null')='null' then 'NO' else Hospital\t\t\t\tend as Hospital\t\t\t  \n,CASE WHEN ISNULL(Corporate\t\t\t   ,'null')='null' then 'NO' else Corporate\t\t\t\tend as Corporate\t\t\t  \n,CASE WHEN ISNULL(LengthofStay\t\t   ,'0')   = 0     then 0\t else LengthofStay\t\t\tend as LengthofStay\t\t  \n,Avg(Cast(ClaimAmount as Money)) as ClaimAmount\n,ClaimDate\n,Sum(ProcedureAmount) as ProcedureAmount\n,CASE WHEN ISNULL(HospitalCity ,'NULL')='null' then 'NO' else HospitalCity  END AS HospitalCity\n,CASE WHEN ISNULL(HospitalState,'NULL')='null' then 'NO' else HospitalState\tEND AS HospitalState\n,CASE WHEN ISNULL(MemberCity   ,'NULL')='null' then 'NO' else MemberCity\tEND AS MemberCity\n,CASE WHEN ISNULL(MemberState  ,'NULL')='null' then 'NO' else MemberState\tEND AS MemberState\n,YEAR(ClaimDate) AS\t [year]\n,MONTH(ClaimDate) as [month]\n,DAY(ClaimDate) as   [day]\nfrom dbo.ClaimsSummary\ngroup by ClaimFIRNo\n,ClaimType\n,HospitalizationType\n,ClassofAccommodation\n,PolicyNo\n,PolicyType\n,member_code\n,FullMemberName\n,Gender\n,Age\n,Hospital\n,Corporate\n,LengthofStay\n,ClaimDate\n,HospitalCity\n,HospitalState\n,MemberCity\n,MemberState\n)\n\nSelect \n A.ClaimFIRNo as Claim_FIR_No\n,A.ClaimType as Claim_Type\n,A.HospitalizationType as Hospitalization_Type \n,A.ClassofAccommodation as Class_of_Accommodation\n,A.PolicyNo \n,A.PolicyType as Policy_Type\n,A.member_code\n,A.FullMemberName\n,A.Gender\n,A.Age\n,A.Hospital\n,A.Corporate\n,A.LengthofStay as Length_of_Stay\n,A.ClaimAmount as Claim_Amount\n,A.ClaimDate as Claim_Date\n,A.ProcedureAmount\n,A.HospitalCity\n,A.HospitalState\n,A.MemberCity\n,A.MemberState\n,B.[Procedure]\n,C.Diagnosis\n,A.[year]\n,A.[month]\n,A.[day]\nfrom Alldata A\nLeft join (Select ClaimFIRNo,STRING_AGG([Procedure],':') as [Procedure] from Proced group by ClaimFIRNo) B on A.ClaimFIRNo=B.ClaimFIRNo\nLeft join (Select ClaimFIRNo,STRING_AGG(Diagnosis,':') as Diagnosis from Diag group by ClaimFIRNo)C on A.ClaimFIRNo=C.ClaimFIRNo\n\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f1782204-fd8a-4448-a4cb-0c4bb600bfb8"
+				"spark.autotune.trackingId": "c866053c-3595-456a-87f5-991e409e2406"
 			}
 		},
 		"metadata": {
@@ -146,7 +146,20 @@
 					"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##### Azure SQL Database Connection String"
+				]
 			},
 			{
 				"cell_type": "code",
@@ -159,18 +172,51 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"microsoft": {
-						"language": "scala"
 					}
 				},
 				"source": [
-					"%%spark\r\n",
-					"spark.sql(\"CREATE DATABASE IF NOT EXISTS ClaimFraudAnalysis\")\r\n",
-					"val df = spark.read.sqlanalytics(\"ClaimsSummaryDSQL.dbo.ClaimsSummary_ModelInput\") \r\n",
-					"// df.write.mode(\"overwrite\").saveAsTable(\"ClaimFraudAnalysis.ClaimsSummary\")"
+					"### Credentials\r\n",
+					"\r\n",
+					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
+					"url = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\r\n",
+					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
-				"execution_count": null
+				"execution_count": 15
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##### Spark JDBC Connection with SQL Server"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df = spark.read.format(\"jdbc\")\\\r\n",
+					"  .option(\"driver\", driver)\\\r\n",
+					"  .option(\"url\", url)\\\r\n",
+					"  .option(\"dbtable\", table)\\\r\n",
+					"  .load()"
+				],
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -183,7 +229,7 @@
 				"source": [
 					"df = df.na.fill(0)"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",

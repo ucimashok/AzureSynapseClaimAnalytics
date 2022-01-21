@@ -79,7 +79,7 @@
 				}
 			},
 			{
-				"name": "Notebook1",
+				"name": "Create Live Folder",
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{

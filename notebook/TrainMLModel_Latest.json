@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "24dc917b-c678-4c0c-bc54-d5de9e3f988f"
+				"spark.autotune.trackingId": "46a595a9-1728-4e5a-8c56-2433d17b35d3"
 			}
 		},
 		"metadata": {
@@ -146,7 +146,7 @@
 					"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
 					""
 				],
-				"execution_count": 34
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -229,7 +229,7 @@
 				"source": [
 					"df = df.na.fill(0)"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -673,7 +673,7 @@
 					"from mlflow.types import DataType\r\n",
 					"from mlflow.types.schema import ColSpec, Schema"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -716,7 +716,7 @@
 					"                             featurization='auto',\r\n",
 					"                             enable_onnx_compatible_models = True)"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",

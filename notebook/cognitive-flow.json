@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "12ea5fc7-7d5f-4f42-b31b-6d9c77e73af9"
+				"spark.autotune.trackingId": "84e00cbc-71a9-4c6a-b2ac-211b8bbbd2eb"
 			}
 		},
 		"metadata": {
@@ -411,7 +411,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"SQLTargetJdbc\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

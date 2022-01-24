@@ -40,7 +40,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Load External TPA",
+						"activity": "Claims Files Load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -50,6 +50,26 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "ClaimsFraudPredictionLoad",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Claims Files Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Load External TPA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ClaimFilesLoad",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

@@ -1,0 +1,64 @@
+{
+	"name": "Claims - Cognitive",
+	"properties": {
+		"activities": [
+			{
+				"name": "CognitiveFlow",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Cognitive Process",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Archiving On Prem",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CognitiveFlow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Archiving OnPrem Data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Archiving Cloud Data",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Archiving On Prem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Archiving Cloud Data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Sub Pipelines"
+		},
+		"annotations": []
+	}
+}

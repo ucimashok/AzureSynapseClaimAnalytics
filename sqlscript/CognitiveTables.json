@@ -1,0 +1,20 @@
+{
+	"name": "CognitiveTables",
+	"properties": {
+		"folder": {
+			"name": "Creation Scripts/Table"
+		},
+		"content": {
+			"query": "drop table dbo.entities\nCreate Table dbo.Entities\n(\n\tclaimid varchar(20) NOT NULL,\n\tcategory varchar(100),\n\ttext varchar(300),\n\thealth bit\n)\n\ndrop table dbo.ClaimFraudAnalyzedAIMLData\nCreate Table dbo.ClaimFraudAnalyzedAIMLData\n(\n\tid varchar(20) NOT NULL\n,\tkeyphrases nvarchar(4000)\n,\tsentiment varchar(20) NOT NULL\n,\ttext nvarchar(4000) NOT NULL\n,\tentities nvarchar(4000)\n,\thealth nvarchar(4000)\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

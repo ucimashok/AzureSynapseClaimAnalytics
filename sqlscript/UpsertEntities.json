@@ -1,0 +1,20 @@
+{
+	"name": "UpsertEntities",
+	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
+		"content": {
+			"query": "/****** Object:  StoredProcedure [dbo].[UpsertEntities]    Script Date: 05-12-2021 11:37:47 ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\n\nCREATE PROC [dbo].[UpsertEntities] AS\nBEGIN\nUpdate\nde\nSET\n  de.claimid = ld.claimid\n, de.category= ld.category\n, de.text= ld.text\nFROM dbo.Entities de \nINNER JOIN  Load.Entities ld ON ld.claimid = de.claimid and ld.category=de.category and ld.text=de.text\n\n\nInsert INTO dbo.Entities \n(\n\tclaimid\n,\tcategory\n,\ttext\n)\n\nSELECT\n\tld.claimid\n,\tld.category\n,\tld.text\nFROM Load.Entities ld\nLEFT JOIN dbo.Entities de ON ld.claimid = de.claimid and ld.category=de.category and ld.text=de.text\nWHERE de.claimid is null\n\nEND\n\nGO\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

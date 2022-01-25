@@ -1,0 +1,20 @@
+{
+	"name": "UpsertCognitiveQuery",
+	"properties": {
+		"folder": {
+			"name": "Creation Scripts/SP"
+		},
+		"content": {
+			"query": "/****** Object:  StoredProcedure [dbo].[UpsertCognitiveReport]    Script Date: 06-12-2021 17:47:44 ******/\nSET ANSI_NULLS ON\nGO\n\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE PROC [dbo].[UpsertClaimFraudAnalyzedAIMLData] AS\nBEGIN\nUpdate\nde\nSET\n  de.id= ld.id\n, de.keyphrases= ld.keyphrases\n, de.sentiment= ld.sentiment\n, de.text= ld.text\n, de.entities = ld.entities\nFROM dbo.ClaimFraudAnalyzedAIMLData de\nINNER JOIN Load.ClaimFraudAnalyzedAIMLData ld ON ld.id = de.id\n\nInsert INTO dbo.ClaimFraudAnalyzedAIMLData \n(\n\tid\n,\tkeyphrases\n,\tsentiment\n,\ttext\n,\tentities\n)\nSELECT\n\tld.id\n,\tld.keyphrases\n,\tld.sentiment\n,\tld.text\n,\tld.entities\nFROM Load.ClaimFraudAnalyzedAIMLData ld\nLEFT JOIN dbo.ClaimFraudAnalyzedAIMLData de ON ld.id = de.id\nWHERE de.id is null\n\nEND\n\nGO\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

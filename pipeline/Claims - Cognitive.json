@@ -1,26 +1,26 @@
 {
-	"name": "Claims - Master",
+	"name": "Claims - Cognitive",
 	"properties": {
 		"activities": [
 			{
-				"name": "Claims Data Load",
+				"name": "CognitiveFlow",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "ClaimsDataLoad",
+						"referenceName": "Cognitive Process",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Load External TPA",
+				"name": "Archiving On Prem",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Claims Data Load",
+						"activity": "CognitiveFlow",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -29,18 +29,18 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "LoadExternalTPAFiles",
+						"referenceName": "Archiving OnPrem Data",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Fraud Prediction",
+				"name": "Archiving Cloud Data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Claims Files Load",
+						"activity": "Archiving On Prem",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -49,27 +49,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "ClaimsFraudPredictionLoad",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
-				"name": "Claims Files Load",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Load External TPA",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "ClaimFilesLoad",
+						"referenceName": "Archiving Cloud Data",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -77,7 +57,7 @@
 			}
 		],
 		"folder": {
-			"name": "Master"
+			"name": "Sub Pipelines"
 		},
 		"annotations": []
 	}

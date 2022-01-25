@@ -1,0 +1,91 @@
+{
+	"name": "Cognitive Process",
+	"properties": {
+		"activities": [
+			{
+				"name": "Cognitive Flow",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "cognitive-flow",
+						"type": "NotebookReference"
+					},
+					"snapshot": true
+				}
+			},
+			{
+				"name": "UpsertCognitiveResults",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Cognitive Flow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[UpsertClaimFraudAnalyzedAIMLData]"
+				},
+				"linkedServiceName": {
+					"referenceName": "uiap-synapse-claims-ws-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "ClaimsSummaryDSQL"
+					}
+				}
+			},
+			{
+				"name": "UpsertEntities",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "UpsertCognitiveResults",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[UpsertEntities]"
+				},
+				"linkedServiceName": {
+					"referenceName": "uiap-synapse-claims-ws-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "ClaimsSummaryDSQL"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Sub Pipelines"
+		},
+		"annotations": []
+	}
+}

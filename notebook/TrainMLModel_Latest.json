@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "11cb213e-d4d2-46ba-a0d5-ed74e9e9cbf5"
+				"spark.autotune.trackingId": "22b46699-ee47-4f75-ad3f-abcf915ae05c"
 			}
 		},
 		"metadata": {
@@ -927,11 +927,11 @@
 					"with open('model.onnx.hex','w') as f1:\r\n",
 					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 					" \r\n",
-					"connection_string = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"BlobConnectionString\")\r\n",
+					"connection_string = TokenLibrary.getSecret(\"aimlworkathonkv\", \"MLBlobConnString\")\r\n",
 					" \r\n",
 					"from azure.storage.blob import BlobClient\r\n",
 					" \r\n",
-					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model_Cleaned.onnx.hex\")\r\n",
+					"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model.onnx.hex\")\r\n",
 					" \r\n",
 					"with open(\"./model.onnx.hex\", \"rb\") as data:\r\n",
 					"    blob.upload_blob(data,overwrite=True)"

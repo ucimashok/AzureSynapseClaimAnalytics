@@ -3,6 +3,10 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "Gsparkpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1fa7f769-f5f0-4bb9-8022-9fbb3497c9a8"
+				"spark.autotune.trackingId": "49c7f13b-73f8-4690-a81c-7f6af62e36c7"
 			}
 		},
 		"metadata": {
@@ -25,6 +29,21 @@
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
+				"name": "Gsparkpool",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -50,7 +69,7 @@
 					}
 				},
 				"source": [
-					"connect_str = \"DefaultEndpointsProtocol=https;AccountName=uiapsynapsedl;AccountKey=6AN2ka9fD3kFuUf//m0R2PStKwZEhBB4MCTLkNTSWdPAWMfNn/K6cSzxYBdnzQobpQidfgIT30Efy6Ao2IMQFg==;EndpointSuffix=core.windows.net\"\r\n",
+					"connect_str = TokenLibrary.getSecret(\"aimlworkathonkv\", \"ClaimsDLConnString\")\r\n",
 					"datalake_service_client = DataLakeServiceClient.from_connection_string(connect_str)\r\n",
 					"container = \"uiapsynapsedlfs\"\r\n",
 					"myfolder     = \"ClaimFiles/Live\"\r\n",

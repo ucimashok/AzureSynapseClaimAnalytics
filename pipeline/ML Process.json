@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Notebook1",
+				"name": "Unsupervised - Supervised ML Run",
 				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -15,7 +15,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"snapshot": true
+					"notebook": {
+						"referenceName": "TrainMLModel_Latest",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool2021",
+						"type": "BigDataPoolReference"
+					}
 				}
 			}
 		],

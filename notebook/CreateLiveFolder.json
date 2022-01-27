@@ -3,6 +3,10 @@
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "Gsparkpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
@@ -13,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "855a7018-b047-4fdb-a9c8-8e097a77337f"
+				"spark.autotune.trackingId": "49c7f13b-73f8-4690-a81c-7f6af62e36c7"
 			}
 		},
 		"metadata": {
@@ -25,6 +29,21 @@
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
+				"name": "Gsparkpool",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},

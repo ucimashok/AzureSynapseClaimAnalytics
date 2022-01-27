@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@bool(length(activity('Get Metadata1').output.childItems))",
+						"value": "@bool(length(activity('Get Metadata of ADLS Live folder').output.childItems))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -67,6 +67,10 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Cognitive Process",
+									"type": "PipelineReference"
+								},
 								"waitOnCompletion": true
 							}
 						}

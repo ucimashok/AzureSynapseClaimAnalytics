@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1fa7f769-f5f0-4bb9-8022-9fbb3497c9a8"
+				"spark.autotune.trackingId": "855a7018-b047-4fdb-a9c8-8e097a77337f"
 			}
 		},
 		"metadata": {
@@ -50,7 +50,7 @@
 					}
 				},
 				"source": [
-					"connect_str = \"DefaultEndpointsProtocol=https;AccountName=uiapsynapsedl;AccountKey=6AN2ka9fD3kFuUf//m0R2PStKwZEhBB4MCTLkNTSWdPAWMfNn/K6cSzxYBdnzQobpQidfgIT30Efy6Ao2IMQFg==;EndpointSuffix=core.windows.net\"\r\n",
+					"connect_str = TokenLibrary.getSecret(\"aimlworkathonkv\", \"ClaimsDLConnString\")\r\n",
 					"datalake_service_client = DataLakeServiceClient.from_connection_string(connect_str)\r\n",
 					"container = \"uiapsynapsedlfs\"\r\n",
 					"myfolder     = \"ClaimFiles/Live\"\r\n",

@@ -99,10 +99,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "CreateFolder_Old",
+						"referenceName": "CreateLiveFolder",
 						"type": "NotebookReference"
 					},
-					"snapshot": true
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "Gsparkpool",
+						"type": "BigDataPoolReference"
+					}
 				}
 			}
 		],

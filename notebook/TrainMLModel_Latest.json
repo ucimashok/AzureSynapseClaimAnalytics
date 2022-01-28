@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "25917703-8a90-4d4b-bcd8-a4ca6f21e68b"
+				"spark.autotune.trackingId": "3db363fb-d233-4f59-a4ac-fb40cbc7a243"
 			}
 		},
 		"metadata": {
@@ -178,7 +178,7 @@
 					"### Credentials\r\n",
 					"\r\n",
 					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
-					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")\r\n",
+					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\r\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
 				"execution_count": 3
@@ -620,7 +620,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\")\n",
+					"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\",\"ClaimsSolutionKV\")\n",
 					"resource_group = \"uiap-d-si-synapse\"\n",
 					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
 					"experiment_name = \"claimfrauddetection\"\n",

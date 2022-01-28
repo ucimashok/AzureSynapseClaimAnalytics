@@ -1,16 +1,23 @@
 {
 	"name": "SqlServerSynapseClaims",
-	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
-			"connectionString": "integrated security=False;data source=192.10.1.72;initial catalog=HealthcareIM_AzureSynapse;user id=azureadmin",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwZTE0MjUyNS02ZjBiLTRjODAtYWRjZS02ZjI4ZmM4NTQwZTUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "Integrated Security=False;Data Source=192.10.1.72;Initial Catalog=HealthcareIM_AzureSynapse;User ID=azureadmin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ClaimsSolutionKV",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "OnPremSQLDatasourcePassword"
+			}
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeselfhosted",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/linkedservices"
 }

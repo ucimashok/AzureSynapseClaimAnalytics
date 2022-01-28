@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0cf1e1c9-2ec4-4b05-8cc3-4ddd318609b4"
+				"spark.autotune.trackingId": "8630d661-55a0-4366-be48-d727e02a9599"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					"from notebookutils import mssparkutils\n",
 					"import time"
 				],
-				"execution_count": 2
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -90,7 +90,7 @@
 				"source": [
 					"jobId = mssparkutils.env.getJobId() "
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -115,7 +115,7 @@
 					"except Exception:\r\n",
 					"    print(\"Already mounted\")"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -128,7 +128,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
-					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\")"
 				],
 				"execution_count": 9
 			},
@@ -185,7 +185,7 @@
 				"cell_type": "code",
 				"source": [
 					"# For Translator\n",
-					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
+					"subscription_key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"AzureTranslatorKey\")\n",
 					"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
 					"\n",
 					"# This is required if using a Cognitive Services resource.\n",
@@ -209,7 +209,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
-					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
+					"key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"TextAnalyticsKey\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
@@ -411,7 +411,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

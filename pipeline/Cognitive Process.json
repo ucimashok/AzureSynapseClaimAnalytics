@@ -19,7 +19,11 @@
 						"referenceName": "cognitive-flow",
 						"type": "NotebookReference"
 					},
-					"snapshot": true
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "Gsparkpool",
+						"type": "BigDataPoolReference"
+					}
 				}
 			},
 			{

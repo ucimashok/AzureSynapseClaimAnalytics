@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "22b46699-ee47-4f75-ad3f-abcf915ae05c"
+				"spark.autotune.trackingId": "f9389746-b873-47ff-9155-e85355b7df19"
 			}
 		},
 		"metadata": {
@@ -178,7 +178,7 @@
 					"### Credentials\r\n",
 					"\r\n",
 					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
-					"url = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\r\n",
+					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")\r\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
 				"execution_count": 3
@@ -620,15 +620,15 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"subscription_id = TokenLibrary.getSecret(\"aimlworkathonkv\",\"SubscriptionId\")\n",
-					"resource_group = \"uiap-d-ci-claimfraudanalytics\"\n",
-					"workspace_name = \"ai-ml-amlworkspace\"\n",
-					"experiment_name = \"sampleclaimfraud\"\n",
+					"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\")\n",
+					"resource_group = \"uiap-d-si-synapse\"\n",
+					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
+					"experiment_name = \"claimfrauddetection\"\n",
 					"\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"\n",
 					"datastore = Datastore.get_default(ws)\n",
-					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"
+					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claim-labelled-dataset')"
 				],
 				"execution_count": 32
 			},

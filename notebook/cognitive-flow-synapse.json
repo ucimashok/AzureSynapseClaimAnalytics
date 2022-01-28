@@ -1,0 +1,501 @@
+{
+	"name": "cognitive-flow-synapse",
+	"properties": {
+		"folder": {
+			"name": "Cognitive Services"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "Gsparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "b92d1b9d-c9e1-4596-b93f-e6a289fd7ab1"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
+				"name": "Gsparkpool",
+				"type": "Spark",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Azure Cognitive Services API Calls using Custom SDK"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Import necessary packages/modules"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%%configure -f\r\n",
+					"{\r\n",
+					"    \"name\": \"synapseml\",\r\n",
+					"    \"conf\": {\r\n",
+					"        \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.9.5\",\r\n",
+					"        \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12\",\r\n",
+					"        \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+					"    }\r\n",
+					"}"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
+					"from collections import OrderedDict\n",
+					"import json\n",
+					"from notebookutils import mssparkutils\n",
+					"import time\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"jobId = mssparkutils.env.getJobId() "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"try:\r\n",
+					"    mssparkutils.fs.mount( \r\n",
+					"    \"abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net\", \r\n",
+					"    \"/claims\", \r\n",
+					"    {\"linkedService\":\"uiapsynapsedl\"} \r\n",
+					"    ) \r\n",
+					"except Exception:\r\n",
+					"    print(\"Already mounted\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"text_analyze = (TextAnalyze()\r\n",
+					"    .setLocation(location)\r\n",
+					"    .setSubscriptionKey(key)\r\n",
+					"    .setTextCol(\"text\")\r\n",
+					"    .setOutputCol(\"textAnalysis\")\r\n",
+					"    .setErrorCol(\"error\")\r\n",
+					"    .setLanguageCol(\"language\")\r\n",
+					"    # set the tasks to perform\r\n",
+					"    .setEntityRecognitionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    .setKeyPhraseExtractionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # Uncomment these lines to add more tasks\r\n",
+					"    # .setEntityRecognitionPiiTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # .setEntityLinkingTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # .setSentimentAnalysisTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    )\r\n",
+					"\r\n",
+					"df_results = text_analyze.transform(df)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Define Credentials for Azure Computer Vision to Read Documents (OCR)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Define Credentials\n",
+					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Create Custom OCR Client Object to make API Calls"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Create Client Object\n",
+					"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Read Files from datalake and call read_document Function"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### For Standard Tier"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# For Standard Tier \n",
+					"files = mssparkutils.fs.ls(f\"synfs:/{jobId}/claims/ClaimFiles/Live\")\n",
+					"OCRDatas = []\n",
+					"for ele in files:\n",
+					"    name = ele.name\n",
+					"    path = '/'+ele.path.replace(':','')\n",
+					"    print(path)\n",
+					"    with open(f'{path}/report.png', mode='rb') as pdfstream:\n",
+					"        resp = client.read_document(streamdata = pdfstream.read())\n",
+					"        parsed = client.parse(resp)\n",
+					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Use Azure Translator API to translate all text into common language (English)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# For Translator\n",
+					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
+					"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
+					"\n",
+					"# This is required if using a Cognitive Services resource.\n",
+					"location = \"centralindia\"\n",
+					"\n",
+					"client = CustomTranslatorAgent(endpoint, subscription_key, location)\n",
+					"documents = OCRDatas # [{'id': 'CL01','text':parsed}] # bring the documents from OCR Response\n",
+					"output= client.translate(documents)\n",
+					"documents = client.parse(output, documents)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Define Azure Text Analytics Credentials and create CustomAgent Object to make API Calls"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Define Credentials\n",
+					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
+					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
+					"# Initialize Text analytics client\n",
+					"text_analytics_client = CustomTextAgent(endpoint, key)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Use analyse_sentiment, get_keyphrases and get_entities functions to get response from API"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Batch Processing to Get Sentiments"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"sentiments = []\n",
+					"s,e=0,10\n",
+					"while True:\n",
+					"    if len(documents)==len(sentiments):\n",
+					"        break\n",
+					"    sentiment_batch = text_analytics_client.analyse_sentiment(documents[s:e])\n",
+					"    data = text_analytics_client.parse(sentiment_batch,documents[s:e],type=\"sentiment\")\n",
+					"    sentiments.extend(data)\n",
+					"    s,e = e,e+10"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Batch Processing to Get keyphrases"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"keyphrases = []\n",
+					"s2,e2=0,10\n",
+					"while True:\n",
+					"    if len(documents)==len(keyphrases):\n",
+					"        break\n",
+					"    phrases_batch = text_analytics_client.get_keyphrases(documents[s2:e2])\n",
+					"    data = text_analytics_client.parse(phrases_batch,sentiments[s2:e2],type=\"keyphrases\")\n",
+					"    keyphrases.extend(data)\n",
+					"    s2,e2 = e2,e2+10"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Batch Processing to Get Entites"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"entities_data = []\n",
+					"categories = []\n",
+					"s3,e3= 0,5\n",
+					"while True:\n",
+					"    if len(documents)==len(entities_data):\n",
+					"        break\n",
+					"    entities = text_analytics_client.get_entities(documents[s3:e3])\n",
+					"    data , category= text_analytics_client.parse(entities,keyphrases[s3:e3],type=\"entities\")\n",
+					"    categories.extend(category)\n",
+					"    entities_data.extend(data)\n",
+					"    s3,e3 = e3,e3+5\n",
+					"categories = [('general',c) for c in set(categories)]"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Batch Processing to Get Health Related Entites"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"consolidated = []\n",
+					"health_cats = []\n",
+					"s4,e4= 0,5\n",
+					"while True:\n",
+					"    if len(documents)==len(consolidated):\n",
+					"        break\n",
+					"    health_entities = text_analytics_client.get_health_entities(documents[s4:e4])\n",
+					"    data , category= text_analytics_client.parse(health_entities,entities_data[s4:e4],type=\"health\")\n",
+					"    health_cats.extend(category)\n",
+					"    consolidated.extend(data)\n",
+					"    s4,e4 = e4,e4+5\n",
+					"categories.extend([('health',c1) for c1 in set(health_cats)])"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Use Agent Parse Function to parse those json response in a well structured format"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Sample Outputs for Testing\n",
+					"# with open('/dbfs/mnt/claimsfiles/outputs/analyse-sentiment.json') as f:\n",
+					"#     sentiments = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.AnalyzeSentiment)\n",
+					"#     print(sentiments)\n",
+					"# with open('/dbfs/mnt/claimsfiles/outputs/get-entities.json') as f:\n",
+					"#     entities = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.Entities)\n",
+					"#     print(entities)\n",
+					"# with open('/dbfs/mnt/claimsfiles/outputs/detect-language.json') as f:\n",
+					"#     detectresp = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.DetectLanguage)\n",
+					"#     print(detectresp)\n",
+					"# with open('/dbfs/mnt/claimsfiles/outputs/get-keyphrases.json') as f:\n",
+					"#     keyphrases = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.KeyPhrases)\n",
+					"#     print(keyphrases)\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Generate Spark Dataframe from JSON Data"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"consolidatedDf = spark.createDataFrame(consolidated)\n",
+					"# display(consolidatedDf)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Select necessary columns in order"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"pdf = consolidatedDf.toPandas()\n",
+					"pdf['entities'] = pdf['entities'].apply(json.dumps)\n",
+					"pdf['health_entities'] = pdf['health_entities'].apply(json.dumps)\n",
+					"# pdf.drop(['entities'],inplace=True, axis = 1)\n",
+					"finalDf = spark.createDataFrame(pdf).select('id','text','sentiment','keyphrases','entities','health_entities')"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Create dataFrame and Select necessary columns in order"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Entities Logic \n",
+					"overallrec = []\n",
+					"for ele in consolidated:\n",
+					"    for c,i in categories:\n",
+					"        overallrec.append(OrderedDict({\"category\":i,\"claimid\": ele[\"id\"], \"text\": ele['entities'].get(i,ele['health_entities'].get(i)), \"health\": int(c=='health')}))\n",
+					"testDf = spark.createDataFrame(overallrec)\n",
+					"entitiesDF = testDf.select(\"claimid\", \"category\", \"text\",\"health\")\n",
+					"# display(entitiesDF)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Write final consolidated data into azure sql using JDBC Connector"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
+					"    dataframe.write \\\n",
+					"    .format(\"jdbc\") \\\n",
+					"    .mode(\"overwrite\") \\\n",
+					"    .option(\"url\", jdbcConnection) \\\n",
+					"    .option(\"dbtable\", tableName) \\\n",
+					"    .save()\n",
+					"    print(\"Data Written Successfully\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
+					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
+					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

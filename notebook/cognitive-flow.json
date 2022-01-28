@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8630d661-55a0-4366-be48-d727e02a9599"
+				"spark.autotune.trackingId": "1e0bc904-7814-402c-b9d4-04377ac9908f"
 			}
 		},
 		"metadata": {
@@ -90,7 +90,7 @@
 				"source": [
 					"jobId = mssparkutils.env.getJobId() "
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -115,7 +115,7 @@
 					"except Exception:\r\n",
 					"    print(\"Already mounted\")"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -130,7 +130,7 @@
 					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
 					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\")"
 				],
-				"execution_count": 9
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",

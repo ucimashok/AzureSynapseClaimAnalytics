@@ -1,0 +1,10 @@
+{
+	"name": "ClaimsSolutionKV",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://ClaimsSolutionAIMLKV.vault.azure.net/"
+		}
+	}
+}

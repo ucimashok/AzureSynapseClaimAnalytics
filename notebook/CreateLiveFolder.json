@@ -1,6 +1,9 @@
 {
 	"name": "CreateLiveFolder",
 	"properties": {
+		"folder": {
+			"name": "Automation"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -17,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "49c7f13b-73f8-4690-a81c-7f6af62e36c7"
+				"spark.autotune.trackingId": "f9fc8aab-11b8-401a-bc75-5b34305f3ee3"
 			}
 		},
 		"metadata": {
@@ -51,30 +54,8 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"from azure.storage.filedatalake import DataLakeServiceClient"
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"connect_str = TokenLibrary.getSecret(\"aimlworkathonkv\", \"ClaimsDLConnString\")\r\n",
-					"datalake_service_client = DataLakeServiceClient.from_connection_string(connect_str)\r\n",
-					"container = \"uiapsynapsedlfs\"\r\n",
-					"myfolder     = \"ClaimFiles/Live\"\r\n",
-					"file_system_client = datalake_service_client.get_file_system_client(container)            \r\n",
-					"directory_client = file_system_client.create_directory(myfolder)"
+					"from notebookutils import mssparkutils\r\n",
+					"mssparkutils.fs.mkdirs('abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net/ClaimFiles/Live')"
 				],
 				"execution_count": null
 			}

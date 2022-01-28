@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "CreateFolder",
+						"referenceName": "CreateFolder_Old",
 						"type": "NotebookReference"
 					},
 					"snapshot": true

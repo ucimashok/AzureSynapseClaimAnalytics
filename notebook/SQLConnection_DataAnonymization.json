@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5dc9d03f-f20a-4207-9227-65b3bcf8c7e5"
+				"spark.autotune.trackingId": "383ff825-ecbe-431b-8aa1-ca9bfaeb20bd"
 			}
 		},
 		"metadata": {
@@ -65,7 +65,7 @@
 				"source": [
 					"### Credentials\n",
 					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
-					"url = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")"
+					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")"
 				],
 				"execution_count": null
 			},

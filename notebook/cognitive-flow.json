@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "daf063ca-cfe6-4762-942e-bf070b68579a"
+				"spark.autotune.trackingId": "0f317445-fe76-4e3f-bcc0-48216dc73e0a"
 			}
 		},
 		"metadata": {
@@ -128,7 +128,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
-					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\")"
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\",\"ClaimsSolutionKV\")"
 				],
 				"execution_count": 5
 			},
@@ -209,7 +209,7 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
-					"key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"TextAnalyticsKey\")\n",
+					"key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"TextAnalyticsKey\",\"ClaimsSolutionKV\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
@@ -411,7 +411,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

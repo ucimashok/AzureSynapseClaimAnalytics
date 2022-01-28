@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fc2b4df5-1cdb-4d0f-832f-9c443eba981b"
+				"spark.autotune.trackingId": "27bc8228-becd-414a-adae-3898041d7fba"
 			}
 		},
 		"metadata": {
@@ -927,7 +927,7 @@
 					"with open('model.onnx.hex','w') as f1:\r\n",
 					"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 					" \r\n",
-					"connection_string = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"ClaimsDLConnString\")\r\n",
+					"connection_string = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"ClaimsDLConnString\",\"ClaimsSolutionKV\")\r\n",
 					" \r\n",
 					"from azure.storage.blob import BlobClient\r\n",
 					" \r\n",

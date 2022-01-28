@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3707e507-42f0-4ae8-8fba-13903dc4601c"
+				"spark.autotune.trackingId": "bc63d5a0-f5bf-4720-84a1-da1534feba08"
 			}
 		},
 		"metadata": {
@@ -708,7 +708,7 @@
 					"                             training_data = dataset,\r\n",
 					"                             label_column_name = \"ADRS\",\r\n",
 					"                             primary_metric = \"AUC_weighted\",\r\n",
-					"                             experiment_timeout_minutes = 10,\r\n",
+					"                             experiment_timeout_minutes = 15,\r\n",
 					"                             blocked_models=['DecisionTreeClassifier'],\r\n",
 					"                             max_concurrent_iterations = 2,\r\n",
 					"                             verbosity = logging.INFO,                             \r\n",

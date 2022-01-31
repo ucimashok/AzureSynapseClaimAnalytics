@@ -25,11 +25,21 @@
 							"type": "BinaryReadSettings"
 						}
 					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"allowCopyCommand": true
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "MLModelDataSet",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlPoolTableModel",
 						"type": "DatasetReference"
 					}
 				]

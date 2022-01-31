@@ -2,7 +2,7 @@
 	"name": "MLModelLoad",
 	"properties": {
 		"content": {
-			"query": "-- Sample table schema for storing a model and related data\nCREATE TABLE [dbo].[Models_test]\n(\n    [Model] [varbinary](max) NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n)\nGO\n\n-- Copy command to load hexadecimal string of the model from Azure Data Lake storage location\nCOPY INTO [Models_test] (Model)\nFROM 'https://uiapsynapsedl.blob.core.windows.net/models/hex/model.onnx.hex'\nWITH (\n    FILE_TYPE = 'CSV',\n    CREDENTIAL=(IDENTITY= 'Storage Account Key', SECRET='6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==')\n)\n",
+			"query": "-- Sample table schema for storing a model and related data\nCREATE TABLE #Models_test\n(\n    [Model] [varbinary](max) NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n)\nGO\n\n-- Copy command to load hexadecimal string of the model from Azure Data Lake storage location\nCOPY INTO #Models_test (Model)\nFROM 'https://uiapsynapsedl.blob.core.windows.net/models/hex/model.onnx.hex'\nWITH (\n    FILE_TYPE = 'CSV',\n    CREDENTIAL=(IDENTITY= 'Storage Account Key', SECRET='6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==')\n)\n\nselect * from #Models_test",
 			"metadata": {
 				"language": "sql"
 			},

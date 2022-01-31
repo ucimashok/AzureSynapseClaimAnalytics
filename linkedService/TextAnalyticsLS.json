@@ -1,0 +1,27 @@
+{
+	"name": "TextAnalyticsLS",
+	"properties": {
+		"annotations": [],
+		"type": "CognitiveService",
+		"typeProperties": {
+			"subscriptionId": "03766bec-6c31-4851-aa3c-233d9b60aeaf",
+			"resourceGroup": "uiap-d-ci-claimfraudanalytics",
+			"csName": "aiml-language",
+			"csKind": "TextAnalytics",
+			"csLocation": "centralindia",
+			"endPoint": "https://aiml-language.cognitiveservices.azure.com/",
+			"csKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ClaimsSolutionKV",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "TextAnalyticsKey"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -5,13 +5,13 @@
 			"name": "Creation Scripts/SP"
 		},
 		"content": {
-			"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM [dbo].[MLModelExt]\n\nEND\n\n-- EXEC [dbo].[InsertMLModel]\n\n-- select * from [dbo].[MLModel_Automated]\n",
+			"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\n-- Sample table schema for storing a model and related data\nCREATE TABLE #MLModelExt\n(\n    [Model] [varbinary](max) NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n)\n\n-- Copy command to load hexadecimal string of the model from Azure Data Lake storage location\nCOPY INTO #MLModelExt (Model)\nFROM 'https://uiapsynapsedl.blob.core.windows.net/models/hex/model.onnx.hex'\nWITH (\n    FILE_TYPE = 'CSV',\n    CREDENTIAL=(IDENTITY= 'Storage Account Key', SECRET='6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==')\n)\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM #MLModelExt\n\nEND\n\n-- select * from [dbo].[MLModel_Automated]\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"poolName": "ClaimsSummaryDSQL",
-				"databaseName": "ClaimsSummaryDSQL"
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
 			},
 			"resultLimit": 5000
 		},

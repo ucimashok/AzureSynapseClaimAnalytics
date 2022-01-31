@@ -43,6 +43,21 @@
 						},
 						"path": "uiapsynapsedlfs",
 						"enableCompression": true
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"type": "String",
+									"ordinal": 1
+								},
+								"sink": {
+									"name": "model",
+									"type": "Byte[]"
+								}
+							}
+						]
 					}
 				},
 				"inputs": [

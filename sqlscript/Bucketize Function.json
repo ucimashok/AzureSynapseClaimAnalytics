@@ -1,0 +1,17 @@
+{
+	"name": "Bucketize Function",
+	"properties": {
+		"content": {
+			"query": "CREATE FUNCTION dbo.Bucketize(@val int,@size int,@count int)\nRETURNS INT \nAS \nBEGIN\nDECLARE @iter INT = 0;\nWHILE (@iter<=@count)\nBEGIN\nIF (@val <= (@iter+1)*@size)\n    BREAK;\nELSE \n    SET @iter=@iter+1;\nEND\nRETURN @iter;\nEND",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

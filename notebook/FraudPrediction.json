@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "696e454e-9046-4f3b-a2da-a2856210731c"
+				"spark.autotune.trackingId": "ecce66b3-647f-44c2-bce5-0a59cb9de043"
 			}
 		},
 		"metadata": {
@@ -28,7 +28,7 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
@@ -54,12 +54,6 @@
 			{
 				"cell_type": "markdown",
 				"source": [
-					"#### Fix Dependencies issue"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
 					"#### Import necessary packages for Prediction using AutoML Run"
 				]
 			},
@@ -79,7 +73,7 @@
 					"import numpy as np\n",
 					"import json"
 				],
-				"execution_count": null
+				"execution_count": 1
 			},
 			{
 				"cell_type": "markdown",
@@ -92,7 +86,7 @@
 				"source": [
 					"### Credentials\n",
 					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
-					"url = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
+					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
 				"execution_count": null
@@ -161,15 +155,11 @@
 				"cell_type": "code",
 				"source": [
 					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
-					"resource_group = \"uiap-d-ci-claimfraudanalytics\"\n",
-					"workspace_name = \"ai-ml-amlworkspace\"\n",
-					"experiment_name = \"sampleclaimfraud\"\n",
+					"resource_group = \"uiap-d-si-synapse\"\n",
+					"workspace_name = \"az-synapse-hack-mlworkspac\"\n",
+					"experiment_name = \"claimfrauddetection\"\n",
 					"\n",
-					"sp = ServicePrincipalAuthentication(tenant_id=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"TenantId\"), # tenantID\n",
-					"                                    service_principal_id=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"ClientId\"), # clientId\n",
-					"                                    service_principal_password=dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"ClientSecret\")) # clientSecret\n",
-					"\n",
-					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name,auth=sp)"
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
 				],
 				"execution_count": null
 			},

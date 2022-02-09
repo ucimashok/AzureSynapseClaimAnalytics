@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "ecce66b3-647f-44c2-bce5-0a59cb9de043"
+				"spark.autotune.trackingId": "b2c45296-4462-47bb-b779-2d7528c82fb0"
 			}
 		},
 		"metadata": {
@@ -73,7 +73,7 @@
 					"import numpy as np\n",
 					"import json"
 				],
-				"execution_count": 1
+				"execution_count": 2
 			},
 			{
 				"cell_type": "markdown",
@@ -89,7 +89,7 @@
 					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -108,7 +108,7 @@
 					"# Converting\n",
 					"pandasdf = df.toPandas()"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",

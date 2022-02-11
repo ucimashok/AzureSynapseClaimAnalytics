@@ -19,11 +19,34 @@
 						"referenceName": "TrainMLModel_Latest",
 						"type": "NotebookReference"
 					},
-					"snapshot": true,
-					"sparkPool": {
-						"referenceName": "sparkpool2021",
-						"type": "BigDataPoolReference"
+					"snapshot": true
+				}
+			},
+			{
+				"name": "InsertMLModel",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Unsupervised - Supervised ML Run",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "ClaimsSummaryDSQL",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsertMLModel]"
 				}
 			}
 		],

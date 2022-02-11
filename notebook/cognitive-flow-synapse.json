@@ -1,5 +1,5 @@
 {
-	"name": "cognitive-flow",
+	"name": "cognitive-flow-synapse",
 	"properties": {
 		"folder": {
 			"name": "Cognitive Services"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0f317445-fe76-4e3f-bcc0-48216dc73e0a"
+				"spark.autotune.trackingId": "b92d1b9d-c9e1-4596-b93f-e6a289fd7ab1"
 			}
 		},
 		"metadata": {
@@ -65,14 +65,59 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
+					"%%configure -f\r\n",
+					"{\r\n",
+					"    \"name\": \"synapseml\",\r\n",
+					"    \"conf\": {\r\n",
+					"        \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.9.5\",\r\n",
+					"        \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12\",\r\n",
+					"        \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+					"    }\r\n",
+					"}"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
 					"from collections import OrderedDict\n",
 					"import json\n",
 					"from notebookutils import mssparkutils\n",
-					"import time"
+					"import time\n",
+					""
 				],
-				"execution_count": 1
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -90,7 +135,7 @@
 				"source": [
 					"jobId = mssparkutils.env.getJobId() "
 				],
-				"execution_count": 2
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -115,7 +160,41 @@
 					"except Exception:\r\n",
 					"    print(\"Already mounted\")"
 				],
-				"execution_count": 3
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"text_analyze = (TextAnalyze()\r\n",
+					"    .setLocation(location)\r\n",
+					"    .setSubscriptionKey(key)\r\n",
+					"    .setTextCol(\"text\")\r\n",
+					"    .setOutputCol(\"textAnalysis\")\r\n",
+					"    .setErrorCol(\"error\")\r\n",
+					"    .setLanguageCol(\"language\")\r\n",
+					"    # set the tasks to perform\r\n",
+					"    .setEntityRecognitionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    .setKeyPhraseExtractionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # Uncomment these lines to add more tasks\r\n",
+					"    # .setEntityRecognitionPiiTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # .setEntityLinkingTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    # .setSentimentAnalysisTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+					"    )\r\n",
+					"\r\n",
+					"df_results = text_analyze.transform(df)"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -128,9 +207,9 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
-					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\",\"ClaimsSolutionKV\")"
+					"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 				],
-				"execution_count": 5
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -144,7 +223,7 @@
 					"# Create Client Object\n",
 					"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
 				],
-				"execution_count": 10
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -173,7 +252,7 @@
 					"        parsed = client.parse(resp)\n",
 					"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -185,7 +264,7 @@
 				"cell_type": "code",
 				"source": [
 					"# For Translator\n",
-					"subscription_key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"AzureTranslatorKey\")\n",
+					"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
 					"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
 					"\n",
 					"# This is required if using a Cognitive Services resource.\n",
@@ -196,7 +275,7 @@
 					"output= client.translate(documents)\n",
 					"documents = client.parse(output, documents)"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -209,11 +288,11 @@
 				"source": [
 					"# Define Credentials\n",
 					"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
-					"key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"TextAnalyticsKey\",\"ClaimsSolutionKV\")\n",
+					"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
 					"# Initialize Text analytics client\n",
 					"text_analytics_client = CustomTextAgent(endpoint, key)"
 				],
-				"execution_count": 15
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -240,7 +319,7 @@
 					"    sentiments.extend(data)\n",
 					"    s,e = e,e+10"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -261,7 +340,7 @@
 					"    keyphrases.extend(data)\n",
 					"    s2,e2 = e2,e2+10"
 				],
-				"execution_count": 17
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -411,7 +490,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
+					"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
 					"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 					"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 				],

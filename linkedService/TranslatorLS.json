@@ -1,0 +1,27 @@
+{
+	"name": "TranslatorLS",
+	"properties": {
+		"annotations": [],
+		"type": "CognitiveService",
+		"typeProperties": {
+			"subscriptionId": "03766bec-6c31-4851-aa3c-233d9b60aeaf",
+			"resourceGroup": "uiap-d-ci-claimfraudanalytics",
+			"csName": "aiml-translator",
+			"csKind": "TextTranslation",
+			"csLocation": "centralindia",
+			"endPoint": "https://api.cognitive.microsofttranslator.com/",
+			"csKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ClaimsSolutionKV",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "AzureTranslatorKey"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"name": "SqlPoolTableModel",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "model",
+				"type": "varbinary"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SparkMLModel"
+		},
+		"sqlPool": {
+			"referenceName": "ClaimsSummaryDSQL",
+			"type": "SqlPoolReference"
+		}
+	}
+}

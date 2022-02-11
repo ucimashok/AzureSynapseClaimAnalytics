@@ -1,6 +1,9 @@
 {
 	"name": "ClaimsFraudDetectionModel_AutoML",
 	"properties": {
+		"folder": {
+			"name": "Outdated"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -40,10 +43,8 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 3,
 				"cores": 8,
-				"memory": 56,
-				"automaticScaleJobs": false
-			},
-			"sessionKeepAliveTimeout": 30
+				"memory": 56
+			}
 		},
 		"cells": [
 			{

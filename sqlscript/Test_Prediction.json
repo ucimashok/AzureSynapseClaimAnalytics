@@ -1,0 +1,17 @@
+{
+	"name": "Test_Prediction",
+	"properties": {
+		"content": {
+			"query": "-- Using T-SQL Predict command to score machine learning models. \nSELECT *\nFROM PREDICT (MODEL = (SELECT [model] FROM load.test_model_03022022 WHERE [ID] = 'uiap-azure-ml-ws-fraud-detection-model-Best:3'),\n              DATA =[dbo].[claims_summary_modelInput_03022022],\n              RUNTIME = ONNX) WITH ([label_out] [bigint]) where label_out=0",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ClaimsSummaryDSQL",
+				"poolName": "ClaimsSummaryDSQL"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

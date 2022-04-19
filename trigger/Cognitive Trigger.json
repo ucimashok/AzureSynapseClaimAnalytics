@@ -4,14 +4,15 @@
 		"annotations": [],
 		"runtimeState": "Stopped",
 		"pipelines": [],
-		"type": "ScheduleTrigger",
+		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"recurrence": {
-				"frequency": "Minute",
-				"interval": 15,
-				"startTime": "2022-04-19T07:26:00Z",
-				"timeZone": "UTC"
-			}
+			"blobPathBeginsWith": "/uiapsynapsedlfs/blobs/ClaimFiles/Live",
+			"blobPathEndsWith": ".png",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Storage/storageAccounts/uiapsynapsedl",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
 		}
 	}
 }

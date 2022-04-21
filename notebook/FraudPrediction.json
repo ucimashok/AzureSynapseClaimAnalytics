@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "60f1e28d-6cec-4f8e-ac04-98cbee735d2e"
+				"spark.autotune.trackingId": "54ceb84f-e55f-4242-b42a-b0382f5f7247"
 			}
 		},
 		"metadata": {
@@ -234,21 +234,6 @@
 			},
 			{
 				"cell_type": "code",
-				"source": [
-					"# def bucketize(val, size, count):\n",
-					"#     i=0\n",
-					"#     for i in range(count):\n",
-					"#         if val <= (i+1)*size:\n",
-					"#             return i\n",
-					"#     return i\n",
-					"\n",
-					"# pandasdf['Age_group'] = [bucketize(x, 10, 5) for x in pandasdf['Age']]    \n",
-					"# pandasdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pandasdf['Claim_Amount']]"
-				],
-				"execution_count": 39
-			},
-			{
-				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
@@ -280,7 +265,6 @@
 					}
 				},
 				"source": [
-					"\r\n",
 					"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
 					"modeljob = joblib.load(model_path + \"/model.pkl\")"
 				],

@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "223d3fd1-234a-4056-a091-feba03241cd5"
+				"spark.autotune.trackingId": "127de2f7-2ede-4fa6-a70c-545ba36b7d7f"
 			}
 		},
 		"metadata": {
@@ -154,33 +154,10 @@
 				"cell_type": "code",
 				"source": [
 					"# Drop unnecessary columns\n",
-					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)"
-				],
-				"execution_count": 6
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Categorize Input Data "
-				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
+					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)\n",
 					"pandasdf.rename(columns = {'Claim_amt_Grp':'Claim_amt_grp','Age_Group':'Age_group'}, inplace = True)"
 				],
-				"execution_count": 7
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -237,46 +214,10 @@
 				"execution_count": 22
 			},
 			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"finalpdf.dtypes"
-				],
-				"execution_count": 23
-			},
-			{
 				"cell_type": "markdown",
 				"source": [
 					"#### Write Predicted Output to Azure SQL Database using JDBC Connection"
 				]
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"sparkfinal.printSchema()"
-				],
-				"execution_count": 27
 			},
 			{
 				"cell_type": "code",
@@ -291,7 +232,7 @@
 					"    .save()\n",
 					"    print(\"Data Written Successfully\")"
 				],
-				"execution_count": null
+				"execution_count": 30
 			},
 			{
 				"cell_type": "code",
@@ -299,25 +240,7 @@
 					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"writeto_sql(sparkfinal, 'dbo.ClaimsFraudOutput_Test', jdbcconnString)"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
+				"execution_count": 31
 			}
 		]
 	}

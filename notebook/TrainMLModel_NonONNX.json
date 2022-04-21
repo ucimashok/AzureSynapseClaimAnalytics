@@ -1,0 +1,843 @@
+{
+	"name": "TrainMLModel_NonONNX",
+	"properties": {
+		"folder": {
+			"name": "SparkMLServices"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "dc031454-e61f-474e-aa69-12f474fead5c"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"source": [
+					"### Health Insurance Fraud Claim Detection using Unsupervised Machine Learning !"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"<p>\n",
+					"Health insurance fraud can be explained as a situation where an insured or medical service provider furnishes fraud, false or misleading information to the insurer with the intention to attain unfair benefits from a policy for the policy holder or service providing source.\n",
+					"\n",
+					"Such fraud leads to serious losses for the insurance service providers but it could also result in impacting the health insurance advantage for genuine customers. Also, “semi-urban and rural areas” have witnessed more cases of health insurance as compared to metro cities.\n",
+					"</p>"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"<b>Most common health insurance frauds:</b>\n",
+					"    \n",
+					"It is a difficult task to explain the types of health insurance frauds as the nature of deceit keeps changing over the years. The most common types of frauds are listed below;\n",
+					"\n",
+					"<li>Filing a claim for treatments or services that were never administered. This is often done by forging genuine patient information and manufacturing admission in connivance with service providers.</li>\n",
+					"\n",
+					"<li>Increasing overall cost of hospitalisation by including treatments that were not necessary basis the medical problem.</li>\n",
+					"\n",
+					"<li>Misrepresenting treatments that are not covered as medically necessary.</li>\n",
+					"\n",
+					"<li>Non-disclosure of Pre-Existing Diseases and manufacturing diagnosis reports to justify tests, examinations and surgeries to prove claim worthiness.</li>"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"<b>Dataset Information :</b>\n",
+					"<hr/>\n",
+					"<li>Claim FIR No: Claim First Investigation Report Number</li>\n",
+					"<li>Claim Type : Claim Categoreies</li>\n",
+					"<li>Hospitalization Type: Mode of Hospitalization</li>\n",
+					"<li>Class_of_Accommodation: Client Room Accommodation</li>\n",
+					"<li>Procedure: Doctor Summary Report</li>\n",
+					"<li>Diagnosis: Medical Diagnosis Report</li>\n",
+					"<li>policyNo: Claim Policy Number</li>\n",
+					"<li>Policy Type: Client Policy Type</li>\n",
+					"<li>member_code: CLient Member Code</li>\n",
+					"<li>FullMemberName: Name of the Client</li>\n",
+					"<li>Gender: Gender</li>\n",
+					"<li>Age: Age</li>\n",
+					"<li>Hospital: Client Admitted Hospitals</li>\n",
+					"<li>Provider Network Type: Client Network provider</li>\n",
+					"<li>Corporate: Client Coporate</li>\n",
+					"<li>Length of Stay: Length of Stay in the hospital</li>\n",
+					"<li>IsFraudClaim: Type of Fraud Cliam</li>\n",
+					"<li>Fraud Score: Fraud Accuracy Score</li>\n",
+					"<li>Claim Amount: Cliam Amount</li>\n",
+					"<li>Claim Date: Claim Date</li>"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Importing Libraries"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import pandas as pd\n",
+					"import numpy as np\n",
+					"from matplotlib import pyplot as plt\n",
+					"import seaborn as sns\n",
+					"from pyspark.sql.functions import * #isnan, when, count, col, regexp_replace, udf\n",
+					"from pyspark.sql.types import StringType,IntegerType\n",
+					"\n",
+					"import nltk\n",
+					"import re\n",
+					"nltk.download('punkt')\n",
+					"nltk.download('stopwords')\n",
+					"\n",
+					"from nltk.corpus import stopwords\n",
+					"from nltk.tokenize import word_tokenize\n",
+					"\n",
+					"from sklearn.preprocessing import LabelEncoder\n",
+					"from sklearn.feature_extraction.text import CountVectorizer\n",
+					"from sklearn.cluster import KMeans\n",
+					"from sklearn.ensemble import IsolationForest\n",
+					"from sklearn.preprocessing import StandardScaler\n",
+					"from sklearn.decomposition import PCA\n",
+					"\n",
+					"%matplotlib inline\n",
+					"sns.set()\n",
+					"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
+					""
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##### Azure SQL Database Connection String"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Credentials\r\n",
+					"\r\n",
+					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
+					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\r\n",
+					"table = \"dbo.ClaimsSummary_ModelInput\""
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##### Spark JDBC Connection with SQL Server"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df = spark.read.format(\"jdbc\")\\\r\n",
+					"  .option(\"driver\", driver)\\\r\n",
+					"  .option(\"url\", url)\\\r\n",
+					"  .option(\"dbtable\", table)\\\r\n",
+					"  .load()"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Null Values Replacing by Zero (0)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df = df.na.fill(0)"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Spark - User Defined Funtion | Preprocess"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"upperCaseUDF = udf(lambda z:str(z).upper())\n",
+					"  \n",
+					"for i in [f.name for f in df.schema.fields if isinstance(f.dataType, StringType)]:\n",
+					"  df=df.withColumn(i, upperCaseUDF(col(i)))   \n",
+					"  \n",
+					"def preunique(x):    \n",
+					"    if x.find('DAYCARE')>=0 or x.find('DAY CARE')>=0:\n",
+					"        return 'DAY CARE'\n",
+					"    if x.find('ICCU')>=0 or x.find('ICU')>=0 or x.find('GW & ICU')>=0 or  x.find('PICU')>=0 or x.find('ICU/SPL')>=0 or  x.find('ICU & Deluxe')>=0:\n",
+					"        return 'ICCU'\n",
+					"    if x.find(\"SEMI PVT\")>=0 or x.find(\"SEMI SPECIAL\")>=0 or x.find(\"S PVT\")>=0 or x.find(\"SEMI\")>=0 or x.find(\"S PRIVATE\")>=0 or x.find(\"PRIVATE\")>=0 or x.find(\"PVT ROOM\")>=0 or x.find(\"PVT A/C\")>=0 or x.find(\"PVt AC\")>=0 or x.find(\"PVT\")>=0:\n",
+					"        return 'PRIVATE'\n",
+					"    if x.find(\"GW\")>=0 or x.find(\"GENERAL\")>=0 or x.find(\"GENERAL WARD\")>=0 or x.find(\"G/W\")>=0:\n",
+					"        return 'GENERAL WARD'\n",
+					"    if x.find(\"DELUXE\")>=0 or x.find(\"DELUX\")>=0 or x.find(\"DLX\")>=0:\n",
+					"        return 'DELUX'\n",
+					"    if x.find(\"HEALTH CHECK UP\")>=0 or x.find(\"HEALTH CHECKUP\")>=0 or x.find(\"CHECKUP\")>=0:\n",
+					"        return 'HEALTH CHECKUP'\n",
+					"    if x.find(\"PRE\")>=0 or x.find(\"POST\")>=0 or x.find(\"PRE POST\")>=0 or x.find(\"PRE & POST\")>=0 or x.find(\"PREPOST\")>=0:\n",
+					"        return 'PRE POST'\n",
+					"    if x.find(\"TWIN\")>=0 or x.find(\"TWING\")>=0 or x.find(\"TWIN SHARING\")>=0 or x.find(\"TWING SHARING\")>=0 or x.find(\"TWIN + CLASSIC\")>=0 or x.find(\"SHARING\")>=0:\n",
+					"        return 'TWIN SHARING'\n",
+					"    if x.find(\"NON AC\")>=0 or x.find(\"NON A/C\")>=0 or x.find(\"NON-A/C\")>=0 or x.find(\"NON-AC\")>=0:\n",
+					"        return 'NON AC ROOM'\n",
+					"    if x.find(\"AC\")>=0 or x.find(\"A/C\")>=0 or x.find(\"SPECIAL\")>=0 or x.find(\"STANDARD\")>=0:\n",
+					"        return 'AC ROOM'\n",
+					"    if x.find(\"SINGLE\")>=0:\n",
+					"        return 'SINGLE ROOM'    \n",
+					"    if x.find(\"NO\")>=0 or x.find(\"NA\")>=0:\n",
+					"        return 'NO'\n",
+					"    if x.find(\"SECOND\")>=0 or x.find(\"DOUBLE\")>=0:\n",
+					"        return 'DOUBLE ROOM'     \n",
+					"    if x.find('ROOM')>=0:\n",
+					"        return 'ROOM'\n",
+					"    if x.find('RENT')>=0:\n",
+					"        return 'RENT' \n",
+					"    return x\n",
+					"  \n",
+					"clsofAccUDF = udf(lambda z : preunique(z), StringType()) \n",
+					"df = df.withColumn('Class_of_Accommodation', clsofAccUDF(col('Class_of_Accommodation')))"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Spark Dataframe Converting to Pandas Dataframe\n",
+					"pdf = df.toPandas()"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Text Preprocessing"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def textclean(txt):    \n",
+					"    token=word_tokenize(txt)\n",
+					"    punc=[word for word in token if word.isalpha()]\n",
+					"    mystop=set(stopwords.words('english'))\n",
+					"    new_tok=[]\n",
+					"    for tok in punc:\n",
+					"        if tok not in mystop:\n",
+					"            new_tok.append(tok)\n",
+					"    return \" \".join(new_tok)    \n",
+					"  \n",
+					"for i in ['Procedure','Diagnosis']:\n",
+					"  pdf[i]=pdf[i].apply(lambda x: textclean(x))"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Replacing by Mean Values"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"pdf.loc[pdf['Age']=='NONE','Age']=30\n",
+					"pdf.loc[pdf['Claim_Amount']==0,'Claim_Amount']=int(pdf['Claim_Amount'].mean())"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Round Claim Amount\n",
+					"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Removing Duplicate Claim Records\n",
+					"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Catagories by Age Group and Claim Amount Group\n",
+					"def bucketize(val, size, count):\n",
+					"    i=0\n",
+					"    for i in range(count):\n",
+					"        if val <= (i+1)*size:\n",
+					"            return i\n",
+					"    return i\n",
+					"\n",
+					"pdf['Age_group'] = [bucketize(x, 10, 5) for x in pdf['Age']]    \n",
+					"pdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pdf['Claim_Amount']]"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Dropping Unnecessary Columns\n",
+					"# 'Claim_FIR_No'\n",
+					"dt=pdf.drop(['FullMemberName','Claim_Date','ProcedureAmount'],axis=1)"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Type Conversation\n",
+					"dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']] = dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']].apply(pd.to_numeric)"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"ddf = dt.copy()"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Feature Encoding\n",
+					"\n",
+					"Convert String Small Data into Numeric Data by LabelEncoder"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"le = LabelEncoder()\n",
+					"\n",
+					"col_n=['Claim_Type', 'Hospitalization_Type', 'Class_of_Accommodation', 'PolicyNo', 'Policy_Type','member_code',\n",
+					"       'Gender', 'Hospital', 'Corporate','HospitalCity', 'HospitalState', 'MemberCity','MemberState']\n",
+					"\n",
+					"for i in col_n:\n",
+					"    ddf[i]=le.fit_transform(ddf[i])"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"Convert String Paragraph Data into Bag of words by Count Vectorizer"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"c1 = CountVectorizer()\n",
+					"c2 = CountVectorizer()\n",
+					"\n",
+					"dia = c1.fit_transform(ddf['Diagnosis'])\n",
+					"pro = c2.fit_transform(ddf['Procedure'])\n",
+					"\n",
+					"diag = pd.DataFrame(dia.toarray(), columns=c1.get_feature_names())\n",
+					"prod = pd.DataFrame(pro.toarray(), columns=c2.get_feature_names())\n",
+					"\n",
+					"dft=pd.concat([diag,prod],axis=1)"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dfr=ddf.drop(['Claim_FIR_No','Diagnosis','Procedure'], axis=1)"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Anomaly Detection using Isolation Forest"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"iforest_d = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
+					"X_d=dfr.values\n",
+					"pred_d = iforest_d.fit_predict(X_d)\n",
+					"scaler_d = StandardScaler()\n",
+					"ddfs=scaler_d.fit_transform(X_d)\n",
+					"\n",
+					"iforest_t = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
+					"X_t=dft.values\n",
+					"pred_t = iforest_t.fit_predict(X_t)\n",
+					"scaler_t = StandardScaler()\n",
+					"dtfs=scaler_t.fit_transform(X_t)\n",
+					""
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Dimensional Reduction"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Apply PCA to reduce the dimensionality\n",
+					"\n",
+					"pca_d = PCA(n_components=2)\n",
+					"pcd = pca_d.fit_transform(ddfs)\n",
+					"\n",
+					"pca_t = PCA(n_components=2)\n",
+					"pct = pca_t.fit_transform(dtfs)"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Extract outliers\n",
+					"\n",
+					"outlier_index_d = np.where(pred_d==-1)\n",
+					"outlier_index_t = np.where(pred_t==-1)\n",
+					"\n",
+					"outlier_values_d = X_d[outlier_index_d]\n",
+					"outlier_values_t = X_t[outlier_index_t]\n",
+					"\n",
+					"outlier_values_scaled_d = scaler_d.transform(outlier_values_d)\n",
+					"outlier_values_scaled_t = scaler_t.transform(outlier_values_t)\n",
+					"\n",
+					"outlier_values_pca_d = pca_d.transform(outlier_values_scaled_d)\n",
+					"outlier_values_pca_t = pca_t.transform(outlier_values_scaled_t)\n",
+					""
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Storing the Anomaly Result \n",
+					"\n",
+					"dtest=dt.copy()\n",
+					"dtest['AD_D']=pred_d\n",
+					"dtest['AD_T']=pred_t"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### KMeans Clustering with PCA"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"kmeans_d = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
+					"kmeans_d.fit(pcd)\n",
+					"dtest['C1_KM']=kmeans_d.labels_\n",
+					"\n",
+					"kmeans_t = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
+					"kmeans_t.fit(pct)\n",
+					"dtest['C2_KM']=kmeans_t.labels_"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dtest[\"ADRS\"]=0\n",
+					"dtest[\"ADRS\"]=dtest[\"AD_D\"].apply(lambda x : int(x==-1))"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Integrating result on Anomaly Detection & Clustering"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"for i in range(0,30):\n",
+					"  if(dtest[dtest[\"C1_KM\"]==i]['AD_D'].value_counts().index[0]==-1):\n",
+					"    if(int(len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)<int(dtest[dtest[\"C1_KM\"]==i]['AD_D'].value_counts().values[0])):\n",
+					"      #print(i,dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().values[0],int((len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)/2))      \n",
+					"      dtest.loc[dtest['C1_KM']==i,'ADRS']=1              "
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"for i in range(0,10):\n",
+					"  if(dtest[dtest[\"C2_KM\"]==i]['AD_T'].value_counts().index[0]==-1):\n",
+					"    if(int(len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)<int(dtest[dtest[\"C2_KM\"]==i]['AD_T'].value_counts().values[0])):\n",
+					"      #print(i,dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().values[0],int((len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)/2))      \n",
+					"      dtest.loc[dtest['C2_KM']==i,'ADRS']=1"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Final Result Mapping"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dtest[\"ADRS\"]=dtest[[\"AD_T\",\"ADRS\"]].apply(lambda x : 1 if x[0]==-1 else x[1] ,axis=1)"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"dfin=dtest[['Claim_FIR_No', 'Claim_Type', 'Hospitalization_Type','Class_of_Accommodation', 'Procedure', 'Diagnosis', 'PolicyNo',\n",
+					"       'Policy_Type', 'member_code', 'Gender', 'Age', 'Hospital', 'Corporate', 'Length_of_Stay', 'Claim_Amount',\n",
+					"       'HospitalCity', 'HospitalState', 'MemberCity','MemberState','Age_group', 'Claim_amt_grp', 'day', 'year', 'month', 'ADRS']]"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.conf.set(\"spark.sql.execution.arrow.enabled\",\"true\")\n",
+					"SDF=spark.createDataFrame(dfin) \n",
+					"SDF.printSchema()\n",
+					"#SDF.show()"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"##### Azure AutoML Dataset Registering"
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
+					"from azureml.data.dataset_factory import TabularDatasetFactory"
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\",\"ClaimsSolutionKV\")\n",
+					"resource_group = \"uiap-d-si-synapse\"\n",
+					"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
+					"experiment_name = \"claimfrauddetection\"\n",
+					"\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+					"\n",
+					"datastore = Datastore.get_default(ws)\n",
+					"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claim-labelled-dataset')"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Import necessary packages to Submit AutoML Experiment"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import logging\r\n",
+					"import azureml.core\r\n",
+					"import onnxruntime\r\n",
+					"import mlflow\r\n",
+					"import mlflow.onnx\r\n",
+					"from azureml.core import Experiment, Workspace, Dataset, Datastore\r\n",
+					"from azureml.train.automl import AutoMLConfig\r\n",
+					"from azureml.data.dataset_factory import TabularDatasetFactory\r\n",
+					"from azureml.core.authentication import InteractiveLoginAuthentication, ServicePrincipalAuthentication\r\n",
+					"\r\n",
+					"from mlflow.models.signature import ModelSignature\r\n",
+					"from mlflow.types import DataType\r\n",
+					"from mlflow.types.schema import ColSpec, Schema"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Define AutoMLConfig Properties"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"automl_config = AutoMLConfig(spark_context = sc,\r\n",
+					"                             task = \"classification\",\r\n",
+					"                             debug_log = 'automl_errors.log',\r\n",
+					"                             training_data = dataset,\r\n",
+					"                             label_column_name = \"ADRS\",\r\n",
+					"                             primary_metric = \"AUC_weighted\",\r\n",
+					"                             experiment_timeout_minutes = 15,\r\n",
+					"                             blocked_models=['DecisionTreeClassifier'],\r\n",
+					"                             max_concurrent_iterations = 2,\r\n",
+					"                             verbosity = logging.INFO,                             \r\n",
+					"#                              enable_cache=True,\r\n",
+					"                             featurization='auto',\r\n",
+					"                             enable_onnx_compatible_models = False)"
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Submit and Run Experiment"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"try:\r\n",
+					"\r\n",
+					"  # Create AML Experiment - use the name from ./99-Shared-Functions-and-Settings notebook\r\n",
+					"  experiment = Experiment(ws, experiment_name)\r\n",
+					"\r\n",
+					"  # Submit AutoML Run\r\n",
+					"  run = experiment.submit(automl_config)\r\n",
+					"  run.wait_for_completion(show_output=True)   \r\n",
+					"\r\n",
+					"except Exception as e:\r\n",
+					"  print(\"Error : \",e)\r\n",
+					"  "
+				],
+				"execution_count": 42
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Get Best Run and Model"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"best_run, onnx_model = run.get_output()"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Infer Schema, Signature and Register the Model"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"artifact_path = experiment_name + \"_artifact\"\r\n",
+					"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\r\n",
+					"mlflow.set_experiment(experiment_name)\r\n",
+					"\r\n",
+					"with mlflow.start_run() as run:\r\n",
+					"    # Save the model to the outputs directory for capture\r\n",
+					"    mlflow.sklearn.log_model(onnx_model, artifact_path)\r\n",
+					"    Run_Id = run.info.run_id\r\n",
+					"    # Register the model to AML model registry\r\n",
+					"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-azure-ml-ws-fraud-detection-model-Best\")"
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Convert ONNXModel to Hexadecimal"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#### Write ONNX Model to Blob Storage"
+				]
+			}
+		]
+	}
+}

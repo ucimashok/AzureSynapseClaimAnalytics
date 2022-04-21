@@ -6,21 +6,17 @@
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
-		"bigDataPool": {
-			"referenceName": "sparkpool2021",
-			"type": "BigDataPoolReference"
-		},
 		"sessionProperties": {
-			"driverMemory": "56g",
-			"driverCores": 8,
-			"executorMemory": "56g",
-			"executorCores": 8,
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
 			"numExecutors": 2,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b2c45296-4462-47bb-b779-2d7528c82fb0"
+				"spark.autotune.trackingId": "112ec6e6-5644-4fff-b139-ca41acd63628"
 			}
 		},
 		"metadata": {
@@ -33,21 +29,6 @@
 			"language_info": {
 				"name": "python"
 			},
-			"a365ComputeOptions": {
-				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
-				"name": "sparkpool2021",
-				"type": "Spark",
-				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
-				"auth": {
-					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net"
-				},
-				"sparkVersion": "2.4",
-				"nodeCount": 3,
-				"cores": 8,
-				"memory": 56,
-				"automaticScaleJobs": false
-			},
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
@@ -59,21 +40,123 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"from azureml.train.automl.run import AutoMLRun\n",
-					"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
-					"from azureml.core.authentication import InteractiveLoginAuthentication, ServicePrincipalAuthentication\n",
-					"from azureml.telemetry import INSTRUMENTATION_KEY\n",
-					"\n",
-					"from inference_schema.schema_decorators import input_schema, output_schema\n",
-					"from inference_schema.parameter_types.numpy_parameter_type import NumpyParameterType\n",
-					"from inference_schema.parameter_types.pandas_parameter_type import PandasParameterType\n",
-					"from inference_schema.parameter_types.standard_py_parameter_type import StandardPythonParameterType\n",
-					"import pandas as pd\n",
-					"import numpy as np\n",
-					"import json"
+					"#Import libraries\r\n",
+					"from pyspark.sql.functions import col, pandas_udf,udf,lit\r\n",
+					"from azureml.core import Workspace\r\n",
+					"from azureml.core.authentication import ServicePrincipalAuthentication\r\n",
+					"import azure.synapse.ml.predict as pcontext\r\n",
+					"import azure.synapse.ml.predict.utils._logger as synapse_predict_logger\r\n",
+					"from azureml.core.model import Model\r\n",
+					"import joblib"
 				],
-				"execution_count": 2
+				"execution_count": 1
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Define Credentials, workspace and Authentication for Prediction"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# from notebookutils.mssparkutils import azureML\r\n",
+					"# ws = azureML.getWorkspace(\"AzureMLServiceClaims\")\r\n",
+					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\r\n",
+					"resource_group = \"uiap-d-si-synapse\"\r\n",
+					"workspace_name = \"az-synapse-hack-mlworkspace\"\r\n",
+					"experiment_name = \"claimfrauddetection\"\r\n",
+					"\r\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.conf.set(\"spark.synapse.ml.predict.enabled\",\"true\")"
+				],
+				"execution_count": 47
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"RETURN_TYPES = \"int\" # for ex: int, float etc. PySpark data types are supported\r\n",
+					"\r\n",
+					"#Define model runtime. This supports only mlflow\r\n",
+					"RUNTIME = \"mlflow\"\r\n",
+					"AML_MODEL_URI = \"aml://uiap-azure-ml-ws-fraud-detection-model-Best\""
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"model = pcontext.bind_model(\r\n",
+					"     return_types=RETURN_TYPES, \r\n",
+					"     runtime=RUNTIME, \r\n",
+					"     model_alias=\"best_model\", #This alias will be used in PREDICT call to refer  this   model\r\n",
+					"     model_uri=AML_MODEL_URI, #In case of AML, it will be AML_MODEL_URI\r\n",
+					"     aml_workspace=ws #This is only for AML. In case of ADLS, this parameter can be removed\r\n",
+					"     ).register()"
+				],
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -89,7 +172,7 @@
 					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
-				"execution_count": 3
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
@@ -108,7 +191,7 @@
 					"# Converting\n",
 					"pandasdf = df.toPandas()"
 				],
-				"execution_count": 4
+				"execution_count": 37
 			},
 			{
 				"cell_type": "markdown",
@@ -122,7 +205,7 @@
 					"# Drop unnecessary columns\n",
 					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)"
 				],
-				"execution_count": null
+				"execution_count": 38
 			},
 			{
 				"cell_type": "markdown",
@@ -133,98 +216,81 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"def bucketize(val, size, count):\n",
-					"    i=0\n",
-					"    for i in range(count):\n",
-					"        if val <= (i+1)*size:\n",
-					"            return i\n",
-					"    return i\n",
+					"# def bucketize(val, size, count):\n",
+					"#     i=0\n",
+					"#     for i in range(count):\n",
+					"#         if val <= (i+1)*size:\n",
+					"#             return i\n",
+					"#     return i\n",
 					"\n",
-					"pandasdf['Age_group'] = [bucketize(x, 10, 5) for x in pandasdf['Age']]    \n",
-					"pandasdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pandasdf['Claim_Amount']]"
+					"# pandasdf['Age_group'] = [bucketize(x, 10, 5) for x in pandasdf['Age']]    \n",
+					"# pandasdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pandasdf['Claim_Amount']]"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Define Credentials, workspace and Authentication for Prediction"
-				]
+				"execution_count": 39
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\n",
-					"resource_group = \"uiap-d-si-synapse\"\n",
-					"workspace_name = \"az-synapse-hack-mlworkspac\"\n",
-					"experiment_name = \"claimfrauddetection\"\n",
-					"\n",
-					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
+					"sparkdf = spark.createDataFrame(pandasdf)\r\n",
+					"sparkdf.createOrReplaceTempView('model_input')"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Get Latest Run and Best Model from ML Studio"
-				]
+				"execution_count": 40
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"experiment = ws.experiments[experiment_name]\n",
-					"best_run = list(experiment.get_runs(type='automl'))[0]\n",
-					"automl_run = AutoMLRun(experiment,run_id = best_run.id)\n",
-					"run, model = automl_run.get_output()"
+					"\r\n",
+					"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
+					"modeljob = joblib.load(model_path + \"/model.pkl\")"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Define Input/Output Schemas for Prediction"
-				]
+				"execution_count": 69
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"input_sample = pd.DataFrame({\"Claim_FIR_No\": pd.Series([\"example_value\"], dtype=\"object\"), \"Claim_Type\": pd.Series([\"example_value\"], dtype=\"object\"), \"Hospitalization_Type\": pd.Series([\"example_value\"], dtype=\"object\"), \"Class_of_Accommodation\": pd.Series([\"example_value\"], dtype=\"object\"), \"Procedure\": pd.Series([\"example_value\"], dtype=\"object\"), \"Diagnosis\": pd.Series([\"example_value\"], dtype=\"object\"), \"PolicyNo\": pd.Series([\"example_value\"], dtype=\"object\"), \"Policy_Type\": pd.Series([\"example_value\"], dtype=\"object\"), \"member_code\": pd.Series([\"example_value\"], dtype=\"object\"), \"Gender\": pd.Series([\"example_value\"], dtype=\"object\"), \"Age\": pd.Series([0], dtype=\"int8\"), \"Hospital\": pd.Series([\"example_value\"], dtype=\"object\"), \"Corporate\": pd.Series([\"example_value\"], dtype=\"object\"), \"Length_of_Stay\": pd.Series([0], dtype=\"int16\"), \"Claim_Amount\": pd.Series([0], dtype=\"int32\"), \"HospitalCity\": pd.Series([\"example_value\"], dtype=\"object\"), \"HospitalState\": pd.Series([\"example_value\"], dtype=\"object\"), \"MemberCity\": pd.Series([\"example_value\"], dtype=\"object\"), \"MemberState\": pd.Series([\"example_value\"], dtype=\"object\"), \"Age_group\": pd.Series([0], dtype=\"int8\"), \"Claim_amt_grp\": pd.Series([0], dtype=\"int16\"), \"day\": pd.Series([0], dtype=\"int8\"), \"year\": pd.Series([0], dtype=\"int16\"), \"month\": pd.Series([0], dtype=\"int8\")})\n",
-					"output_sample = np.array([0])\n",
-					"method_sample = StandardPythonParameterType(\"predict\")"
+					"# columns_str= ','.join(sparkdf.columns)\r\n",
+					"# predictions = spark.sql(\r\n",
+					"#                   f\"\"\"\r\n",
+					"#                       SELECT PREDICT('output',\r\n",
+					"#                                 {columns_str}) AS predict \r\n",
+					"#                       FROM model_input\r\n",
+					"#                   \"\"\"\r\n",
+					"#               ).show()"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Define User Defined Function for Fraud Prediction"
-				]
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"try:\n",
-					"    @input_schema('method', method_sample, convert_to_provided_type=False)\n",
-					"    @input_schema('data', PandasParameterType(input_sample))\n",
-					"    @output_schema(NumpyParameterType(output_sample))\n",
-					"    def run(data, method=\"predict\"):\n",
-					"        try:\n",
-					"            if method == \"predict_proba\":\n",
-					"                result = model.predict_proba(data)\n",
-					"            elif method == \"predict\":\n",
-					"                result = model.predict(data)\n",
-					"            else:\n",
-					"                raise Exception(f\"Invalid predict method argument received ({method})\")\n",
-					"            if isinstance(result, pd.DataFrame):\n",
-					"                result = result.values\n",
-					"            return result.tolist()\n",
-					"        except Exception as e:\n",
-					"            result = str(e)\n",
-					"            return json.dumps({\"error\": result})\n",
-					"except:\n",
-					"    pass"
-				],
-				"execution_count": null
+				"execution_count": 60
 			},
 			{
 				"cell_type": "markdown",

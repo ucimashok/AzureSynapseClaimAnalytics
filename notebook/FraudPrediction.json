@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "58c69c28-e611-49ad-b9b6-a3ed7f339148"
+				"spark.autotune.trackingId": "223d3fd1-234a-4056-a091-feba03241cd5"
 			}
 		},
 		"metadata": {
@@ -76,7 +76,7 @@
 					"from azureml.core.model import Model\r\n",
 					"import joblib"
 				],
-				"execution_count": null
+				"execution_count": 2
 			},
 			{
 				"cell_type": "markdown",
@@ -107,7 +107,7 @@
 					"\r\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "markdown",
@@ -123,7 +123,7 @@
 					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"table = \"dbo.[ClaimsSummary_ModelInput_New]\""
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "markdown",
@@ -142,7 +142,7 @@
 					"# Converting\n",
 					"pandasdf = df.toPandas()"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "markdown",
@@ -156,7 +156,7 @@
 					"# Drop unnecessary columns\n",
 					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
@@ -180,7 +180,7 @@
 				"source": [
 					"pandasdf.rename(columns = {'Claim_amt_Grp':'Claim_amt_grp','Age_Group':'Age_group'}, inplace = True)"
 				],
-				"execution_count": null
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -199,7 +199,7 @@
 					"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
 					"modeljob = joblib.load(model_path + \"/model.pkl\")"
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -217,7 +217,7 @@
 				"source": [
 					"res=modeljob.predict(pandasdf)"
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "markdown",
@@ -230,29 +230,11 @@
 				"source": [
 					"finalpdf = df.toPandas()\n",
 					"finalpdf['IsMLFraudClaim'] = res\n",
+					"finalpdf = finalpdf[['IsMLFraudClaim','Claim_FIR_No']]\n",
+					"# finalpdf.drop(['Claim_FIR_No','Claim_Type'],axis=1,inplace=True)\n",
 					"sparkfinal = spark.createDataFrame(finalpdf)"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"source": [
-					"#### Write Predicted Output to Azure SQL Database using JDBC Connection"
-				]
-			},
-			{
-				"cell_type": "code",
-				"source": [
-					"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
-					"    dataframe.write \\\n",
-					"    .format(\"jdbc\") \\\n",
-					"    .mode(\"overwrite\") \\\n",
-					"    .option(\"url\", jdbcConnection) \\\n",
-					"    .option(\"dbtable\", tableName) \\\n",
-					"    .save()\n",
-					"    print(\"Data Written Successfully\")"
-				],
-				"execution_count": null
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -265,11 +247,49 @@
 						"transient": {
 							"deleting": false
 						}
-					},
-					"collapsed": false
+					}
 				},
 				"source": [
-					"display(sparkfinal)"
+					"finalpdf.dtypes"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"#### Write Predicted Output to Azure SQL Database using JDBC Connection"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"sparkfinal.printSchema()"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
+					"    dataframe.write \\\n",
+					"    .format(\"jdbc\") \\\n",
+					"    .mode(\"overwrite\") \\\n",
+					"    .option(\"url\", jdbcConnection) \\\n",
+					"    .option(\"dbtable\", tableName) \\\n",
+					"    .option(\"createTableColumnTypes\", \"Claim_FIR_No VARCHAR(30)\") \\\n",
+					"    .save()\n",
+					"    print(\"Data Written Successfully\")"
 				],
 				"execution_count": null
 			},
@@ -277,7 +297,7 @@
 				"cell_type": "code",
 				"source": [
 					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
-					"writeto_sql(sparkfinal, 'dbo.ClaimsFraudOutput_TestDemo', jdbcconnString)"
+					"writeto_sql(sparkfinal, 'dbo.ClaimsFraudOutput_Test', jdbcconnString)"
 				],
 				"execution_count": null
 			},

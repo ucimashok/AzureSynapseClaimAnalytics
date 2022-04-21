@@ -7,20 +7,20 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "Gsparkpool",
+			"referenceName": "sparkpool2021",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "54ceb84f-e55f-4242-b42a-b0382f5f7247"
+				"spark.autotune.trackingId": "3a6bd88d-3282-4a87-83f6-b818e2c054d4"
 			}
 		},
 		"metadata": {
@@ -34,18 +34,18 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
-				"name": "Gsparkpool",
+				"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
+				"name": "sparkpool2021",
 				"type": "Spark",
-				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
+				"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.1",
-				"nodeCount": 10,
-				"cores": 4,
-				"memory": 28,
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
 				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
@@ -72,15 +72,15 @@
 				},
 				"source": [
 					"#Import libraries\r\n",
-					"from pyspark.sql.functions import col, pandas_udf,udf,lit\r\n",
+					"# from pyspark.sql.functions import col, pandas_udf,udf,lit\r\n",
 					"from azureml.core import Workspace\r\n",
-					"from azureml.core.authentication import ServicePrincipalAuthentication\r\n",
-					"import azure.synapse.ml.predict as pcontext\r\n",
-					"import azure.synapse.ml.predict.utils._logger as synapse_predict_logger\r\n",
+					"# from azureml.core.authentication import ServicePrincipalAuthentication\r\n",
+					"# import azure.synapse.ml.predict as pcontext\r\n",
+					"# import azure.synapse.ml.predict.utils._logger as synapse_predict_logger\r\n",
 					"from azureml.core.model import Model\r\n",
 					"import joblib"
 				],
-				"execution_count": 1
+				"execution_count": 42
 			},
 			{
 				"cell_type": "markdown",
@@ -111,7 +111,7 @@
 					"\r\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
 				],
-				"execution_count": 6
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -129,7 +129,7 @@
 				"source": [
 					"spark.conf.set(\"spark.synapse.ml.predict.enabled\",\"true\")"
 				],
-				"execution_count": 47
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -151,7 +151,7 @@
 					"RUNTIME = \"mlflow\"\r\n",
 					"AML_MODEL_URI = \"aml://uiap-azure-ml-ws-fraud-detection-model-Best\""
 				],
-				"execution_count": 15
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -167,15 +167,15 @@
 					}
 				},
 				"source": [
-					"model = pcontext.bind_model(\r\n",
-					"     return_types=RETURN_TYPES, \r\n",
-					"     runtime=RUNTIME, \r\n",
-					"     model_alias=\"best_model\", #This alias will be used in PREDICT call to refer  this   model\r\n",
-					"     model_uri=AML_MODEL_URI, #In case of AML, it will be AML_MODEL_URI\r\n",
-					"     aml_workspace=ws #This is only for AML. In case of ADLS, this parameter can be removed\r\n",
-					"     ).register()"
+					"# model = pcontext.bind_model(\r\n",
+					"#      return_types=RETURN_TYPES, \r\n",
+					"#      runtime=RUNTIME, \r\n",
+					"#      model_alias=\"best_model\", #This alias will be used in PREDICT call to refer  this   model\r\n",
+					"#      model_uri=AML_MODEL_URI, #In case of AML, it will be AML_MODEL_URI\r\n",
+					"#      aml_workspace=ws #This is only for AML. In case of ADLS, this parameter can be removed\r\n",
+					"#      ).register()"
 				],
-				"execution_count": 16
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -191,7 +191,7 @@
 					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 					"table = \"dbo.ClaimsSummary_ModelInput\""
 				],
-				"execution_count": 17
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -210,7 +210,7 @@
 					"# Converting\n",
 					"pandasdf = df.toPandas()"
 				],
-				"execution_count": 37
+				"execution_count": 22
 			},
 			{
 				"cell_type": "markdown",
@@ -224,7 +224,7 @@
 					"# Drop unnecessary columns\n",
 					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)"
 				],
-				"execution_count": 38
+				"execution_count": 23
 			},
 			{
 				"cell_type": "markdown",
@@ -246,10 +246,10 @@
 					}
 				},
 				"source": [
-					"sparkdf = spark.createDataFrame(pandasdf)\r\n",
-					"sparkdf.createOrReplaceTempView('model_input')"
+					"# sparkdf = spark.createDataFrame(pandasdf)\r\n",
+					"# sparkdf.createOrReplaceTempView('model_input')"
 				],
-				"execution_count": 40
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -268,7 +268,100 @@
 					"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
 					"modeljob = joblib.load(model_path + \"/model.pkl\")"
 				],
-				"execution_count": 69
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# pandasdf.drop('Claim_amt_Grp',axis=1,inplace=True)\r\n",
+					"pandasdf.rename(columns = {'Claim_amt_Grp':'Claim_amt_grp','Age_Group':'Age_group'}, inplace = True)\r\n",
+					"# display(pandasdf)"
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pred_cols = list(pandasdf.columns.values)[:-1]"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pred_cols"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"modeljob.predict(pandasdf)"
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -304,10 +397,10 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"res = run(pandasdf)\n",
-					"finalpdf = df.toPandas()\n",
-					"finalpdf['IsMLFraudClaim'] = res\n",
-					"sparkfinal = spark.createDataFrame(finalpdf)"
+					"# res = run(pandasdf)\n",
+					"# finalpdf = df.toPandas()\n",
+					"# finalpdf['IsMLFraudClaim'] = res\n",
+					"# sparkfinal = spark.createDataFrame(finalpdf)"
 				],
 				"execution_count": null
 			},
@@ -334,8 +427,8 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"jdbcconnString = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
-					"writeto_sql(sparkfinal, '[dbo].ClaimsFraudOutput', jdbcconnString)"
+					"# jdbcconnString = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
+					"# writeto_sql(sparkfinal, '[dbo].ClaimsFraudOutput', jdbcconnString)"
 				],
 				"execution_count": null
 			}

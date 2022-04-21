@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "90faa89c-6dd6-400b-a095-160b8f49bb41"
+				"spark.autotune.trackingId": "58c69c28-e611-49ad-b9b6-a3ed7f339148"
 			}
 		},
 		"metadata": {
@@ -76,7 +76,7 @@
 					"from azureml.core.model import Model\r\n",
 					"import joblib"
 				],
-				"execution_count": 1
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -107,7 +107,7 @@
 					"\r\n",
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
 				],
-				"execution_count": 2
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -121,9 +121,9 @@
 					"### Credentials\n",
 					"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
 					"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
-					"table = \"dbo.ClaimsSummary_ModelInput\""
+					"table = \"dbo.[ClaimsSummary_ModelInput_New]\""
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -142,7 +142,7 @@
 					"# Converting\n",
 					"pandasdf = df.toPandas()"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -156,7 +156,7 @@
 					"# Drop unnecessary columns\n",
 					"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -199,7 +199,7 @@
 					"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
 					"modeljob = joblib.load(model_path + \"/model.pkl\")"
 				],
-				"execution_count": 10
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -217,7 +217,7 @@
 				"source": [
 					"res=modeljob.predict(pandasdf)"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -256,9 +256,46 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
 				"source": [
-					"jdbcconnString = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
-					"writeto_sql(sparkfinal, '[dbo].ClaimsFraudOutput_Test', jdbcconnString)"
+					"display(sparkfinal)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
+					"writeto_sql(sparkfinal, 'dbo.ClaimsFraudOutput_TestDemo', jdbcconnString)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
 				],
 				"execution_count": null
 			}

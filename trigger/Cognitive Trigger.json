@@ -1,0 +1,25 @@
+{
+	"name": "Cognitive Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Claims - Cognitive Master",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/uiapsynapsedlfs/blobs/ClaimFiles/Live",
+			"blobPathEndsWith": ".png",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Storage/storageAccounts/uiapsynapsedl",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

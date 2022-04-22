@@ -5,9 +5,6 @@
 		"workspaceName": {
 			"value": "uiap-synapse-claims-ws"
 		},
-		"AzureMLServiceClaims_servicePrincipalKey": {
-			"value": ""
-		},
 		"OnPremFileLocation_password": {
 			"value": ""
 		},
@@ -17,23 +14,17 @@
 		"uiap-synapse-claims-ws-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
-		"uiapsynapsedl_accountKey": {
-			"value": ""
-		},
 		"AzureMLServiceClaims_properties_typeProperties_subscriptionId": {
 			"value": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
 		},
 		"AzureMLServiceClaims_properties_typeProperties_resourceGroupName": {
 			"value": "uiap-d-si-synapse"
 		},
-		"AzureMLServiceClaims_properties_typeProperties_servicePrincipalId": {
-			"value": "a387d727-b567-46ed-859e-84f88f049e0d"
-		},
-		"AzureMLServiceClaims_properties_typeProperties_tenant": {
-			"value": "008502d6-3f79-46f0-ab37-9354e3fe80ff"
-		},
 		"ClaimsSolutionKV_properties_typeProperties_baseUrl": {
-			"value": "https://aimlworkathonkv.vault.azure.net/"
+			"value": "https://ClaimsSolutionAIMLKV.vault.azure.net/"
+		},
+		"ComputerVisionLS_properties_typeProperties_subscriptionId": {
+			"value": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
 		},
 		"OnPremFileLocation_properties_typeProperties_host": {
 			"value": "C:\\Azuresynapse\\ExternalTPA"
@@ -41,11 +32,20 @@
 		"OnPremFileLocation_properties_typeProperties_userId": {
 			"value": "ubtiinc\\aravind.r"
 		},
+		"TextAnalyticsLS_properties_typeProperties_subscriptionId": {
+			"value": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
+		},
+		"TranslatorLS_properties_typeProperties_subscriptionId": {
+			"value": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
+		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://uiapsynapsedl.dfs.core.windows.net"
 		},
 		"uiapsynapsedl_properties_typeProperties_url": {
 			"value": "https://uiapsynapsedl.dfs.core.windows.net"
+		},
+		"Cognitive Trigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Storage/storageAccounts/uiapsynapsedl"
 		}
 	}
 }

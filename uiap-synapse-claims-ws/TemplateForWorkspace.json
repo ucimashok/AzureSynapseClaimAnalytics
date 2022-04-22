@@ -7,10 +7,6 @@
 			"metadata": "Workspace name",
 			"defaultValue": "uiap-synapse-claims-ws"
 		},
-		"AzureMLServiceClaims_servicePrincipalKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'servicePrincipalKey' of 'AzureMLServiceClaims'"
-		},
 		"OnPremFileLocation_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'OnPremFileLocation'"
@@ -23,10 +19,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'uiap-synapse-claims-ws-WorkspaceDefaultSqlServer'"
 		},
-		"uiapsynapsedl_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'uiapsynapsedl'"
-		},
 		"AzureMLServiceClaims_properties_typeProperties_subscriptionId": {
 			"type": "string",
 			"defaultValue": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
@@ -35,17 +27,13 @@
 			"type": "string",
 			"defaultValue": "uiap-d-si-synapse"
 		},
-		"AzureMLServiceClaims_properties_typeProperties_servicePrincipalId": {
-			"type": "string",
-			"defaultValue": "a387d727-b567-46ed-859e-84f88f049e0d"
-		},
-		"AzureMLServiceClaims_properties_typeProperties_tenant": {
-			"type": "string",
-			"defaultValue": "008502d6-3f79-46f0-ab37-9354e3fe80ff"
-		},
 		"ClaimsSolutionKV_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://aimlworkathonkv.vault.azure.net/"
+			"defaultValue": "https://ClaimsSolutionAIMLKV.vault.azure.net/"
+		},
+		"ComputerVisionLS_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
 		},
 		"OnPremFileLocation_properties_typeProperties_host": {
 			"type": "string",
@@ -55,6 +43,14 @@
 			"type": "string",
 			"defaultValue": "ubtiinc\\aravind.r"
 		},
+		"TextAnalyticsLS_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
+		},
+		"TranslatorLS_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "03766bec-6c31-4851-aa3c-233d9b60aeaf"
+		},
 		"uiap-synapse-claims-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
@@ -62,30 +58,16 @@
 		"uiapsynapsedl_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://uiapsynapsedl.dfs.core.windows.net"
+		},
+		"Cognitive Trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Storage/storageAccounts/uiapsynapsedl"
 		}
 	},
 	"variables": {
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('workspaceName'), '/sparkpool2021')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Gsparkpool')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/Archiving Cloud Data')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
@@ -192,10 +174,14 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebook": {
-								"referenceName": "CreateFolder",
+								"referenceName": "CreateLiveFolder",
 								"type": "NotebookReference"
 							},
-							"snapshot": true
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "Gsparkpool",
+								"type": "BigDataPoolReference"
+							}
 						}
 					}
 				],
@@ -211,7 +197,8 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/ADLSLiveFileSink')]",
 				"[concat(variables('workspaceId'), '/datasets/ADLSArchiveFileSink')]",
-				"[concat(variables('workspaceId'), '/notebooks/CreateFolder')]"
+				"[concat(variables('workspaceId'), '/notebooks/CreateLiveFolder')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/Gsparkpool')]"
 			]
 		},
 		{
@@ -1175,7 +1162,11 @@
 								"referenceName": "cognitive-flow",
 								"type": "NotebookReference"
 							},
-							"snapshot": true
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "Gsparkpool",
+								"type": "BigDataPoolReference"
+							}
 						}
 					},
 					{
@@ -1250,6 +1241,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/cognitive-flow')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/Gsparkpool')]",
 				"[concat(variables('workspaceId'), '/linkedServices/uiap-synapse-claims-ws-WorkspaceDefaultSqlServer')]"
 			]
 		},
@@ -2851,11 +2843,34 @@
 								"referenceName": "TrainMLModel_Latest",
 								"type": "NotebookReference"
 							},
-							"snapshot": true,
-							"sparkPool": {
-								"referenceName": "sparkpool2021",
-								"type": "BigDataPoolReference"
+							"snapshot": true
+						}
+					},
+					{
+						"name": "InsertMLModel",
+						"type": "SqlPoolStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Unsupervised - Supervised ML Run",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"sqlPool": {
+							"referenceName": "ClaimsSummaryDSQL",
+							"type": "SqlPoolReference"
+						},
+						"typeProperties": {
+							"storedProcedureName": "[dbo].[InsertMLModel]"
 						}
 					}
 				],
@@ -2870,7 +2885,102 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/notebooks/TrainMLModel_Latest')]",
-				"[concat(variables('workspaceId'), '/bigDataPools/sparkpool2021')]"
+				"[concat(variables('workspaceId'), '/sqlPools/ClaimsSummaryDSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/MLModel_Load_Test')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlPoolSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								}
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "uiapsynapsedl",
+									"type": "LinkedServiceReference"
+								},
+								"path": "uiapsynapsedlfs",
+								"enableCompression": true
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "model",
+											"type": "Byte[]"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MLModelSource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SqlPoolTableModel",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Sub Pipelines"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/MLModelSource')]",
+				"[concat(variables('workspaceId'), '/datasets/SqlPoolTableModel')]",
+				"[concat(variables('workspaceId'), '/linkedServices/uiapsynapsedl')]"
 			]
 		},
 		{
@@ -3310,6 +3420,38 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/MLModelSource')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "uiapsynapsedl",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "model.onnx.hex",
+						"folderPath": "hex",
+						"fileSystem": "models"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/uiapsynapsedl')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/OnPremArchiveDocFiles')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -3351,6 +3493,32 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/OnPremFileLocation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlPoolTableModel')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlPoolTable",
+				"schema": [
+					{
+						"name": "model",
+						"type": "varbinary"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SparkMLModel"
+				},
+				"sqlPool": {
+					"referenceName": "ClaimsSummaryDSQL",
+					"type": "SqlPoolReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/sqlPools/ClaimsSummaryDSQL')]"
 			]
 		},
 		{
@@ -3677,12 +3845,7 @@
 					"subscriptionId": "[parameters('AzureMLServiceClaims_properties_typeProperties_subscriptionId')]",
 					"resourceGroupName": "[parameters('AzureMLServiceClaims_properties_typeProperties_resourceGroupName')]",
 					"mlWorkspaceName": "az-synapse-hack-mlworkspace",
-					"servicePrincipalId": "[parameters('AzureMLServiceClaims_properties_typeProperties_servicePrincipalId')]",
-					"servicePrincipalKey": {
-						"type": "SecureString",
-						"value": "[parameters('AzureMLServiceClaims_servicePrincipalKey')]"
-					},
-					"tenant": "[parameters('AzureMLServiceClaims_properties_typeProperties_tenant')]"
+					"authentication": "MSI"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -3721,6 +3884,39 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ComputerVisionLS')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "CognitiveService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('ComputerVisionLS_properties_typeProperties_subscriptionId')]",
+					"resourceGroup": "uiap-d-ci-claimfraudanalytics",
+					"csName": "aiml-computervision",
+					"csKind": "ComputerVision",
+					"csLocation": "centralindia",
+					"endPoint": "https://aiml-computervision.cognitiveservices.azure.com/",
+					"csKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ClaimsSolutionKV",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "ComputerVisionKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ClaimsSolutionKV')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/OnPremFileLocation')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -3752,7 +3948,15 @@
 				"annotations": [],
 				"type": "SqlServer",
 				"typeProperties": {
-					"connectionString": "[parameters('SqlServerSynapseClaims_connectionString')]"
+					"connectionString": "[parameters('SqlServerSynapseClaims_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ClaimsSolutionKV",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "OnPremSQLDatasourcePassword"
+					}
 				},
 				"connectVia": {
 					"referenceName": "IntegrationRuntimeselfhosted",
@@ -3760,7 +3964,74 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeselfhosted')]"
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeselfhosted')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ClaimsSolutionKV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TextAnalyticsLS')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "CognitiveService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('TextAnalyticsLS_properties_typeProperties_subscriptionId')]",
+					"resourceGroup": "uiap-d-ci-claimfraudanalytics",
+					"csName": "aiml-language",
+					"csKind": "TextAnalytics",
+					"csLocation": "centralindia",
+					"endPoint": "https://aiml-language.cognitiveservices.azure.com/",
+					"csKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ClaimsSolutionKV",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "TextAnalyticsKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ClaimsSolutionKV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TranslatorLS')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "CognitiveService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('TranslatorLS_properties_typeProperties_subscriptionId')]",
+					"resourceGroup": "uiap-d-ci-claimfraudanalytics",
+					"csName": "aiml-translator",
+					"csKind": "TextTranslation",
+					"csLocation": "centralindia",
+					"endPoint": "https://api.cognitive.microsofttranslator.com/",
+					"csKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ClaimsSolutionKV",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "AzureTranslatorKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ClaimsSolutionKV')]"
 			]
 		},
 		{
@@ -3814,11 +4085,7 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('uiapsynapsedl_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('uiapsynapsedl_accountKey')]"
-					}
+					"url": "[parameters('uiapsynapsedl_properties_typeProperties_url')]"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -3827,6 +4094,37 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Cognitive Trigger')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Claims - Cognitive Master",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/uiapsynapsedlfs/blobs/ClaimFiles/Live",
+					"blobPathEndsWith": ".png",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('Cognitive Trigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/Claims - Cognitive Master')]"
 			]
 		},
 		{
@@ -4268,6 +4566,26 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Bucketize Function')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "CREATE FUNCTION dbo.Bucketize(@val int,@size int,@count int)\nRETURNS INT \nAS \nBEGIN\nDECLARE @iter INT = 0;\nWHILE (@iter<=@count)\nBEGIN\nIF (@val <= (@iter+1)*@size)\n    BREAK;\nELSE \n    SET @iter=@iter+1;\nEND\nRETURN @iter;\nEND",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "ClaimsSummaryDSQL",
+						"poolName": "ClaimsSummaryDSQL"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/ClaimDetails')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -4345,7 +4663,7 @@
 					"name": "Creation Scripts"
 				},
 				"content": {
-					"query": "\nALTER VIEW [dbo].[ClaimsSummary_ModelInput]\nAS\n\nWith Diag as \n(\nSelect ClaimFIRNo,Diagnosis from dbo.ClaimsSummary nolock group by ClaimFIRNo,Diagnosis\n)\n,Proced as\n(\nSelect ClaimFIRNo,[Procedure] from dbo.ClaimsSummary nolock group by ClaimFIRNo,[Procedure]\n)\n\n, Alldata as (\nSelect \n CASE WHEN ISNULL(ClaimFIRNo\t\t   ,'null')='null' then 'NO' else ClaimFIRNo\t\t\t\tend as ClaimFIRNo\t\t  \n,CASE WHEN ISNULL(ClaimType\t\t\t   ,'null')='null' then 'NO' else ClaimType\t\t\t\tend as ClaimType\t\t\t  \n,CASE WHEN ISNULL(HospitalizationType  ,'null')='null' then 'NO' else HospitalizationType\t\tend as HospitalizationType \n,CASE WHEN ISNULL(ClassofAccommodation ,'null')='null' then 'NO' else ClassofAccommodation\tend as ClassofAccommodation\n,CASE WHEN ISNULL(PolicyNo\t\t\t   ,'null')='null' then 'NO' else PolicyNo\t\t\t\tend as PolicyNo\t\t\t  \n,CASE WHEN ISNULL(PolicyType\t\t   ,'null')='null' then 'NO' else PolicyType\t\t\t\tend as PolicyType\t\t  \n,CASE WHEN ISNULL(member_code\t\t   ,'null')='null' then 'NO' else member_code\t\t\t\tend as member_code\t\t  \n,CASE WHEN ISNULL(FullMemberName\t   ,'null')='null' then 'NO' else FullMemberName\t\t\tend as FullMemberName\t  \n,CASE WHEN ISNULL(Gender\t\t\t   ,'null')='null' then 'NO' else Gender\t\t\t\t\tend as Gender\t\t\t  \n,CASE WHEN ISNULL(Age\t\t\t\t   ,'0')   = 0     then\t  0  else Age\t\t\t\t\t\tend as Age\t\t\t\t  \n,CASE WHEN ISNULL(Hospital\t\t\t   ,'null')='null' then 'NO' else Hospital\t\t\t\tend as Hospital\t\t\t  \n,CASE WHEN ISNULL(Corporate\t\t\t   ,'null')='null' then 'NO' else Corporate\t\t\t\tend as Corporate\t\t\t  \n,CASE WHEN ISNULL(LengthofStay\t\t   ,'0')   = 0     then 0\t else LengthofStay\t\t\tend as LengthofStay\t\t  \n,Avg(Cast(ClaimAmount as Money)) as ClaimAmount\n,ClaimDate\n,Sum(ProcedureAmount) as ProcedureAmount\n,CASE WHEN ISNULL(HospitalCity ,'NULL')='null' then 'NO' else HospitalCity  END AS HospitalCity\n,CASE WHEN ISNULL(HospitalState,'NULL')='null' then 'NO' else HospitalState\tEND AS HospitalState\n,CASE WHEN ISNULL(MemberCity   ,'NULL')='null' then 'NO' else MemberCity\tEND AS MemberCity\n,CASE WHEN ISNULL(MemberState  ,'NULL')='null' then 'NO' else MemberState\tEND AS MemberState\n,YEAR(ClaimDate) AS\t [year]\n,MONTH(ClaimDate) as [month]\n,DAY(ClaimDate) as   [day]\nfrom dbo.ClaimsSummary\ngroup by ClaimFIRNo\n,ClaimType\n,HospitalizationType\n,ClassofAccommodation\n,PolicyNo\n,PolicyType\n,member_code\n,FullMemberName\n,Gender\n,Age\n,Hospital\n,Corporate\n,LengthofStay\n,ClaimDate\n,HospitalCity\n,HospitalState\n,MemberCity\n,MemberState\n)\n\nSelect \n A.ClaimFIRNo as Claim_FIR_No\n,A.ClaimType as Claim_Type\n,A.HospitalizationType as Hospitalization_Type \n,A.ClassofAccommodation as Class_of_Accommodation\n,A.PolicyNo \n,A.PolicyType as Policy_Type\n,A.member_code\n,A.FullMemberName\n,A.Gender\n,A.Age\n,A.Hospital\n,A.Corporate\n,A.LengthofStay as Length_of_Stay\n,A.ClaimAmount as Claim_Amount\n,A.ClaimDate as Claim_Date\n,A.ProcedureAmount\n,A.HospitalCity\n,A.HospitalState\n,A.MemberCity\n,A.MemberState\n,B.[Procedure]\n,C.Diagnosis\n,A.[year]\n,A.[month]\n,A.[day]\nfrom Alldata A\nLeft join (Select ClaimFIRNo,STRING_AGG([Procedure],':') as [Procedure] from Proced group by ClaimFIRNo) B on A.ClaimFIRNo=B.ClaimFIRNo\nLeft join (Select ClaimFIRNo,STRING_AGG(Diagnosis,':') as Diagnosis from Diag group by ClaimFIRNo)C on A.ClaimFIRNo=C.ClaimFIRNo\n\nGO\n\n\n",
+					"query": "DROP VIEW [dbo].[ClaimsSummary_ModelInput]\nGO\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE VIEW [dbo].[ClaimsSummary_ModelInput] AS With Diag as \n(\nSelect ClaimFIRNo,Diagnosis from dbo.ClaimsSummary nolock group by ClaimFIRNo,Diagnosis\n)\n,Proced as\n(\nSelect ClaimFIRNo,[Procedure] from dbo.ClaimsSummary nolock group by ClaimFIRNo,[Procedure]\n)\n\n, Alldata as (\nSelect \n CASE WHEN ISNULL(ClaimFIRNo\t\t   ,'null')='null' then 'NO' else ClaimFIRNo\t\t\t\tend as ClaimFIRNo\t\t  \n,CASE WHEN ISNULL(ClaimType\t\t\t   ,'null')='null' then 'NO' else ClaimType\t\t\t\tend as ClaimType\t\t\t  \n,CASE WHEN ISNULL(HospitalizationType  ,'null')='null' then 'NO' else HospitalizationType\t\tend as HospitalizationType \n,CASE WHEN ISNULL(ClassofAccommodation ,'null')='null' then 'NO' else ClassofAccommodation\tend as ClassofAccommodation\n,CASE WHEN ISNULL(PolicyNo\t\t\t   ,'null')='null' then 'NO' else PolicyNo\t\t\t\tend as PolicyNo\t\t\t  \n,CASE WHEN ISNULL(PolicyType\t\t   ,'null')='null' then 'NO' else PolicyType\t\t\t\tend as PolicyType\t\t  \n,CASE WHEN ISNULL(member_code\t\t   ,'null')='null' then 'NO' else member_code\t\t\t\tend as member_code\t\t  \n,CASE WHEN ISNULL(FullMemberName\t   ,'null')='null' then 'NO' else FullMemberName\t\t\tend as FullMemberName\t  \n,CASE WHEN ISNULL(Gender\t\t\t   ,'null')='null' then 'NO' else Gender\t\t\t\t\tend as Gender\t\t\t  \n,CASE WHEN ISNULL(Age\t\t\t\t   ,'0')   = 0     then\t  0  else Age\t\t\t\t\t\tend as Age\t\t\t\t  \n,CASE WHEN ISNULL(Hospital\t\t\t   ,'null')='null' then 'NO' else Hospital\t\t\t\tend as Hospital\t\t\t  \n,CASE WHEN ISNULL(Corporate\t\t\t   ,'null')='null' then 'NO' else Corporate\t\t\t\tend as Corporate\t\t\t  \n,CASE WHEN ISNULL(LengthofStay\t\t   ,'0')   = 0     then 0\t else LengthofStay\t\t\tend as LengthofStay\t\t  \n,Avg(Cast(ClaimAmount as Money)) as ClaimAmount\n,ClaimDate\n,Sum(ProcedureAmount) as ProcedureAmount\n,CASE WHEN ISNULL(HospitalCity ,'NULL')='null' then 'NO' else HospitalCity  END AS HospitalCity\n,CASE WHEN ISNULL(HospitalState,'NULL')='null' then 'NO' else HospitalState\tEND AS HospitalState\n,CASE WHEN ISNULL(MemberCity   ,'NULL')='null' then 'NO' else MemberCity\tEND AS MemberCity\n,CASE WHEN ISNULL(MemberState  ,'NULL')='null' then 'NO' else MemberState\tEND AS MemberState\n,YEAR(ClaimDate) AS\t [year]\n,MONTH(ClaimDate) as [month]\n,DAY(ClaimDate) as   [day]\nfrom dbo.ClaimsSummary\ngroup by ClaimFIRNo\n,ClaimType\n,HospitalizationType\n,ClassofAccommodation\n,PolicyNo\n,PolicyType\n,member_code\n,FullMemberName\n,Gender\n,Age\n,Hospital\n,Corporate\n,LengthofStay\n,ClaimDate\n,HospitalCity\n,HospitalState\n,MemberCity\n,MemberState\n)\n\nSelect \n A.ClaimFIRNo as Claim_FIR_No\n,A.ClaimType as Claim_Type\n,A.HospitalizationType as Hospitalization_Type \n,A.ClassofAccommodation as Class_of_Accommodation\n,A.PolicyNo \n,A.PolicyType as Policy_Type\n,A.member_code\n,A.FullMemberName\n,A.Gender\n,A.Age\n,A.Hospital\n,A.Corporate\n,A.LengthofStay as Length_of_Stay\n,A.ClaimAmount as Claim_Amount\n,A.ClaimDate as Claim_Date\n,A.ProcedureAmount\n,A.HospitalCity\n,A.HospitalState\n,A.MemberCity\n,A.MemberState\n,B.[Procedure]\n,C.Diagnosis\n,A.[year]\n,A.[month]\n,A.[day]\n,dbo.Bucketize(A.ClaimAmount,1000,200) as Claim_amt_Grp\n,dbo.Bucketize(A.Age,10,5) as Age_Group\nfrom Alldata A\nLeft join (Select ClaimFIRNo,STRING_AGG([Procedure],':') as [Procedure] from Proced group by ClaimFIRNo) B on A.ClaimFIRNo=B.ClaimFIRNo\nLeft join (Select ClaimFIRNo,STRING_AGG(Diagnosis,':') as Diagnosis from Diag group by ClaimFIRNo)C on A.ClaimFIRNo=C.ClaimFIRNo;\nGO",
 					"metadata": {
 						"language": "sql"
 					},
@@ -4920,7 +5238,27 @@
 					"name": "Creation Scripts/SP"
 				},
 				"content": {
-					"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM [dbo].[MLModelExt]\n\nEND\n\n-- EXEC [dbo].[InsertMLModel]\n\n-- select * from [dbo].[MLModel_Automated]\n",
+					"query": "ALTER PROCEDURE [dbo].[InsertMLModel]\nAS \nBEGIN\n\n-- Sample table schema for storing a model and related data\nCREATE TABLE #MLModelExt\n(\n    [Model] [varbinary](max) NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n)\n\n-- Copy command to load hexadecimal string of the model from Azure Data Lake storage location\nCOPY INTO #MLModelExt (Model)\nFROM 'https://uiapsynapsedl.blob.core.windows.net/models/hex/model.onnx.hex'\nWITH (\n    FILE_TYPE = 'CSV',\n    CREDENTIAL=(IDENTITY= 'Storage Account Key', SECRET='6IJl3LEJh0J49PaxUdd2iaiSCgV1wGuHRkW7kg6DHWIzyfEPXaLiJ9WlpfJomU01frb5f7Stpzy8w85nQlMnVw==')\n)\n\nDECLARE @maxid int = (select isnull(max(Id),0)  from  [dbo].[MLModel_Automated])\nINSERT INTO [dbo].[MLModel_Automated]\nSELECT @maxid+1, Model, GETDATE()\nFROM #MLModelExt\n\nEND\n\n-- select * from [dbo].[MLModel_Automated]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "ClaimsSummaryDSQL",
+						"poolName": "ClaimsSummaryDSQL"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- Select input scoring data and assign aliases.\nDROP TABLE [dbo].[claims_summary_modelInput_03022022]\n\nSELECT TOP 200\n        [Claim_FIR_No],\n        [Claim_Type],\n        [Hospitalization_Type],\n        [Class_of_Accommodation],\n        [Procedure],\n        [Diagnosis],\n        [PolicyNo],\n        [Policy_Type],\n        [member_code],\n        [Gender],\n        CAST([Age] AS [bigint]) AS [Age],\n        [Hospital],\n        [Corporate],\n        CAST([Length_of_Stay] AS [bigint]) AS [Length_of_Stay],\n        CAST([Claim_Amount] AS [bigint]) AS [Claim_Amount],\n        [HospitalCity],\n        [HospitalState],\n        [MemberCity],\n        [MemberState],\n        CAST([Age_Group] AS [bigint]) AS [Age_group],\n        CAST([Claim_Amt_Grp] AS [bigint]) AS [Claim_amt_grp],\n        CAST([day] AS [bigint]) AS [day],\n        CAST([year] AS [bigint]) AS [year],\n        CAST([month] AS [bigint]) AS [month]\n    INTO [dbo].[claims_summary_modelInput_03022022] FROM [dbo].[ClaimsSummary_ModelInput] \n\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -4944,6 +5282,26 @@
 				},
 				"content": {
 					"query": "DROP TABLE [dbo].[ClaimApprovalStatus]\n\n\nCreate Table [dbo].[ClaimApprovalStatus]\n(\n\nClaimFormDetailId Int,\nIsClaimApproved int DEFAULT(-1)\n)\n\n\nINSERT INTO [dbo].[ClaimApprovalStatus] (ClaimFormDetailId)\nSELECT distinct ClaimFIRNo from dbo.ClaimsSummary\n\n-- Select * from [dbo].[ClaimApprovalStatus]\n\n-- Select count(*) from [dbo].[ClaimApprovalStatus_Dev]\n\n\n-- Select top 100 * from dbo.ClaimsSummary\n-- Select top 100 * from dbo.FactClaimDetails\n\n-- Select distinct top 100 * from dbo.FactClaimDetails where ClaimFIRNo='100061610552'\n\n-- Select ClaimFIRNo, Count(ClaimFIRNo) from dbo.FactClaimDetails\n-- group by ClaimFIRNo having Count(ClaimFIRNo) >1",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "ClaimsSummaryDSQL",
+						"poolName": "ClaimsSummaryDSQL"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Test_Prediction')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- Using T-SQL Predict command to score machine learning models. \nSELECT *\nFROM PREDICT (MODEL = (SELECT [model] FROM load.test_model_03022022 WHERE [ID] = 'uiap-azure-ml-ws-fraud-detection-model-Best:3'),\n              DATA =[dbo].[claims_summary_modelInput_03022022],\n              RUNTIME = ONNX) WITH ([label_out] [bigint]) where label_out=0",
 					"metadata": {
 						"language": "sql"
 					},
@@ -5307,6 +5665,9 @@
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"folder": {
+					"name": "Outdated"
+				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
@@ -5322,11 +5683,13 @@
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2"
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "112e19a8-a815-4df3-9619-c8db89d3553e"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
+					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
 						"display_name": "python"
@@ -5346,9 +5709,9 @@
 						"sparkVersion": "2.4",
 						"nodeCount": 3,
 						"cores": 8,
-						"memory": 56,
-						"extraHeader": null
-					}
+						"memory": 56
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -5364,7 +5727,6 @@
 							"val df = spark.read.sqlanalytics(\"ClaimsSummaryDSQL.dbo.ClaimsSummary\") \r\n",
 							"df.write.mode(\"overwrite\").saveAsTable(\"ClaimFraudAnalysis.ClaimsSummary\")"
 						],
-						"attachments": null,
 						"outputs": [],
 						"execution_count": null
 					}
@@ -5377,6 +5739,9 @@
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"folder": {
+					"name": "Outdated"
+				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
@@ -5610,7 +5975,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/CreateFolder')]",
+			"name": "[concat(parameters('workspaceName'), '/CreateFolder_Old')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -5633,7 +5998,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c64322f2-544a-4ea9-918f-206757cb3630"
+						"spark.autotune.trackingId": "ea4b1ebd-b102-4c9e-821a-ce577d453c46"
 					}
 				},
 				"metadata": {
@@ -5659,7 +6024,8 @@
 						"nodeCount": 3,
 						"cores": 8,
 						"memory": 56
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -5692,6 +6058,9 @@
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
+				"folder": {
+					"name": "Automation"
+				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
@@ -5708,7 +6077,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "49c7f13b-73f8-4690-a81c-7f6af62e36c7"
+						"spark.autotune.trackingId": "f9fc8aab-11b8-401a-bc75-5b34305f3ee3"
 					}
 				},
 				"metadata": {
@@ -5734,16 +6103,82 @@
 						"nodeCount": 10,
 						"cores": 4,
 						"memory": 28
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
 						"source": [
-							"from azure.storage.filedatalake import DataLakeServiceClient"
+							"from notebookutils import mssparkutils\r\n",
+							"mssparkutils.fs.mkdirs('abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net/ClaimFiles/Live')"
 						],
 						"outputs": [],
 						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FraudPrediction')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "SparkMLServices"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool2021",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "127de2f7-2ede-4fa6-a70c-545ba36b7d7f"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
+						"name": "sparkpool2021",
+						"type": "Spark",
+						"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 8,
+						"memory": 56
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Import necessary packages for Prediction using AutoML Run"
+						]
 					},
 					{
 						"cell_type": "code",
@@ -5759,15 +6194,186 @@
 							}
 						},
 						"source": [
-							"connect_str = TokenLibrary.getSecret(\"aimlworkathonkv\", \"ClaimsDLConnString\")\r\n",
-							"datalake_service_client = DataLakeServiceClient.from_connection_string(connect_str)\r\n",
-							"container = \"uiapsynapsedlfs\"\r\n",
-							"myfolder     = \"ClaimFiles/Live\"\r\n",
-							"file_system_client = datalake_service_client.get_file_system_client(container)            \r\n",
-							"directory_client = file_system_client.create_directory(myfolder)"
+							"#Import libraries\r\n",
+							"from azureml.core import Workspace\r\n",
+							"from azureml.core.model import Model\r\n",
+							"import joblib"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Define Credentials, workspace and Authentication for Prediction"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# from notebookutils.mssparkutils import azureML\r\n",
+							"# ws = azureML.getWorkspace(\"AzureMLServiceClaims\")\r\n",
+							"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\r\n",
+							"resource_group = \"uiap-d-si-synapse\"\r\n",
+							"workspace_name = \"az-synapse-hack-mlworkspace\"\r\n",
+							"experiment_name = \"claimfrauddetection\"\r\n",
+							"\r\n",
+							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Define credentials and input table to Read data"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"### Credentials\n",
+							"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
+							"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
+							"table = \"dbo.[ClaimsSummary_ModelInput_New]\""
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Reading data using JDBC and loading as a Spark Dataframe"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"df = spark.read.format(\"jdbc\")\\\n",
+							"  .option(\"driver\", driver)\\\n",
+							"  .option(\"url\", url)\\\n",
+							"  .option(\"dbtable\", table)\\\n",
+							"  .load()\n",
+							"# Converting\n",
+							"pandasdf = df.toPandas()"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Drop Unnecessary Columns"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Drop unnecessary columns\n",
+							"pandasdf.drop(['Claim_Date','ProcedureAmount','FullMemberName'], axis = 1, inplace = True)\n",
+							"pandasdf.rename(columns = {'Claim_amt_Grp':'Claim_amt_grp','Age_Group':'Age_group'}, inplace = True)"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"model_path = Model.get_model_path(model_name=\"uiap-azure-ml-ws-fraud-detection-model-Best\", _workspace=ws)\r\n",
+							"modeljob = joblib.load(model_path + \"/model.pkl\")"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"res=modeljob.predict(pandasdf)"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Flag the claims using Custom Function"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"finalpdf = df.toPandas()\n",
+							"finalpdf['IsMLFraudClaim'] = res\n",
+							"finalpdf = finalpdf[['IsMLFraudClaim','Claim_FIR_No']]\n",
+							"# finalpdf.drop(['Claim_FIR_No','Claim_Type'],axis=1,inplace=True)\n",
+							"sparkfinal = spark.createDataFrame(finalpdf)"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Write Predicted Output to Azure SQL Database using JDBC Connection"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
+							"    dataframe.write \\\n",
+							"    .format(\"jdbc\") \\\n",
+							"    .mode(\"overwrite\") \\\n",
+							"    .option(\"url\", jdbcConnection) \\\n",
+							"    .option(\"dbtable\", tableName) \\\n",
+							"    .option(\"createTableColumnTypes\", \"Claim_FIR_No VARCHAR(30)\") \\\n",
+							"    .save()\n",
+							"    print(\"Data Written Successfully\")"
+						],
+						"outputs": [],
+						"execution_count": 30
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
+							"writeto_sql(sparkfinal, 'dbo.ClaimsFraudOutput_Test', jdbcconnString)"
+						],
+						"outputs": [],
+						"execution_count": 31
 					}
 				]
 			},
@@ -5797,7 +6403,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5dc9d03f-f20a-4207-9227-65b3bcf8c7e5"
+						"spark.autotune.trackingId": "383ff825-ecbe-431b-8aa1-ca9bfaeb20bd"
 					}
 				},
 				"metadata": {
@@ -5823,7 +6429,8 @@
 						"nodeCount": 3,
 						"cores": 8,
 						"memory": 56
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -5841,7 +6448,7 @@
 						"source": [
 							"### Credentials\n",
 							"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
-							"url = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")"
+							"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\")"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -5939,7 +6546,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/TrainMLModel')]",
+			"name": "[concat(parameters('workspaceName'), '/TrainMLModel_Latest')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -5962,7 +6569,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e8ac8b01-abf5-499d-ad73-fdca73d8ea51"
+						"spark.autotune.trackingId": "bc63d5a0-f5bf-4720-84a1-da1534feba08"
 					}
 				},
 				"metadata": {
@@ -5988,1063 +6595,18 @@
 						"nodeCount": 3,
 						"cores": 8,
 						"memory": 56
-					}
-				},
-				"cells": [
-					{
-						"cell_type": "markdown",
-						"source": [
-							"### Health Insurance Fraud Claim Detection using Unsupervised Machine Learning !"
-						]
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"<p>\n",
-							"Health insurance fraud can be explained as a situation where an insured or medical service provider furnishes fraud, false or misleading information to the insurer with the intention to attain unfair benefits from a policy for the policy holder or service providing source.\n",
-							"\n",
-							"Such fraud leads to serious losses for the insurance service providers but it could also result in impacting the health insurance advantage for genuine customers. Also, “semi-urban and rural areas” have witnessed more cases of health insurance as compared to metro cities.\n",
-							"</p>"
-						]
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"<b>Most common health insurance frauds:</b>\n",
-							"    \n",
-							"It is a difficult task to explain the types of health insurance frauds as the nature of deceit keeps changing over the years. The most common types of frauds are listed below;\n",
-							"\n",
-							"<li>Filing a claim for treatments or services that were never administered. This is often done by forging genuine patient information and manufacturing admission in connivance with service providers.</li>\n",
-							"\n",
-							"<li>Increasing overall cost of hospitalisation by including treatments that were not necessary basis the medical problem.</li>\n",
-							"\n",
-							"<li>Misrepresenting treatments that are not covered as medically necessary.</li>\n",
-							"\n",
-							"<li>Non-disclosure of Pre-Existing Diseases and manufacturing diagnosis reports to justify tests, examinations and surgeries to prove claim worthiness.</li>"
-						]
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"<b>Dataset Information :</b>\n",
-							"<hr/>\n",
-							"<li>Claim FIR No: Claim First Investigation Report Number</li>\n",
-							"<li>Claim Type : Claim Categoreies</li>\n",
-							"<li>Hospitalization Type: Mode of Hospitalization</li>\n",
-							"<li>Class_of_Accommodation: Client Room Accommodation</li>\n",
-							"<li>Procedure: Doctor Summary Report</li>\n",
-							"<li>Diagnosis: Medical Diagnosis Report</li>\n",
-							"<li>policyNo: Claim Policy Number</li>\n",
-							"<li>Policy Type: Client Policy Type</li>\n",
-							"<li>member_code: CLient Member Code</li>\n",
-							"<li>FullMemberName: Name of the Client</li>\n",
-							"<li>Gender: Gender</li>\n",
-							"<li>Age: Age</li>\n",
-							"<li>Hospital: Client Admitted Hospitals</li>\n",
-							"<li>Provider Network Type: Client Network provider</li>\n",
-							"<li>Corporate: Client Coporate</li>\n",
-							"<li>Length of Stay: Length of Stay in the hospital</li>\n",
-							"<li>IsFraudClaim: Type of Fraud Cliam</li>\n",
-							"<li>Fraud Score: Fraud Accuracy Score</li>\n",
-							"<li>Claim Amount: Cliam Amount</li>\n",
-							"<li>Claim Date: Claim Date</li>"
-						]
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Importing Libraries"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"import pandas as pd\n",
-							"import numpy as np\n",
-							"from matplotlib import pyplot as plt\n",
-							"import seaborn as sns\n",
-							"from pyspark.sql.functions import * #isnan, when, count, col, regexp_replace, udf\n",
-							"from pyspark.sql.types import StringType,IntegerType\n",
-							"\n",
-							"import nltk\n",
-							"import re\n",
-							"nltk.download('punkt')\n",
-							"nltk.download('stopwords')\n",
-							"\n",
-							"from nltk.corpus import stopwords\n",
-							"from nltk.tokenize import word_tokenize\n",
-							"\n",
-							"from sklearn.preprocessing import LabelEncoder\n",
-							"from sklearn.feature_extraction.text import CountVectorizer\n",
-							"from sklearn.cluster import KMeans\n",
-							"from sklearn.ensemble import IsolationForest\n",
-							"from sklearn.preprocessing import StandardScaler\n",
-							"from sklearn.decomposition import PCA\n",
-							"\n",
-							"%matplotlib inline\n",
-							"sns.set()\n",
-							"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Azure SQL Database Connection String"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"### Credentials\n",
-							"\n",
-							"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\n",
-							"url = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SQLTargetJdbc\")\n",
-							"table = \"dbo.ClaimsSummary_ModelInput\""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Spark JDBC Connection with SQL Server"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"df = spark.read.format(\"jdbc\")\\\n",
-							"  .option(\"driver\", driver)\\\n",
-							"  .option(\"url\", url)\\\n",
-							"  .option(\"dbtable\", table)\\\n",
-							"  .load()\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# df = df.withColumnRenamed(\"ClaimFIRNo\",\"Claim_FIR_No\") \\\n",
-							"#     .withColumnRenamed(\"ClaimType\",\"Claim_Type\") \\\n",
-							"#     .withColumnRenamed(\"HospitalizationType\",\"Hospitalization_Type\") \\\n",
-							"#     .withColumnRenamed(\"ClassofAccommodation\",\"Class_of_Accommodation\") \\\n",
-							"#     .withColumnRenamed(\"PolicyType\",\"Policy_Type\") \\\n",
-							"#     .withColumnRenamed(\"LengthofStay\",\"Length_of_Stay\") \\\n",
-							"#     .withColumnRenamed(\"ClaimAmount\",\"Claim_Amount\") \\\n",
-							"#     .withColumnRenamed(\"ClaimDate\",\"Claim_Date\")    "
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Null Values Replacing by Zero (0)"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"df = df.na.fill(0)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# strcol = ['Claim_Type', 'Hospitalization_Type', 'Class_of_Accommodation','Procedure', 'Diagnosis', 'PolicyNo', 'Policy_Type', 'member_code','FullMemberName','Gender','Hospital','Corporate','HospitalCity','HospitalState','MemberCity','MemberState']\n",
-							"\n",
-							"# for i in strcol:\n",
-							"#   df = df.withColumn(i, regexp_replace(i, '0', 'NO'))\n",
-							"#   df = df.withColumn(i, regexp_replace(i, 'NULL', 'NO'))\n",
-							"#   df = df.withColumn(i, regexp_replace(i, 'Null', 'NO'))\n",
-							"#   df = df.withColumn(i, regexp_replace(i, 'null', 'NO'))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Spark - User Defined Funtion | Preprocess"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"upperCaseUDF = udf(lambda z:str(z).upper())\n",
-							"  \n",
-							"for i in [f.name for f in df.schema.fields if isinstance(f.dataType, StringType)]:\n",
-							"  df=df.withColumn(i, upperCaseUDF(col(i)))   \n",
-							"  \n",
-							"def preunique(x):    \n",
-							"    if x.find('DAYCARE')>=0 or x.find('DAY CARE')>=0:\n",
-							"        return 'DAY CARE'\n",
-							"    if x.find('ICCU')>=0 or x.find('ICU')>=0 or x.find('GW & ICU')>=0 or  x.find('PICU')>=0 or x.find('ICU/SPL')>=0 or  x.find('ICU & Deluxe')>=0:\n",
-							"        return 'ICCU'\n",
-							"    if x.find(\"SEMI PVT\")>=0 or x.find(\"SEMI SPECIAL\")>=0 or x.find(\"S PVT\")>=0 or x.find(\"SEMI\")>=0 or x.find(\"S PRIVATE\")>=0 or x.find(\"PRIVATE\")>=0 or x.find(\"PVT ROOM\")>=0 or x.find(\"PVT A/C\")>=0 or x.find(\"PVt AC\")>=0 or x.find(\"PVT\")>=0:\n",
-							"        return 'PRIVATE'\n",
-							"    if x.find(\"GW\")>=0 or x.find(\"GENERAL\")>=0 or x.find(\"GENERAL WARD\")>=0 or x.find(\"G/W\")>=0:\n",
-							"        return 'GENERAL WARD'\n",
-							"    if x.find(\"DELUXE\")>=0 or x.find(\"DELUX\")>=0 or x.find(\"DLX\")>=0:\n",
-							"        return 'DELUX'\n",
-							"    if x.find(\"HEALTH CHECK UP\")>=0 or x.find(\"HEALTH CHECKUP\")>=0 or x.find(\"CHECKUP\")>=0:\n",
-							"        return 'HEALTH CHECKUP'\n",
-							"    if x.find(\"PRE\")>=0 or x.find(\"POST\")>=0 or x.find(\"PRE POST\")>=0 or x.find(\"PRE & POST\")>=0 or x.find(\"PREPOST\")>=0:\n",
-							"        return 'PRE POST'\n",
-							"    if x.find(\"TWIN\")>=0 or x.find(\"TWING\")>=0 or x.find(\"TWIN SHARING\")>=0 or x.find(\"TWING SHARING\")>=0 or x.find(\"TWIN + CLASSIC\")>=0 or x.find(\"SHARING\")>=0:\n",
-							"        return 'TWIN SHARING'\n",
-							"    if x.find(\"NON AC\")>=0 or x.find(\"NON A/C\")>=0 or x.find(\"NON-A/C\")>=0 or x.find(\"NON-AC\")>=0:\n",
-							"        return 'NON AC ROOM'\n",
-							"    if x.find(\"AC\")>=0 or x.find(\"A/C\")>=0 or x.find(\"SPECIAL\")>=0 or x.find(\"STANDARD\")>=0:\n",
-							"        return 'AC ROOM'\n",
-							"    if x.find(\"SINGLE\")>=0:\n",
-							"        return 'SINGLE ROOM'    \n",
-							"    if x.find(\"NO\")>=0 or x.find(\"NA\")>=0:\n",
-							"        return 'NO'\n",
-							"    if x.find(\"SECOND\")>=0 or x.find(\"DOUBLE\")>=0:\n",
-							"        return 'DOUBLE ROOM'     \n",
-							"    if x.find('ROOM')>=0:\n",
-							"        return 'ROOM'\n",
-							"    if x.find('RENT')>=0:\n",
-							"        return 'RENT' \n",
-							"    return x\n",
-							"  \n",
-							"clsofAccUDF = udf(lambda z : preunique(z), StringType()) \n",
-							"df = df.withColumn('Class_of_Accommodation', clsofAccUDF(col('Class_of_Accommodation')))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Spark Dataframe Converting to Pandas Dataframe\n",
-							"pdf = df.toPandas()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Text Preprocessing"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"def textclean(txt):    \n",
-							"    token=word_tokenize(txt)\n",
-							"    punc=[word for word in token if word.isalpha()]\n",
-							"    mystop=set(stopwords.words('english'))\n",
-							"    new_tok=[]\n",
-							"    for tok in punc:\n",
-							"        if tok not in mystop:\n",
-							"            new_tok.append(tok)\n",
-							"    return \" \".join(new_tok)    \n",
-							"  \n",
-							"for i in ['Procedure','Diagnosis']:\n",
-							"  pdf[i]=pdf[i].apply(lambda x: textclean(x))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Replacing by Mean Values"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"pdf.loc[pdf['Age']=='NONE','Age']=30\n",
-							"pdf.loc[pdf['Claim_Amount']==0,'Claim_Amount']=int(pdf['Claim_Amount'].mean())"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Round Claim Amount\n",
-							"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Removing Duplicate Claim Records\n",
-							"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Catagories by Age Group and Claim Amount Group\n",
-							"def bucketize(val, size, count):\n",
-							"    i=0\n",
-							"    for i in range(count):\n",
-							"        if val <= (i+1)*size:\n",
-							"            return i\n",
-							"    return i\n",
-							"\n",
-							"pdf['Age_group'] = [bucketize(x, 10, 5) for x in pdf['Age']]    \n",
-							"pdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pdf['Claim_Amount']]"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# pdf['day'] = pd.DatetimeIndex(pdf['Claim_Date']).day\n",
-							"# pdf['year'] = pd.DatetimeIndex(pdf['Claim_Date']).year\n",
-							"# pdf['month'] = pd.DatetimeIndex(pdf['Claim_Date']).month"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Dropping Unnecessary Columns\n",
-							"# 'Claim_FIR_No'\n",
-							"dt=pdf.drop(['FullMemberName','Claim_Date','ProcedureAmount'],axis=1)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Type Conversation\n",
-							"dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']] = dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']].apply(pd.to_numeric)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"ddf = dt.copy()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Feature Encoding\n",
-							"\n",
-							"Convert String Small Data into Numeric Data by LabelEncoder"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"le = LabelEncoder()\n",
-							"\n",
-							"col_n=['Claim_Type', 'Hospitalization_Type', 'Class_of_Accommodation', 'PolicyNo', 'Policy_Type','member_code',\n",
-							"       'Gender', 'Hospital', 'Corporate','HospitalCity', 'HospitalState', 'MemberCity','MemberState']\n",
-							"\n",
-							"for i in col_n:\n",
-							"    ddf[i]=le.fit_transform(ddf[i])"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"Convert String Paragraph Data into Bag of words by Count Vectorizer"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"c1 = CountVectorizer()\n",
-							"c2 = CountVectorizer()\n",
-							"\n",
-							"dia = c1.fit_transform(ddf['Diagnosis'])\n",
-							"pro = c2.fit_transform(ddf['Procedure'])\n",
-							"\n",
-							"diag = pd.DataFrame(dia.toarray(), columns=c1.get_feature_names())\n",
-							"prod = pd.DataFrame(pro.toarray(), columns=c2.get_feature_names())\n",
-							"\n",
-							"dft=pd.concat([diag,prod],axis=1)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"dfr=ddf.drop(['Claim_FIR_No','Diagnosis','Procedure'], axis=1)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"#### Anomaly Detection using Isolation Forest"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"iforest_d = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
-							"X_d=dfr.values\n",
-							"pred_d = iforest_d.fit_predict(X_d)\n",
-							"scaler_d = StandardScaler()\n",
-							"ddfs=scaler_d.fit_transform(X_d)\n",
-							"\n",
-							"iforest_t = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
-							"X_t=dft.values\n",
-							"pred_t = iforest_t.fit_predict(X_t)\n",
-							"scaler_t = StandardScaler()\n",
-							"dtfs=scaler_t.fit_transform(X_t)\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Dimensional Reduction"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Apply PCA to reduce the dimensionality\n",
-							"\n",
-							"pca_d = PCA(n_components=2)\n",
-							"pcd = pca_d.fit_transform(ddfs)\n",
-							"\n",
-							"pca_t = PCA(n_components=2)\n",
-							"pct = pca_t.fit_transform(dtfs)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Extract outliers\n",
-							"\n",
-							"outlier_index_d = np.where(pred_d==-1)\n",
-							"outlier_index_t = np.where(pred_t==-1)\n",
-							"\n",
-							"outlier_values_d = X_d[outlier_index_d]\n",
-							"outlier_values_t = X_t[outlier_index_t]\n",
-							"\n",
-							"outlier_values_scaled_d = scaler_d.transform(outlier_values_d)\n",
-							"outlier_values_scaled_t = scaler_t.transform(outlier_values_t)\n",
-							"\n",
-							"outlier_values_pca_d = pca_d.transform(outlier_values_scaled_d)\n",
-							"outlier_values_pca_t = pca_t.transform(outlier_values_scaled_t)\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"# Storing the Anomaly Result \n",
-							"\n",
-							"dtest=dt.copy()\n",
-							"dtest['AD_D']=pred_d\n",
-							"dtest['AD_T']=pred_t"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### KMeans Clustering with PCA"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"kmeans_d = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
-							"kmeans_d.fit(pcd)\n",
-							"dtest['C1_KM']=kmeans_d.labels_\n",
-							"\n",
-							"kmeans_t = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
-							"kmeans_t.fit(pct)\n",
-							"dtest['C2_KM']=kmeans_t.labels_"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"dtest[\"ADRS\"]=0\n",
-							"dtest[\"ADRS\"]=dtest[\"AD_D\"].apply(lambda x : int(x==-1))"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Integrating result on Anomaly Detection & Clustering"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"for i in range(0,30):\n",
-							"  if(dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().index[0][0]==-1):\n",
-							"    if(int(len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)<int(dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().values[0])):\n",
-							"      #print(i,dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().values[0],int((len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)/2))      \n",
-							"      dtest.loc[dtest['C1_KM']==i,'ADRS']=1              "
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"for i in range(0,10):\n",
-							"  if(dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().index[0][0]==-1):\n",
-							"    if(int(len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)<int(dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().values[0])):\n",
-							"      #print(i,dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().values[0],int((len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)/2))      \n",
-							"      dtest.loc[dtest['C2_KM']==i,'ADRS']=1"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Final Result Mapping"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"dtest[\"ADRS\"]=dtest[[\"AD_T\",\"ADRS\"]].apply(lambda x : 1 if x[0]==-1 else x[1] ,axis=1)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"dfin=dtest[['Claim_FIR_No', 'Claim_Type', 'Hospitalization_Type','Class_of_Accommodation', 'Procedure', 'Diagnosis', 'PolicyNo',\n",
-							"       'Policy_Type', 'member_code', 'Gender', 'Age', 'Hospital', 'Corporate', 'Length_of_Stay', 'Claim_Amount',\n",
-							"       'HospitalCity', 'HospitalState', 'MemberCity','MemberState','Age_group', 'Claim_amt_grp', 'day', 'year', 'month', 'ADRS']]"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"spark.conf.set(\"spark.sql.execution.arrow.enabled\",\"true\")\n",
-							"SDF=spark.createDataFrame(dfin) \n",
-							"SDF.printSchema()\n",
-							"#SDF.show()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"source": [
-							"##### Azure AutoML Dataset Registering"
-						]
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
-							"from azureml.data.dataset_factory import TabularDatasetFactory"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"source": [
-							"subscription_id = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"SubscriptionId\") \n",
-							"resource_group = \"uiap-d-ci-claimfraudanalytics\"\n",
-							"workspace_name = \"ai-ml-amlworkspace\"\n",
-							"experiment_name = \"sampleclaimfraud\"\n",
-							"\n",
-							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
-							"\n",
-							"datastore = Datastore.get_default(ws)\n",
-							"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Import necessary packages to Submit AutoML Experiment"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"import logging\r\n",
-							"import azureml.core\r\n",
-							"import onnxruntime\r\n",
-							"import mlflow\r\n",
-							"import mlflow.onnx\r\n",
-							"from azureml.core import Experiment, Workspace, Dataset, Datastore\r\n",
-							"from azureml.train.automl import AutoMLConfig\r\n",
-							"from azureml.data.dataset_factory import TabularDatasetFactory\r\n",
-							"from azureml.core.authentication import InteractiveLoginAuthentication, ServicePrincipalAuthentication\r\n",
-							"\r\n",
-							"from mlflow.models.signature import ModelSignature\r\n",
-							"from mlflow.types import DataType\r\n",
-							"from mlflow.types.schema import ColSpec, Schema"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Define Credentials, workspace and Authentication for Prediction"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"subscription_id = \"03766bec-6c31-4851-aa3c-233d9b60aeaf\"\r\n",
-							"resource_group = \"uiap-d-ci-claimfraudanalytics\"\r\n",
-							"workspace_name = \"ai-ml-amlworkspace\"\r\n",
-							"experiment_name = \"sampleclaimfraud\"\r\n",
-							"\r\n",
-							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"dataset = Dataset.get_by_name(workspace=ws,name='claiml-labelled-dataset',version='latest')"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Define AutoMLConfig Properties"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"automl_config = AutoMLConfig(spark_context = sc,\r\n",
-							"                             task = \"classification\",\r\n",
-							"                             debug_log = 'automl_errors.log',\r\n",
-							"                             training_data = dataset,\r\n",
-							"                             label_column_name = \"ADRS\",\r\n",
-							"                             primary_metric = \"AUC_weighted\",\r\n",
-							"                             experiment_timeout_minutes = 15,\r\n",
-							"                             blocked_models=['DecisionTreeClassifier'],\r\n",
-							"                             max_concurrent_iterations = 2,\r\n",
-							"                             verbosity = logging.INFO,                             \r\n",
-							"#                              enable_cache=True,\r\n",
-							"                             featurization='auto',\r\n",
-							"                             enable_onnx_compatible_models = True)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Submit and Run Experiment"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"try:\r\n",
-							"\r\n",
-							"  # Create AML Experiment - use the name from ./99-Shared-Functions-and-Settings notebook\r\n",
-							"  experiment = Experiment(ws, experiment_name)\r\n",
-							"\r\n",
-							"  # Submit AutoML Run\r\n",
-							"  run = experiment.submit(automl_config)\r\n",
-							"  run.wait_for_completion(show_output=True)   \r\n",
-							"\r\n",
-							"except Exception as e:\r\n",
-							"  print(\"Error : \",e)\r\n",
-							"  "
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Get Best Run and Onnx Model"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"best_run, onnx_model = run.get_output(return_onnx_model=True)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Infer Schema, Signature and Register the Model"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"# Define utility functions to infer the schema of ONNX model\r\n",
-							"def _infer_schema(data):\r\n",
-							"    res = []\r\n",
-							"    for _, col in enumerate(data):\r\n",
-							"        t = col.type.replace(\"tensor(\", \"\").replace(\")\", \"\")\r\n",
-							"        if t in [\"bool\"]:\r\n",
-							"            dt = DataType.boolean\r\n",
-							"        elif t in [\"int8\", \"uint8\", \"int16\", \"uint16\", \"int32\"]:\r\n",
-							"            dt = DateType.integer\r\n",
-							"        elif t in [\"uint32\", \"int64\"]:\r\n",
-							"            dt = DataType.long\r\n",
-							"        elif t in [\"float16\", \"bfloat16\", \"float\"]:\r\n",
-							"            dt = DataType.float\r\n",
-							"        elif t in [\"double\"]:\r\n",
-							"            dt = DataType.double\r\n",
-							"        elif t in [\"string\"]:\r\n",
-							"            dt = DataType.string\r\n",
-							"        else:\r\n",
-							"            raise Exception(\"Unsupported type: \" + t)\r\n",
-							"        res.append(ColSpec(type=dt, name=col.name))\r\n",
-							"    return Schema(res)\r\n",
-							"\r\n",
-							"def _infer_signature(onnx_model):\r\n",
-							"    onnx_model_bytes = onnx_model.SerializeToString()\r\n",
-							"    onnx_runtime = onnxruntime.InferenceSession(onnx_model_bytes)\r\n",
-							"    # print(onnx_runtime.get_inputs())\r\n",
-							"    # print(onnx_runtime.get_outputs())\r\n",
-							"    inputs = _infer_schema(onnx_runtime.get_inputs())\r\n",
-							"    outputs = _infer_schema(onnx_runtime.get_outputs())\r\n",
-							"    return ModelSignature(inputs, outputs)\r\n",
-							"\r\n",
-							"# Infer signature of ONNX model\r\n",
-							"signature = _infer_signature(onnx_model)\r\n",
-							"\r\n",
-							"artifact_path = experiment_name + \"_artifact\"\r\n",
-							"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\r\n",
-							"mlflow.set_experiment(experiment_name)\r\n",
-							"\r\n",
-							"with mlflow.start_run() as run:\r\n",
-							"    # Save the model to the outputs directory for capture\r\n",
-							"    mlflow.onnx.log_model(onnx_model, artifact_path, signature=signature)\r\n",
-							"    Run_Id = run.info.run_id\r\n",
-							"    # Register the model to AML model registry\r\n",
-							"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-azure-ml-ws-fraud-detection-model-Best\")"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Convert ONNXModel to Hexadecimal"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def convertONNXtoHEX(model):\r\n",
-							"    return model.SerializeToString().hex()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "markdown",
-						"metadata": {
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"#### Write ONNX Model to Blob Storage"
-						]
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"with open('model.onnx.hex','w') as f1:\r\n",
-							"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
-							" \r\n",
-							"connection_string = dbutils.secrets.get(scope = \"ai-ml-workathon-scope\", key = \"BlobConnectionString\")\r\n",
-							" \r\n",
-							"from azure.storage.blob import BlobClient\r\n",
-							" \r\n",
-							"blob = BlobClient.from_connection_string(conn_str=connection_string, container_name=\"models\", blob_name=\"hex/model_Cleaned.onnx.hex\")\r\n",
-							" \r\n",
-							"with open(\"./model.onnx.hex\", \"rb\") as data:\r\n",
-							"    blob.upload_blob(data,overwrite=True)"
-						],
-						"outputs": [],
-						"execution_count": null
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/TrainMLModel_Latest')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "SparkMLServices"
-				},
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "sparkpool2021",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "56g",
-					"driverCores": 8,
-					"executorMemory": "56g",
-					"executorCores": 8,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e8c05e2a-322c-4111-a907-7d5080a5dce9"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
-						"name": "sparkpool2021",
-						"type": "Spark",
-						"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "2.4",
-						"nodeCount": 3,
-						"cores": 8,
-						"memory": 56,
-						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"### Health Insurance Fraud Claim Detection using Unsupervised Machine Learning !"
 						]
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"<p>\n",
 							"Health insurance fraud can be explained as a situation where an insured or medical service provider furnishes fraud, false or misleading information to the insurer with the intention to attain unfair benefits from a policy for the policy holder or service providing source.\n",
@@ -7055,7 +6617,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"<b>Most common health insurance frauds:</b>\n",
 							"    \n",
@@ -7072,7 +6633,6 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"<b>Dataset Information :</b>\n",
 							"<hr/>\n",
@@ -7100,14 +6660,12 @@
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Importing Libraries"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"import pandas as pd\n",
 							"import numpy as np\n",
@@ -7137,7 +6695,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 1
 					},
 					{
 						"cell_type": "markdown",
@@ -7169,11 +6727,11 @@
 							"### Credentials\r\n",
 							"\r\n",
 							"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
-							"url = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\r\n",
+							"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\r\n",
 							"table = \"dbo.ClaimsSummary_ModelInput\""
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 2
 					},
 					{
 						"cell_type": "markdown",
@@ -7209,34 +6767,30 @@
 							"  .load()"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 3
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Null Values Replacing by Zero (0)"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"df = df.na.fill(0)"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 4
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Spark - User Defined Funtion | Preprocess"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"upperCaseUDF = udf(lambda z:str(z).upper())\n",
 							"  \n",
@@ -7280,28 +6834,25 @@
 							"df = df.withColumn('Class_of_Accommodation', clsofAccUDF(col('Class_of_Accommodation')))"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Spark Dataframe Converting to Pandas Dataframe\n",
 							"pdf = df.toPandas()"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 6
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Text Preprocessing"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"def textclean(txt):    \n",
 							"    token=word_tokenize(txt)\n",
@@ -7317,57 +6868,51 @@
 							"  pdf[i]=pdf[i].apply(lambda x: textclean(x))"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 7
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Replacing by Mean Values"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"pdf.loc[pdf['Age']=='NONE','Age']=30\n",
 							"pdf.loc[pdf['Claim_Amount']==0,'Claim_Amount']=int(pdf['Claim_Amount'].mean())"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Round Claim Amount\n",
+							"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
 						],
 						"outputs": [],
 						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							"# Round Claim Amount\n",
-							"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
+							"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
 						],
 						"outputs": [],
 						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
+							"# Removing Duplicate Claim Records\n",
+							"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
 						],
 						"outputs": [],
 						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
-						"source": [
-							"# Removing Duplicate Claim Records\n",
-							"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
-						],
-						"outputs": [],
-						"execution_count": 12
-					},
-					{
-						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Catagories by Age Group and Claim Amount Group\n",
 							"def bucketize(val, size, count):\n",
@@ -7381,41 +6926,37 @@
 							"pdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pdf['Claim_Amount']]"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Dropping Unnecessary Columns\n",
 							"# 'Claim_FIR_No'\n",
 							"dt=pdf.drop(['FullMemberName','Claim_Date','ProcedureAmount'],axis=1)"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Type Conversation\n",
 							"dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']] = dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']].apply(pd.to_numeric)"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"ddf = dt.copy()"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 15
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Feature Encoding\n",
 							"\n",
@@ -7424,7 +6965,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"le = LabelEncoder()\n",
 							"\n",
@@ -7435,18 +6975,16 @@
 							"    ddf[i]=le.fit_transform(ddf[i])"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 16
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"Convert String Paragraph Data into Bag of words by Count Vectorizer"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"c1 = CountVectorizer()\n",
 							"c2 = CountVectorizer()\n",
@@ -7460,27 +6998,24 @@
 							"dft=pd.concat([diag,prod],axis=1)"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"dfr=ddf.drop(['Claim_FIR_No','Diagnosis','Procedure'], axis=1)"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 18
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"#### Anomaly Detection using Isolation Forest"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"iforest_d = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
 							"X_d=dfr.values\n",
@@ -7496,18 +7031,16 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 19
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Dimensional Reduction"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Apply PCA to reduce the dimensionality\n",
 							"\n",
@@ -7518,11 +7051,10 @@
 							"pct = pca_t.fit_transform(dtfs)"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Extract outliers\n",
 							"\n",
@@ -7540,11 +7072,10 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Storing the Anomaly Result \n",
 							"\n",
@@ -7553,18 +7084,16 @@
 							"dtest['AD_T']=pred_t"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 22
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### KMeans Clustering with PCA"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"kmeans_d = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
 							"kmeans_d.fit(pcd)\n",
@@ -7575,28 +7104,25 @@
 							"dtest['C2_KM']=kmeans_t.labels_"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 23
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"dtest[\"ADRS\"]=0\n",
 							"dtest[\"ADRS\"]=dtest[\"AD_D\"].apply(lambda x : int(x==-1))"
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 24
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Integrating result on Anomaly Detection & Clustering"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"for i in range(0,30):\n",
 							"  if(dtest[dtest[\"C1_KM\"]==i]['AD_D'].value_counts().index[0]==-1):\n",
@@ -7605,11 +7131,10 @@
 							"      dtest.loc[dtest['C1_KM']==i,'ADRS']=1              "
 						],
 						"outputs": [],
-						"execution_count": 26
+						"execution_count": 25
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"for i in range(0,10):\n",
 							"  if(dtest[dtest[\"C2_KM\"]==i]['AD_T'].value_counts().index[0]==-1):\n",
@@ -7618,38 +7143,34 @@
 							"      dtest.loc[dtest['C2_KM']==i,'ADRS']=1"
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 26
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Final Result Mapping"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"dtest[\"ADRS\"]=dtest[[\"AD_T\",\"ADRS\"]].apply(lambda x : 1 if x[0]==-1 else x[1] ,axis=1)"
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 27
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"dfin=dtest[['Claim_FIR_No', 'Claim_Type', 'Hospitalization_Type','Class_of_Accommodation', 'Procedure', 'Diagnosis', 'PolicyNo',\n",
 							"       'Policy_Type', 'member_code', 'Gender', 'Age', 'Hospital', 'Corporate', 'Length_of_Stay', 'Claim_Amount',\n",
 							"       'HospitalCity', 'HospitalState', 'MemberCity','MemberState','Age_group', 'Claim_amt_grp', 'day', 'year', 'month', 'ADRS']]"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 28
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"spark.conf.set(\"spark.sql.execution.arrow.enabled\",\"true\")\n",
 							"SDF=spark.createDataFrame(dfin) \n",
@@ -7657,41 +7178,38 @@
 							"#SDF.show()"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 29
 					},
 					{
 						"cell_type": "markdown",
-						"metadata": {},
 						"source": [
 							"##### Azure AutoML Dataset Registering"
 						]
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
 							"from azureml.data.dataset_factory import TabularDatasetFactory"
 						],
 						"outputs": [],
-						"execution_count": 31
+						"execution_count": 30
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							"subscription_id = TokenLibrary.getSecret(\"aimlworkathonkv\",\"SubscriptionId\")\n",
-							"resource_group = \"uiap-d-ci-claimfraudanalytics\"\n",
-							"workspace_name = \"ai-ml-amlworkspace\"\n",
-							"experiment_name = \"sampleclaimfraud\"\n",
+							"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\",\"ClaimsSolutionKV\")\n",
+							"resource_group = \"uiap-d-si-synapse\"\n",
+							"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
+							"experiment_name = \"claimfrauddetection\"\n",
 							"\n",
 							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 							"\n",
 							"datastore = Datastore.get_default(ws)\n",
-							"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claiml-labelled-dataset')"
+							"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claim-labelled-dataset')"
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 31
 					},
 					{
 						"cell_type": "markdown",
@@ -7735,7 +7253,7 @@
 							"from mlflow.types.schema import ColSpec, Schema"
 						],
 						"outputs": [],
-						"execution_count": 33
+						"execution_count": 32
 					},
 					{
 						"cell_type": "markdown",
@@ -7779,7 +7297,7 @@
 							"                             enable_onnx_compatible_models = True)"
 						],
 						"outputs": [],
-						"execution_count": 34
+						"execution_count": 33
 					},
 					{
 						"cell_type": "markdown",
@@ -7822,7 +7340,7 @@
 							"  "
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 34
 					},
 					{
 						"cell_type": "markdown",
@@ -7854,7 +7372,7 @@
 							"best_run, onnx_model = run.get_output(return_onnx_model=True)"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 35
 					},
 					{
 						"cell_type": "markdown",
@@ -7929,7 +7447,7 @@
 							"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-azure-ml-ws-fraud-detection-model-Best\")"
 						],
 						"outputs": [],
-						"execution_count": 37
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -7962,7 +7480,7 @@
 							"    return model.SerializeToString().hex()"
 						],
 						"outputs": [],
-						"execution_count": 38
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -7994,7 +7512,7 @@
 							"with open('model.onnx.hex','w') as f1:\r\n",
 							"    f1.write(convertONNXtoHEX(onnx_model))\r\n",
 							" \r\n",
-							"connection_string = TokenLibrary.getSecret(\"aimlworkathonkv\", \"MLBlobConnString\")\r\n",
+							"connection_string = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"ClaimsDLConnString\",\"ClaimsSolutionKV\")\r\n",
 							" \r\n",
 							"from azure.storage.blob import BlobClient\r\n",
 							" \r\n",
@@ -8004,7 +7522,889 @@
 							"    blob.upload_blob(data,overwrite=True)"
 						],
 						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TrainMLModel_NonONNX')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "SparkMLServices"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "dc031454-e61f-474e-aa69-12f474fead5c"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Health Insurance Fraud Claim Detection using Unsupervised Machine Learning !"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"<p>\n",
+							"Health insurance fraud can be explained as a situation where an insured or medical service provider furnishes fraud, false or misleading information to the insurer with the intention to attain unfair benefits from a policy for the policy holder or service providing source.\n",
+							"\n",
+							"Such fraud leads to serious losses for the insurance service providers but it could also result in impacting the health insurance advantage for genuine customers. Also, “semi-urban and rural areas” have witnessed more cases of health insurance as compared to metro cities.\n",
+							"</p>"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"<b>Most common health insurance frauds:</b>\n",
+							"    \n",
+							"It is a difficult task to explain the types of health insurance frauds as the nature of deceit keeps changing over the years. The most common types of frauds are listed below;\n",
+							"\n",
+							"<li>Filing a claim for treatments or services that were never administered. This is often done by forging genuine patient information and manufacturing admission in connivance with service providers.</li>\n",
+							"\n",
+							"<li>Increasing overall cost of hospitalisation by including treatments that were not necessary basis the medical problem.</li>\n",
+							"\n",
+							"<li>Misrepresenting treatments that are not covered as medically necessary.</li>\n",
+							"\n",
+							"<li>Non-disclosure of Pre-Existing Diseases and manufacturing diagnosis reports to justify tests, examinations and surgeries to prove claim worthiness.</li>"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"<b>Dataset Information :</b>\n",
+							"<hr/>\n",
+							"<li>Claim FIR No: Claim First Investigation Report Number</li>\n",
+							"<li>Claim Type : Claim Categoreies</li>\n",
+							"<li>Hospitalization Type: Mode of Hospitalization</li>\n",
+							"<li>Class_of_Accommodation: Client Room Accommodation</li>\n",
+							"<li>Procedure: Doctor Summary Report</li>\n",
+							"<li>Diagnosis: Medical Diagnosis Report</li>\n",
+							"<li>policyNo: Claim Policy Number</li>\n",
+							"<li>Policy Type: Client Policy Type</li>\n",
+							"<li>member_code: CLient Member Code</li>\n",
+							"<li>FullMemberName: Name of the Client</li>\n",
+							"<li>Gender: Gender</li>\n",
+							"<li>Age: Age</li>\n",
+							"<li>Hospital: Client Admitted Hospitals</li>\n",
+							"<li>Provider Network Type: Client Network provider</li>\n",
+							"<li>Corporate: Client Coporate</li>\n",
+							"<li>Length of Stay: Length of Stay in the hospital</li>\n",
+							"<li>IsFraudClaim: Type of Fraud Cliam</li>\n",
+							"<li>Fraud Score: Fraud Accuracy Score</li>\n",
+							"<li>Claim Amount: Cliam Amount</li>\n",
+							"<li>Claim Date: Claim Date</li>"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Importing Libraries"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"import pandas as pd\n",
+							"import numpy as np\n",
+							"from matplotlib import pyplot as plt\n",
+							"import seaborn as sns\n",
+							"from pyspark.sql.functions import * #isnan, when, count, col, regexp_replace, udf\n",
+							"from pyspark.sql.types import StringType,IntegerType\n",
+							"\n",
+							"import nltk\n",
+							"import re\n",
+							"nltk.download('punkt')\n",
+							"nltk.download('stopwords')\n",
+							"\n",
+							"from nltk.corpus import stopwords\n",
+							"from nltk.tokenize import word_tokenize\n",
+							"\n",
+							"from sklearn.preprocessing import LabelEncoder\n",
+							"from sklearn.feature_extraction.text import CountVectorizer\n",
+							"from sklearn.cluster import KMeans\n",
+							"from sklearn.ensemble import IsolationForest\n",
+							"from sklearn.preprocessing import StandardScaler\n",
+							"from sklearn.decomposition import PCA\n",
+							"\n",
+							"%matplotlib inline\n",
+							"sns.set()\n",
+							"plt.rcParams[\"figure.figsize\"] = (15,8)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"##### Azure SQL Database Connection String"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Credentials\r\n",
+							"\r\n",
+							"driver = \"com.microsoft.sqlserver.jdbc.SQLServerDriver\"\r\n",
+							"url = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\r\n",
+							"table = \"dbo.ClaimsSummary_ModelInput\""
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"##### Spark JDBC Connection with SQL Server"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df = spark.read.format(\"jdbc\")\\\r\n",
+							"  .option(\"driver\", driver)\\\r\n",
+							"  .option(\"url\", url)\\\r\n",
+							"  .option(\"dbtable\", table)\\\r\n",
+							"  .load()"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Null Values Replacing by Zero (0)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"df = df.na.fill(0)"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Spark - User Defined Funtion | Preprocess"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"upperCaseUDF = udf(lambda z:str(z).upper())\n",
+							"  \n",
+							"for i in [f.name for f in df.schema.fields if isinstance(f.dataType, StringType)]:\n",
+							"  df=df.withColumn(i, upperCaseUDF(col(i)))   \n",
+							"  \n",
+							"def preunique(x):    \n",
+							"    if x.find('DAYCARE')>=0 or x.find('DAY CARE')>=0:\n",
+							"        return 'DAY CARE'\n",
+							"    if x.find('ICCU')>=0 or x.find('ICU')>=0 or x.find('GW & ICU')>=0 or  x.find('PICU')>=0 or x.find('ICU/SPL')>=0 or  x.find('ICU & Deluxe')>=0:\n",
+							"        return 'ICCU'\n",
+							"    if x.find(\"SEMI PVT\")>=0 or x.find(\"SEMI SPECIAL\")>=0 or x.find(\"S PVT\")>=0 or x.find(\"SEMI\")>=0 or x.find(\"S PRIVATE\")>=0 or x.find(\"PRIVATE\")>=0 or x.find(\"PVT ROOM\")>=0 or x.find(\"PVT A/C\")>=0 or x.find(\"PVt AC\")>=0 or x.find(\"PVT\")>=0:\n",
+							"        return 'PRIVATE'\n",
+							"    if x.find(\"GW\")>=0 or x.find(\"GENERAL\")>=0 or x.find(\"GENERAL WARD\")>=0 or x.find(\"G/W\")>=0:\n",
+							"        return 'GENERAL WARD'\n",
+							"    if x.find(\"DELUXE\")>=0 or x.find(\"DELUX\")>=0 or x.find(\"DLX\")>=0:\n",
+							"        return 'DELUX'\n",
+							"    if x.find(\"HEALTH CHECK UP\")>=0 or x.find(\"HEALTH CHECKUP\")>=0 or x.find(\"CHECKUP\")>=0:\n",
+							"        return 'HEALTH CHECKUP'\n",
+							"    if x.find(\"PRE\")>=0 or x.find(\"POST\")>=0 or x.find(\"PRE POST\")>=0 or x.find(\"PRE & POST\")>=0 or x.find(\"PREPOST\")>=0:\n",
+							"        return 'PRE POST'\n",
+							"    if x.find(\"TWIN\")>=0 or x.find(\"TWING\")>=0 or x.find(\"TWIN SHARING\")>=0 or x.find(\"TWING SHARING\")>=0 or x.find(\"TWIN + CLASSIC\")>=0 or x.find(\"SHARING\")>=0:\n",
+							"        return 'TWIN SHARING'\n",
+							"    if x.find(\"NON AC\")>=0 or x.find(\"NON A/C\")>=0 or x.find(\"NON-A/C\")>=0 or x.find(\"NON-AC\")>=0:\n",
+							"        return 'NON AC ROOM'\n",
+							"    if x.find(\"AC\")>=0 or x.find(\"A/C\")>=0 or x.find(\"SPECIAL\")>=0 or x.find(\"STANDARD\")>=0:\n",
+							"        return 'AC ROOM'\n",
+							"    if x.find(\"SINGLE\")>=0:\n",
+							"        return 'SINGLE ROOM'    \n",
+							"    if x.find(\"NO\")>=0 or x.find(\"NA\")>=0:\n",
+							"        return 'NO'\n",
+							"    if x.find(\"SECOND\")>=0 or x.find(\"DOUBLE\")>=0:\n",
+							"        return 'DOUBLE ROOM'     \n",
+							"    if x.find('ROOM')>=0:\n",
+							"        return 'ROOM'\n",
+							"    if x.find('RENT')>=0:\n",
+							"        return 'RENT' \n",
+							"    return x\n",
+							"  \n",
+							"clsofAccUDF = udf(lambda z : preunique(z), StringType()) \n",
+							"df = df.withColumn('Class_of_Accommodation', clsofAccUDF(col('Class_of_Accommodation')))"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Spark Dataframe Converting to Pandas Dataframe\n",
+							"pdf = df.toPandas()"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Text Preprocessing"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"def textclean(txt):    \n",
+							"    token=word_tokenize(txt)\n",
+							"    punc=[word for word in token if word.isalpha()]\n",
+							"    mystop=set(stopwords.words('english'))\n",
+							"    new_tok=[]\n",
+							"    for tok in punc:\n",
+							"        if tok not in mystop:\n",
+							"            new_tok.append(tok)\n",
+							"    return \" \".join(new_tok)    \n",
+							"  \n",
+							"for i in ['Procedure','Diagnosis']:\n",
+							"  pdf[i]=pdf[i].apply(lambda x: textclean(x))"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Replacing by Mean Values"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"pdf.loc[pdf['Age']=='NONE','Age']=30\n",
+							"pdf.loc[pdf['Claim_Amount']==0,'Claim_Amount']=int(pdf['Claim_Amount'].mean())"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Round Claim Amount\n",
+							"pdf['Claim_Amount']=pdf['Claim_Amount'].apply(lambda x: int(x))"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"pdf[['Age', 'Claim_Amount']] = pdf[['Age', 'Claim_Amount']].apply(pd.to_numeric)"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Removing Duplicate Claim Records\n",
+							"pdf=pdf.drop_duplicates(subset=['Claim_FIR_No'])"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Catagories by Age Group and Claim Amount Group\n",
+							"def bucketize(val, size, count):\n",
+							"    i=0\n",
+							"    for i in range(count):\n",
+							"        if val <= (i+1)*size:\n",
+							"            return i\n",
+							"    return i\n",
+							"\n",
+							"pdf['Age_group'] = [bucketize(x, 10, 5) for x in pdf['Age']]    \n",
+							"pdf['Claim_amt_grp'] = [bucketize(x, 1000, 200) for x in pdf['Claim_Amount']]"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Dropping Unnecessary Columns\n",
+							"# 'Claim_FIR_No'\n",
+							"dt=pdf.drop(['FullMemberName','Claim_Date','ProcedureAmount'],axis=1)"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Type Conversation\n",
+							"dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']] = dt[['day', 'month', 'year','Length_of_Stay','Claim_Amount']].apply(pd.to_numeric)"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"ddf = dt.copy()"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Feature Encoding\n",
+							"\n",
+							"Convert String Small Data into Numeric Data by LabelEncoder"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"le = LabelEncoder()\n",
+							"\n",
+							"col_n=['Claim_Type', 'Hospitalization_Type', 'Class_of_Accommodation', 'PolicyNo', 'Policy_Type','member_code',\n",
+							"       'Gender', 'Hospital', 'Corporate','HospitalCity', 'HospitalState', 'MemberCity','MemberState']\n",
+							"\n",
+							"for i in col_n:\n",
+							"    ddf[i]=le.fit_transform(ddf[i])"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"Convert String Paragraph Data into Bag of words by Count Vectorizer"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"c1 = CountVectorizer()\n",
+							"c2 = CountVectorizer()\n",
+							"\n",
+							"dia = c1.fit_transform(ddf['Diagnosis'])\n",
+							"pro = c2.fit_transform(ddf['Procedure'])\n",
+							"\n",
+							"diag = pd.DataFrame(dia.toarray(), columns=c1.get_feature_names())\n",
+							"prod = pd.DataFrame(pro.toarray(), columns=c2.get_feature_names())\n",
+							"\n",
+							"dft=pd.concat([diag,prod],axis=1)"
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"dfr=ddf.drop(['Claim_FIR_No','Diagnosis','Procedure'], axis=1)"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Anomaly Detection using Isolation Forest"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"iforest_d = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
+							"X_d=dfr.values\n",
+							"pred_d = iforest_d.fit_predict(X_d)\n",
+							"scaler_d = StandardScaler()\n",
+							"ddfs=scaler_d.fit_transform(X_d)\n",
+							"\n",
+							"iforest_t = IsolationForest(n_estimators=100, max_samples='auto',contamination=0.05, max_features=1.0,bootstrap=False, n_jobs=-1, random_state=0)\n",
+							"X_t=dft.values\n",
+							"pred_t = iforest_t.fit_predict(X_t)\n",
+							"scaler_t = StandardScaler()\n",
+							"dtfs=scaler_t.fit_transform(X_t)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 27
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Dimensional Reduction"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Apply PCA to reduce the dimensionality\n",
+							"\n",
+							"pca_d = PCA(n_components=2)\n",
+							"pcd = pca_d.fit_transform(ddfs)\n",
+							"\n",
+							"pca_t = PCA(n_components=2)\n",
+							"pct = pca_t.fit_transform(dtfs)"
+						],
+						"outputs": [],
+						"execution_count": 28
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Extract outliers\n",
+							"\n",
+							"outlier_index_d = np.where(pred_d==-1)\n",
+							"outlier_index_t = np.where(pred_t==-1)\n",
+							"\n",
+							"outlier_values_d = X_d[outlier_index_d]\n",
+							"outlier_values_t = X_t[outlier_index_t]\n",
+							"\n",
+							"outlier_values_scaled_d = scaler_d.transform(outlier_values_d)\n",
+							"outlier_values_scaled_t = scaler_t.transform(outlier_values_t)\n",
+							"\n",
+							"outlier_values_pca_d = pca_d.transform(outlier_values_scaled_d)\n",
+							"outlier_values_pca_t = pca_t.transform(outlier_values_scaled_t)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Storing the Anomaly Result \n",
+							"\n",
+							"dtest=dt.copy()\n",
+							"dtest['AD_D']=pred_d\n",
+							"dtest['AD_T']=pred_t"
+						],
+						"outputs": [],
+						"execution_count": 30
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### KMeans Clustering with PCA"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"kmeans_d = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
+							"kmeans_d.fit(pcd)\n",
+							"dtest['C1_KM']=kmeans_d.labels_\n",
+							"\n",
+							"kmeans_t = KMeans(n_clusters=100, init='k-means++', n_init=100, max_iter=100, random_state=0)\n",
+							"kmeans_t.fit(pct)\n",
+							"dtest['C2_KM']=kmeans_t.labels_"
+						],
+						"outputs": [],
+						"execution_count": 31
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"dtest[\"ADRS\"]=0\n",
+							"dtest[\"ADRS\"]=dtest[\"AD_D\"].apply(lambda x : int(x==-1))"
+						],
+						"outputs": [],
+						"execution_count": 32
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Integrating result on Anomaly Detection & Clustering"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"for i in range(0,30):\n",
+							"  if(dtest[dtest[\"C1_KM\"]==i]['AD_D'].value_counts().index[0]==-1):\n",
+							"    if(int(len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)<int(dtest[dtest[\"C1_KM\"]==i]['AD_D'].value_counts().values[0])):\n",
+							"      #print(i,dtest[dtest[\"C1_KM\"]==i][['AD_D']].value_counts().values[0],int((len(dtest[dtest[\"C1_KM\"]==i][['AD_D']])/2)/2))      \n",
+							"      dtest.loc[dtest['C1_KM']==i,'ADRS']=1              "
+						],
+						"outputs": [],
+						"execution_count": 33
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"for i in range(0,10):\n",
+							"  if(dtest[dtest[\"C2_KM\"]==i]['AD_T'].value_counts().index[0]==-1):\n",
+							"    if(int(len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)<int(dtest[dtest[\"C2_KM\"]==i]['AD_T'].value_counts().values[0])):\n",
+							"      #print(i,dtest[dtest[\"C2_KM\"]==i][['AD_T']].value_counts().values[0],int((len(dtest[dtest[\"C2_KM\"]==i][['AD_T']])/2)/2))      \n",
+							"      dtest.loc[dtest['C2_KM']==i,'ADRS']=1"
+						],
+						"outputs": [],
+						"execution_count": 34
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Final Result Mapping"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"dtest[\"ADRS\"]=dtest[[\"AD_T\",\"ADRS\"]].apply(lambda x : 1 if x[0]==-1 else x[1] ,axis=1)"
+						],
+						"outputs": [],
+						"execution_count": 35
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"dfin=dtest[['Claim_FIR_No', 'Claim_Type', 'Hospitalization_Type','Class_of_Accommodation', 'Procedure', 'Diagnosis', 'PolicyNo',\n",
+							"       'Policy_Type', 'member_code', 'Gender', 'Age', 'Hospital', 'Corporate', 'Length_of_Stay', 'Claim_Amount',\n",
+							"       'HospitalCity', 'HospitalState', 'MemberCity','MemberState','Age_group', 'Claim_amt_grp', 'day', 'year', 'month', 'ADRS']]"
+						],
+						"outputs": [],
+						"execution_count": 36
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"spark.conf.set(\"spark.sql.execution.arrow.enabled\",\"true\")\n",
+							"SDF=spark.createDataFrame(dfin) \n",
+							"SDF.printSchema()\n",
+							"#SDF.show()"
+						],
+						"outputs": [],
+						"execution_count": 37
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"##### Azure AutoML Dataset Registering"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from azureml.core import Experiment, Workspace, Dataset, Datastore\n",
+							"from azureml.data.dataset_factory import TabularDatasetFactory"
+						],
+						"outputs": [],
+						"execution_count": 38
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"subscription_id = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"SubscriptionId\",\"ClaimsSolutionKV\")\n",
+							"resource_group = \"uiap-d-si-synapse\"\n",
+							"workspace_name = \"az-synapse-hack-mlworkspace\"\n",
+							"experiment_name = \"claimfrauddetection\"\n",
+							"\n",
+							"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+							"\n",
+							"datastore = Datastore.get_default(ws)\n",
+							"dataset = TabularDatasetFactory.register_spark_dataframe(SDF, datastore, name = 'claim-labelled-dataset')"
+						],
+						"outputs": [],
 						"execution_count": 39
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Import necessary packages to Submit AutoML Experiment"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import logging\r\n",
+							"import azureml.core\r\n",
+							"import onnxruntime\r\n",
+							"import mlflow\r\n",
+							"import mlflow.onnx\r\n",
+							"from azureml.core import Experiment, Workspace, Dataset, Datastore\r\n",
+							"from azureml.train.automl import AutoMLConfig\r\n",
+							"from azureml.data.dataset_factory import TabularDatasetFactory\r\n",
+							"from azureml.core.authentication import InteractiveLoginAuthentication, ServicePrincipalAuthentication\r\n",
+							"\r\n",
+							"from mlflow.models.signature import ModelSignature\r\n",
+							"from mlflow.types import DataType\r\n",
+							"from mlflow.types.schema import ColSpec, Schema"
+						],
+						"outputs": [],
+						"execution_count": 40
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Define AutoMLConfig Properties"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"automl_config = AutoMLConfig(spark_context = sc,\r\n",
+							"                             task = \"classification\",\r\n",
+							"                             debug_log = 'automl_errors.log',\r\n",
+							"                             training_data = dataset,\r\n",
+							"                             label_column_name = \"ADRS\",\r\n",
+							"                             primary_metric = \"AUC_weighted\",\r\n",
+							"                             experiment_timeout_minutes = 15,\r\n",
+							"                             blocked_models=['DecisionTreeClassifier'],\r\n",
+							"                             max_concurrent_iterations = 2,\r\n",
+							"                             verbosity = logging.INFO,                             \r\n",
+							"#                              enable_cache=True,\r\n",
+							"                             featurization='auto',\r\n",
+							"                             enable_onnx_compatible_models = False)"
+						],
+						"outputs": [],
+						"execution_count": 41
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Submit and Run Experiment"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"try:\r\n",
+							"\r\n",
+							"  # Create AML Experiment - use the name from ./99-Shared-Functions-and-Settings notebook\r\n",
+							"  experiment = Experiment(ws, experiment_name)\r\n",
+							"\r\n",
+							"  # Submit AutoML Run\r\n",
+							"  run = experiment.submit(automl_config)\r\n",
+							"  run.wait_for_completion(show_output=True)   \r\n",
+							"\r\n",
+							"except Exception as e:\r\n",
+							"  print(\"Error : \",e)\r\n",
+							"  "
+						],
+						"outputs": [],
+						"execution_count": 42
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Get Best Run and Model"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"best_run, onnx_model = run.get_output()"
+						],
+						"outputs": [],
+						"execution_count": 43
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Infer Schema, Signature and Register the Model"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"artifact_path = experiment_name + \"_artifact\"\r\n",
+							"mlflow.set_tracking_uri(ws.get_mlflow_tracking_uri())\r\n",
+							"mlflow.set_experiment(experiment_name)\r\n",
+							"\r\n",
+							"with mlflow.start_run() as run:\r\n",
+							"    # Save the model to the outputs directory for capture\r\n",
+							"    mlflow.sklearn.log_model(onnx_model, artifact_path)\r\n",
+							"    Run_Id = run.info.run_id\r\n",
+							"    # Register the model to AML model registry\r\n",
+							"    mlflow.register_model(\"runs:/\" + run.info.run_id + \"/\" + artifact_path, \"uiap-azure-ml-ws-fraud-detection-model-Best\")"
+						],
+						"outputs": [],
+						"execution_count": 44
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Convert ONNXModel to Hexadecimal"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"#### Write ONNX Model to Blob Storage"
+						]
 					}
 				]
 			},
@@ -8060,7 +8460,8 @@
 						"nodeCount": 3,
 						"cores": 8,
 						"memory": 56
-					}
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -8954,7 +9355,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/cognitive-flow')]",
+			"name": "[concat(parameters('workspaceName'), '/cognitive-flow-synapse')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -8964,20 +9365,20 @@
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
-					"referenceName": "sparkpool2021",
+					"referenceName": "Gsparkpool",
 					"type": "BigDataPoolReference"
 				},
 				"sessionProperties": {
-					"driverMemory": "56g",
-					"driverCores": 8,
-					"executorMemory": "56g",
-					"executorCores": 8,
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
 					"numExecutors": 2,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "84e00cbc-71a9-4c6a-b2ac-211b8bbbd2eb"
+						"spark.autotune.trackingId": "b92d1b9d-c9e1-4596-b93f-e6a289fd7ab1"
 					}
 				},
 				"metadata": {
@@ -8991,19 +9392,20 @@
 						"name": "python"
 					},
 					"a365ComputeOptions": {
-						"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/sparkpool2021",
-						"name": "sparkpool2021",
+						"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
+						"name": "Gsparkpool",
 						"type": "Spark",
-						"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool2021",
+						"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
 						"auth": {
 							"type": "AAD",
 							"authResource": "https://dev.azuresynapse.net"
 						},
-						"sparkVersion": "2.4",
-						"nodeCount": 3,
-						"cores": 8,
-						"memory": 56
-					}
+						"sparkVersion": "3.1",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
@@ -9020,12 +9422,40 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
 						"source": [
-							"from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
+							"%%configure -f\r\n",
+							"{\r\n",
+							"    \"name\": \"synapseml\",\r\n",
+							"    \"conf\": {\r\n",
+							"        \"spark.jars.packages\": \"com.microsoft.azure:synapseml_2.12:0.9.5\",\r\n",
+							"        \"spark.jars.excludes\": \"org.scala-lang:scala-reflect,org.apache.spark:spark-tags_2.12,org.scalactic:scalactic_2.12,org.scalatest:scalatest_2.12\",\r\n",
+							"        \"spark.yarn.user.classpath.first\": \"true\"\r\n",
+							"    }\r\n",
+							"}"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
 							"from collections import OrderedDict\n",
 							"import json\n",
 							"from notebookutils import mssparkutils\n",
-							"import time"
+							"import time\n",
+							""
 						],
 						"outputs": [],
 						"execution_count": 2
@@ -9044,10 +9474,29 @@
 							}
 						},
 						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
 							"jobId = mssparkutils.env.getJobId() "
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -9073,7 +9522,42 @@
 							"    print(\"Already mounted\")"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"text_analyze = (TextAnalyze()\r\n",
+							"    .setLocation(location)\r\n",
+							"    .setSubscriptionKey(key)\r\n",
+							"    .setTextCol(\"text\")\r\n",
+							"    .setOutputCol(\"textAnalysis\")\r\n",
+							"    .setErrorCol(\"error\")\r\n",
+							"    .setLanguageCol(\"language\")\r\n",
+							"    # set the tasks to perform\r\n",
+							"    .setEntityRecognitionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+							"    .setKeyPhraseExtractionTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+							"    # Uncomment these lines to add more tasks\r\n",
+							"    # .setEntityRecognitionPiiTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+							"    # .setEntityLinkingTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+							"    # .setSentimentAnalysisTasks([{\"parameters\": { \"model-version\": \"latest\"}}])\r\n",
+							"    )\r\n",
+							"\r\n",
+							"df_results = text_analyze.transform(df)"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "markdown",
@@ -9089,7 +9573,449 @@
 							"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"aimlworkathonkv\",\"ComputerVisionKey\")"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Create Custom OCR Client Object to make API Calls"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Create Client Object\n",
+							"client = CustomOCRAgent(endpoint, SUBSCRIPTION_KEY, inputtype = 'stream')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Read Files from datalake and call read_document Function"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### For Standard Tier"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# For Standard Tier \n",
+							"files = mssparkutils.fs.ls(f\"synfs:/{jobId}/claims/ClaimFiles/Live\")\n",
+							"OCRDatas = []\n",
+							"for ele in files:\n",
+							"    name = ele.name\n",
+							"    path = '/'+ele.path.replace(':','')\n",
+							"    print(path)\n",
+							"    with open(f'{path}/report.png', mode='rb') as pdfstream:\n",
+							"        resp = client.read_document(streamdata = pdfstream.read())\n",
+							"        parsed = client.parse(resp)\n",
+							"        OCRDatas.append(OrderedDict({\"id\": name, \"text\": parsed}))"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Use Azure Translator API to translate all text into common language (English)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# For Translator\n",
+							"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
+							"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
+							"\n",
+							"# This is required if using a Cognitive Services resource.\n",
+							"location = \"centralindia\"\n",
+							"\n",
+							"client = CustomTranslatorAgent(endpoint, subscription_key, location)\n",
+							"documents = OCRDatas # [{'id': 'CL01','text':parsed}] # bring the documents from OCR Response\n",
+							"output= client.translate(documents)\n",
+							"documents = client.parse(output, documents)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Define Azure Text Analytics Credentials and create CustomAgent Object to make API Calls"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Define Credentials\n",
+							"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
+							"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
+							"# Initialize Text analytics client\n",
+							"text_analytics_client = CustomTextAgent(endpoint, key)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Use analyse_sentiment, get_keyphrases and get_entities functions to get response from API"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Batch Processing to Get Sentiments"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"sentiments = []\n",
+							"s,e=0,10\n",
+							"while True:\n",
+							"    if len(documents)==len(sentiments):\n",
+							"        break\n",
+							"    sentiment_batch = text_analytics_client.analyse_sentiment(documents[s:e])\n",
+							"    data = text_analytics_client.parse(sentiment_batch,documents[s:e],type=\"sentiment\")\n",
+							"    sentiments.extend(data)\n",
+							"    s,e = e,e+10"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Batch Processing to Get keyphrases"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"keyphrases = []\n",
+							"s2,e2=0,10\n",
+							"while True:\n",
+							"    if len(documents)==len(keyphrases):\n",
+							"        break\n",
+							"    phrases_batch = text_analytics_client.get_keyphrases(documents[s2:e2])\n",
+							"    data = text_analytics_client.parse(phrases_batch,sentiments[s2:e2],type=\"keyphrases\")\n",
+							"    keyphrases.extend(data)\n",
+							"    s2,e2 = e2,e2+10"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Batch Processing to Get Entites"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"entities_data = []\n",
+							"categories = []\n",
+							"s3,e3= 0,5\n",
+							"while True:\n",
+							"    if len(documents)==len(entities_data):\n",
+							"        break\n",
+							"    entities = text_analytics_client.get_entities(documents[s3:e3])\n",
+							"    data , category= text_analytics_client.parse(entities,keyphrases[s3:e3],type=\"entities\")\n",
+							"    categories.extend(category)\n",
+							"    entities_data.extend(data)\n",
+							"    s3,e3 = e3,e3+5\n",
+							"categories = [('general',c) for c in set(categories)]"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Batch Processing to Get Health Related Entites"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"consolidated = []\n",
+							"health_cats = []\n",
+							"s4,e4= 0,5\n",
+							"while True:\n",
+							"    if len(documents)==len(consolidated):\n",
+							"        break\n",
+							"    health_entities = text_analytics_client.get_health_entities(documents[s4:e4])\n",
+							"    data , category= text_analytics_client.parse(health_entities,entities_data[s4:e4],type=\"health\")\n",
+							"    health_cats.extend(category)\n",
+							"    consolidated.extend(data)\n",
+							"    s4,e4 = e4,e4+5\n",
+							"categories.extend([('health',c1) for c1 in set(health_cats)])"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Use Agent Parse Function to parse those json response in a well structured format"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Sample Outputs for Testing\n",
+							"# with open('/dbfs/mnt/claimsfiles/outputs/analyse-sentiment.json') as f:\n",
+							"#     sentiments = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.AnalyzeSentiment)\n",
+							"#     print(sentiments)\n",
+							"# with open('/dbfs/mnt/claimsfiles/outputs/get-entities.json') as f:\n",
+							"#     entities = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.Entities)\n",
+							"#     print(entities)\n",
+							"# with open('/dbfs/mnt/claimsfiles/outputs/detect-language.json') as f:\n",
+							"#     detectresp = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.DetectLanguage)\n",
+							"#     print(detectresp)\n",
+							"# with open('/dbfs/mnt/claimsfiles/outputs/get-keyphrases.json') as f:\n",
+							"#     keyphrases = text_analytics_client.parse(json.load(f),documents, CustomTextAgent.KeyPhrases)\n",
+							"#     print(keyphrases)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Generate Spark Dataframe from JSON Data"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"consolidatedDf = spark.createDataFrame(consolidated)\n",
+							"# display(consolidatedDf)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Select necessary columns in order"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"pdf = consolidatedDf.toPandas()\n",
+							"pdf['entities'] = pdf['entities'].apply(json.dumps)\n",
+							"pdf['health_entities'] = pdf['health_entities'].apply(json.dumps)\n",
+							"# pdf.drop(['entities'],inplace=True, axis = 1)\n",
+							"finalDf = spark.createDataFrame(pdf).select('id','text','sentiment','keyphrases','entities','health_entities')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"#### Create dataFrame and Select necessary columns in order"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Entities Logic \n",
+							"overallrec = []\n",
+							"for ele in consolidated:\n",
+							"    for c,i in categories:\n",
+							"        overallrec.append(OrderedDict({\"category\":i,\"claimid\": ele[\"id\"], \"text\": ele['entities'].get(i,ele['health_entities'].get(i)), \"health\": int(c=='health')}))\n",
+							"testDf = spark.createDataFrame(overallrec)\n",
+							"entitiesDF = testDf.select(\"claimid\", \"category\", \"text\",\"health\")\n",
+							"# display(entitiesDF)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Write final consolidated data into azure sql using JDBC Connector"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"def writeto_sql(dataframe, tableName, jdbcConnection):\n",
+							"    dataframe.write \\\n",
+							"    .format(\"jdbc\") \\\n",
+							"    .mode(\"overwrite\") \\\n",
+							"    .option(\"url\", jdbcConnection) \\\n",
+							"    .option(\"dbtable\", tableName) \\\n",
+							"    .save()\n",
+							"    print(\"Data Written Successfully\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
+							"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
+							"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/cognitive-flow')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "Cognitive Services"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "Gsparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "0f317445-fe76-4e3f-bcc0-48216dc73e0a"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/03766bec-6c31-4851-aa3c-233d9b60aeaf/resourceGroups/uiap-d-si-synapse/providers/Microsoft.Synapse/workspaces/uiap-synapse-claims-ws/bigDataPools/Gsparkpool",
+						"name": "Gsparkpool",
+						"type": "Spark",
+						"endpoint": "https://uiap-synapse-claims-ws.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Gsparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.1",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"source": [
+							"## Azure Cognitive Services API Calls using Custom SDK"
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Import necessary packages/modules"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"from cognitive.agent import CustomTextAgent, CustomOCRAgent, CustomTranslatorAgent\n",
+							"from collections import OrderedDict\n",
+							"import json\n",
+							"from notebookutils import mssparkutils\n",
+							"import time"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"jobId = mssparkutils.env.getJobId() "
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"try:\r\n",
+							"    mssparkutils.fs.mount( \r\n",
+							"    \"abfss://uiapsynapsedlfs@uiapsynapsedl.dfs.core.windows.net\", \r\n",
+							"    \"/claims\", \r\n",
+							"    {\"linkedService\":\"uiapsynapsedl\"} \r\n",
+							"    ) \r\n",
+							"except Exception:\r\n",
+							"    print(\"Already mounted\")"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "markdown",
+						"source": [
+							"### Define Credentials for Azure Computer Vision to Read Documents (OCR)"
+						]
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"# Define Credentials\n",
+							"endpoint = 'https://aiml-computervision.cognitiveservices.azure.com'\n",
+							"SUBSCRIPTION_KEY = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"ComputerVisionKey\",\"ClaimsSolutionKV\")"
+						],
+						"outputs": [],
+						"execution_count": 5
 					},
 					{
 						"cell_type": "markdown",
@@ -9146,7 +10072,7 @@
 						"cell_type": "code",
 						"source": [
 							"# For Translator\n",
-							"subscription_key = TokenLibrary.getSecret(\"aimlworkathonkv\",\"AzureTranslatorKey\")\n",
+							"subscription_key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\",\"AzureTranslatorKey\")\n",
 							"endpoint = \"https://api.cognitive.microsofttranslator.com/\"\n",
 							"\n",
 							"# This is required if using a Cognitive Services resource.\n",
@@ -9171,7 +10097,7 @@
 						"source": [
 							"# Define Credentials\n",
 							"endpoint = \"https://aiml-language.cognitiveservices.azure.com\" \n",
-							"key = TokenLibrary.getSecret(\"aimlworkathonkv\", \"TextAnalyticsKey\")\n",
+							"key = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"TextAnalyticsKey\",\"ClaimsSolutionKV\")\n",
 							"# Initialize Text analytics client\n",
 							"text_analytics_client = CustomTextAgent(endpoint, key)"
 						],
@@ -9383,7 +10309,7 @@
 					{
 						"cell_type": "code",
 						"source": [
-							"jdbcconnString = TokenLibrary.getSecret(\"aimlworkathonkv\", \"DSQLTargetJdbc\")\n",
+							"jdbcconnString = TokenLibrary.getSecret(\"ClaimsSolutionAIMLKV\", \"DSQLTargetJdbc\",\"ClaimsSolutionKV\")\n",
 							"writeto_sql(entitiesDF, 'Load.Entities', jdbcconnString)\n",
 							"writeto_sql(finalDf, 'Load.ClaimFraudAnalyzedAIMLData', jdbcconnString)"
 						],
@@ -9401,6 +10327,62 @@
 			"properties": {
 				"collation": "SQL_Latin1_General_CP1_CI_AS",
 				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "centralindia"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sparkpool2021')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 3,
+				"nodeSize": "Medium",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "2.4",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": true,
+				"customLibraries": [],
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "centralindia"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Gsparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.1",
+				"libraryRequirements": {
+					"content": "Faker\r\nazure-storage-file-datalake\r\nuicognitive-sdk",
+					"filename": "requirements.txt",
+					"time": "2022-01-27T05:25:32.40945Z"
+				},
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": true,
 				"annotations": []
 			},
 			"dependsOn": [],
